@@ -22,5 +22,7 @@ function App() {
     </div>
   );
 }
-
+fetch('http://www.miigaik.ru/Abitur/get_html.php?get=och_budzh',
+    {method:'GET', mode: 'cors'}).
+then(x=>console.log(x))
 export default App;
