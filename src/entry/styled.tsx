@@ -1,13 +1,8 @@
 import styled from "@emotion/styled"
+import { BackThemeImage } from "../components/common/styled"
 import { COLORS } from "../config/colors"
+import { CSS_CONSTANTS } from "../config/globalStyles/common"
 import { MAIN_FONT_NAME } from "../config/globalStyles/fonts"
-import NOISE_IMG from "./../assets/images/noise.jpg"
-
-const BackThemeImage = styled.div`
-  background-image: url(${NOISE_IMG});
-  background-attachment: fixed;
-  background-size: cover;
-`
 
 const BackThemeColor = styled.div`
   position: fixed;
@@ -27,6 +22,7 @@ const Container = styled.div`
   font-weight: 800;
   z-index: 2;
   position: relative;
+  padding: ${CSS_CONSTANTS.padding};
 `
 export const AppContainer: React.FC = (props) => (
   <BackThemeImage>

@@ -1,39 +1,56 @@
 import styled from "@emotion/styled"
 import { COLORS } from "../../config/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
-import { CenteredDiv } from "../styled"
+import { Control } from "../styled"
 
-const ButtonBase = styled(CenteredDiv)<{ disabled?: boolean }>`
-  padding: 8px;
-  height: 20px;
-  font-size: 16px;
-  width: min-content;
-  min-width: 100px;
+const useButton = (
+  disabled: boolean,
+  color: COLORS,
+  background: COLORS,
+  backgroundDisable: COLORS,
+  hover: COLORS,
+  active: COLORS,
+  border: COLORS
+) => `
+  border: ${CSS_CONSTANTS.borderWidth} solid ${border};
+  color: ${color};
+  background: ${disabled ? backgroundDisable : background};
+  &:hover {
+    background: ${hover};
+  }
+  &:active {
+    background: ${active};
+  }`
+
+const ButtonBase = styled(Control)<{ disabled?: boolean }>`
+  height: 36px;
+  font-size: ${CSS_CONSTANTS.controlFontSize};
+  min-width: 116px;
   border-radius: ${CSS_CONSTANTS.borderRadius};
-  cursor: pointer;
-  user-select: none;
 `
 
 export const StandardButton = styled(ButtonBase)<{ disabled?: boolean }>`
-  border: ${CSS_CONSTANTS.borderWidth} solid ${COLORS.deepMain};
-  color: ${COLORS.deepLightSecondary};
-  background: ${({ disabled }) => (disabled ? COLORS.fullMain : COLORS.primaryMain)};
-  &:hover {
-    background: ${COLORS.lightMain};
-  }
-  &:active {
-    background: ${COLORS.deepMain};
-  }
+  ${({ disabled }) =>
+    useButton(
+      !!disabled,
+      COLORS.deepLightSecondary,
+      COLORS.primaryMain,
+      COLORS.fullMain,
+      COLORS.lightMain,
+      COLORS.deepMain,
+      COLORS.deepDark
+    )}
 `
 
 export const RejectButton = styled(ButtonBase)<{ disabled?: boolean }>`
-  border: ${CSS_CONSTANTS.borderWidth} solid ${COLORS.deepDark};
-  color: ${COLORS.deepLightSecondary};
-  background: ${({ disabled }) => (disabled ? COLORS.fullDark : COLORS.deepLightDark)};
-  &:hover {
-    background: ${COLORS.lightDark};
-  }
-  &:active {
-    background: ${COLORS.deepDark};
-  }
+  ${({ disabled }) =>
+    useButton(
+      !!disabled,
+      COLORS.deepLightSecondary,
+      COLORS.deepLightDark,
+      COLORS.fullDark,
+      COLORS.lightDark,
+      COLORS.deepDark,
+      COLORS.deepDark
+    )}
 `

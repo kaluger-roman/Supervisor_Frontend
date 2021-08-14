@@ -1,0 +1,1 @@
+export { StandardContainer } from "./styled"
