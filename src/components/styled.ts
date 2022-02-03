@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import NOISE_IMG from "./../assets/images/noise.jpg"
 
 export const CenteredDivStyle = `
     display: flex;
@@ -17,6 +18,14 @@ export const FullSizeStyle = `
     height: 100%;
 `
 
+export const FullScreenStyle = `
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+`
+
 export const CenteredDiv = styled.div`
     ${CenteredDivStyle}
 `
@@ -27,4 +36,22 @@ export const Control = styled(CenteredDiv)`
 
 export const FullSize = styled.div`
     ${FullSizeStyle}
+`
+
+export const FullSizeCentered = styled(CenteredDiv)`
+    ${FullSizeStyle}
+`
+
+export const NormalizedInput = styled.input`
+    &:focus {
+        outline: none;
+    }
+`
+
+export const BackThemeImage = styled.div<{ borderRadius?: string }>`
+    background-image: url(${NOISE_IMG});
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
+    border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : 0)};
 `

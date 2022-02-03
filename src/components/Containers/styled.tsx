@@ -1,8 +1,16 @@
 import styled from "@emotion/styled"
-import { COLORS } from "../../config/colors"
+import { cond, equals, always, T } from "ramda"
+import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
-import { BackThemeImage } from "../common/styled"
-import { FullSize } from "../styled"
+import { BackThemeImage, FullSize } from "../styled"
+import { ThemeVariant } from "../types"
+import { StandardContainerProps } from "./types"
+
+const colorThemeSegregator = cond([
+    [equals(ThemeVariant.dark), always(COLORS.lightDark)],
+    [equals(ThemeVariant.light), always(COLORS.deepLightDark)],
+    [T, always(COLORS.lightDark)]
+]) as (variant?: ThemeVariant) => COLORS
 
 export const ContainerBase = styled.div`
     padding: ${CSS_CONSTANTS.padding};
@@ -15,19 +23,19 @@ export const ContainerBase = styled.div`
     align-items: center;
 `
 
-const BackThemeColor = styled(FullSize)`
+const BackThemeColor = styled(FullSize)<{ variant?: ThemeVariant }>`
     position: absolute;
     left: 0;
     top: 0;
-    background-color: ${COLORS.lightDark};
+    background-color: ${({ variant }) => colorThemeSegregator(variant)};
     opacity: 0.95;
     z-index: 1;
     border-radius: ${CSS_CONSTANTS.borderRadius};
 `
 
-export const StandardContainer: React.FC = (props) => (
+export const StandardContainer: React.FC<StandardContainerProps> = (props) => (
     <BackThemeImage borderRadius={CSS_CONSTANTS.borderRadius}>
-        <BackThemeColor />
+        <BackThemeColor variant={props.variant} />
         <ContainerBase>{props.children}</ContainerBase>
     </BackThemeImage>
 )

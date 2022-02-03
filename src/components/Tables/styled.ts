@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { sum } from "lodash"
 import { add, inc } from "ramda"
-import { COLORS } from "../../config/colors"
+import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { CenteredDivStyle, FullSize } from "../styled"
 import { checkPosition, needSpan } from "./helper"

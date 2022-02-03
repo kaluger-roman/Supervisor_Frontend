@@ -1,1 +1,1 @@
-export { StandardButton, RejectButton } from "./styled"
+export { StandardButton, RejectButton, CancelCross } from "./styled"

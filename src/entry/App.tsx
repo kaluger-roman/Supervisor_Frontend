@@ -12,13 +12,25 @@ import { Header, LargeHeader, PageHeader, SectionHeader, SubHeader } from "../co
 import { StandardContainer } from "../components/Containers"
 import { Table } from "../components/Tables"
 import { createSimpleConfig } from "../components/Tables/helper"
+import { ThemeVariant } from "../components/types"
+import { Calendar } from "../components/Calendar"
+import { Input } from "../components/Inputs"
+import { ModalPortal, ShowModal } from "../components/Modals"
 
 const App: React.FC = () => {
     return (
         <Provider store={store}>
             <Global styles={GlobalStyles} />
+            <ModalPortal />
             <AppContainer>
                 <StandardContainer>
+                    <Calendar />
+                    <Input onChange={() => {}} value="testtesttesttesttestfdfd" label="Label" />
+
+                    <StandardContainer variant={ThemeVariant.light}>
+                        <StandardButton>Кнопка</StandardButton>
+                        <RejectButton>Отмена</RejectButton>
+                    </StandardContainer>
                     <StandardButton>Кнопка</StandardButton>
                     <RejectButton>Отмена</RejectButton>
                     <Checkboxes
@@ -39,33 +51,32 @@ const App: React.FC = () => {
                         selected={["1"]}
                     />
                     <Table
-                        config={
-                            {
-                                template: [
-                                    ["0", "0", "2"],
-                                    ["3", "4", "5"]
-                                ],
-                                cellsHeight: [50, 100],
-                                cellsWidth: [50, 100, 100],
-                                rowFractions: 2,
-                                colFractions: 3,
-                                content: { "2": "kek", "5": "lol" }
-                            } /* createSimpleConfig(5, 7, 500, 200, { "0": "kek", "3": "lol" })*/
-                        }
+                        config={{
+                            template: [
+                                ["0", "0", "2"],
+                                ["3", "4", "5"]
+                            ],
+                            cellsHeight: [50, 100],
+                            cellsWidth: [50, 100, 100],
+                            rowFractions: 2,
+                            colFractions: 3,
+                            content: { "2": "kek", "5": "lol" }
+                        }}
                     />
                 </StandardContainer>
                 {/* <DarkContainer>
-          <StandardButton>Кнопка</StandardButton>
-          <RejectButton>Отмена</RejectButton>
-        </DarkContainer>
-        <StandardButton>Кнопка</StandardButton>
-        <RejectButton>Отмена</RejectButton> */}
+                    <StandardButton>Кнопка</StandardButton>
+                    <RejectButton>Отмена</RejectButton>
+                </DarkContainer> */}
+                <StandardButton>Кнопка</StandardButton>
+                <RejectButton>Отмена</RejectButton>
 
                 <PageHeader>Header</PageHeader>
                 <SectionHeader>Header</SectionHeader>
                 <LargeHeader>Header</LargeHeader>
                 <Header>Header</Header>
                 <SubHeader>Header</SubHeader>
+                <Calendar />
             </AppContainer>
         </Provider>
     )

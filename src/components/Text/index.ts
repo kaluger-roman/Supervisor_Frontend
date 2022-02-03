@@ -1,0 +1,1 @@
+export { StandardText } from "./styled"

@@ -1,0 +1,90 @@
+@use "src/config/globalStyles/colors";
+@use "src/config/globalStyles/cssConstants";
+
+.react-calendar {
+    background: colors.$deeplightsecondary;
+    border-radius: cssConstants.$borderRadius;
+    font-size: cssConstants.$controlFontSize !important;
+    font-weight: bold !important;
+    font-family: "Slab";
+    color: colors.$primaryDark !important;
+
+    .react-calendar__tile {
+        padding: 3px !important;
+    }
+
+    .react-calendar__viewContainer {
+        padding: 8px;
+    }
+
+    button {
+        font-family: "Slab";
+        font-size: cssConstants.$controlFontSize !important;
+        border-radius: cssConstants.$borderRadius;
+        font-weight: bold !important;
+        color: colors.$primaryDark !important;
+
+        &:hover,
+        &:focus {
+            background: colors.$deeplightmain !important;
+        }
+    }
+
+    .react-calendar__tile--now {
+        background: colors.$primarymain !important;
+
+        &:hover {
+            background: colors.$deeplightmain !important;
+        }
+
+        &:focus {
+            background: colors.$primarymain !important;
+        }
+    }
+
+    .react-calendar__tile--active,
+    .react-calendar__tile--hasActive {
+        background: colors.$primarymain !important;
+
+        &:hover {
+            background: colors.$deeplightmain !important;
+        }
+
+        &:focus {
+            background: colors.$primarymain !important;
+        }
+    }
+
+    .react-calendar__navigation {
+        font-weight: 1000 !important;
+        font-size: 30px !important;
+        margin-bottom: 0 !important;
+
+        button {
+            font-size: 20px !important;
+            text-transform: capitalize;
+
+            &:hover,
+            &:focus {
+                transform: scale(1.4);
+                background: transparent !important;
+            }
+
+            &.react-calendar__navigation__label {
+                &:hover,
+                &:focus {
+                    background: transparent !important;
+                    transform: scale(1.05);
+                    text-decoration: underline;
+                }
+            }
+
+            &:nth-child(1),
+            &:nth-child(2),
+            &:nth-child(4),
+            &:nth-child(5) {
+                font-size: 34px !important;
+            }
+        }
+    }
+}
