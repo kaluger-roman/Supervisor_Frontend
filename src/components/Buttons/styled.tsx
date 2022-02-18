@@ -3,7 +3,7 @@ import React from "react"
 import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { CenteredDiv, Control } from "../styled"
-import CrossIcon from "../../assets/images/cross.svg"
+import { IconProps } from "./types"
 
 const useButton = (
     disabled: boolean,
@@ -31,11 +31,12 @@ const ButtonBase = styled(Control)<{ disabled?: boolean }>`
     border-radius: ${CSS_CONSTANTS.borderRadius};
 `
 
-const CancelCircle = styled(CenteredDiv)`
+const IconCircleOuter = styled(CenteredDiv)<{ scale?: number }>`
     width: ${CSS_CONSTANTS.iconBigSize};
     height: ${CSS_CONSTANTS.iconBigSize};
     border-radius: 50%;
     background: ${COLORS.primaryDark};
+    ${({ scale }) => `scale: ${scale};`}
 
     & > div {
         background: ${COLORS.primaryMain};
@@ -56,17 +57,33 @@ const CancelCircle = styled(CenteredDiv)`
     }
 `
 
-const CancelCrossInner = styled.div`
+const IconCircleInner = styled.div<IconProps>`
     width: ${CSS_CONSTANTS.iconSize};
     height: ${CSS_CONSTANTS.iconSize};
-    mask-image: url(${CrossIcon});
-    -webkit-mask-box-image: url(${CrossIcon});
+    ${({ scale }) => `scale: ${scale};`}
+    mask-image: ${({ icon }) => `url(${icon})`};
+    -webkit-mask-box-image: ${({ icon }) => `url(${icon})`};
 `
 
-export const CancelCross: React.FC = () => (
-    <CancelCircle>
-        <CancelCrossInner />
-    </CancelCircle>
+export const MaskIcon = styled.div<IconProps>`
+    width: ${CSS_CONSTANTS.iconSize};
+    height: ${CSS_CONSTANTS.iconSize};
+    mask-image: ${({ icon }) => `url(${icon})`};
+    -webkit-mask-box-image: ${({ icon }) => `url(${icon})`};
+    background: ${COLORS.primaryDark};
+
+    &:hover {
+        background: ${COLORS.lightMain};
+    }
+    &:active {
+        background: ${COLORS.fullMain};
+    }
+`
+
+export const IconCircle: React.FC<IconProps> = ({ icon, scale }) => (
+    <IconCircleOuter scale={scale}>
+        <IconCircleInner icon={icon} />
+    </IconCircleOuter>
 )
 
 export const StandardButton = styled(ButtonBase)<{ disabled?: boolean }>`

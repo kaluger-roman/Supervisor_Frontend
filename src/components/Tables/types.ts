@@ -1,4 +1,5 @@
 import React from "react"
+import { Coords } from "../../types"
 
 export type TableConfig = {
     template: TableTemplate
@@ -35,7 +36,6 @@ export enum SpanCell {
     bottom = "bottom"
 }
 
-export type Coords = { x: number; y: number }
 export type Zones = { [key: string]: Coords[] }
 
 export type CellRect = {

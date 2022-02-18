@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react"
 import ReactDOM from "react-dom"
 import { convertCssSecondsToIntMs, CSS_CONSTANTS } from "../../config/globalStyles/common"
-import { StandardButton, RejectButton, CancelCross } from "../Buttons"
+import { StandardButton, RejectButton, IconCircle } from "../Buttons"
 import { StandardContainer } from "../Containers"
 import { SectionHeader } from "../Headers"
 import { StandardText } from "../Text"
@@ -9,6 +9,7 @@ import { ThemeVariant } from "../types"
 import { MODAL_PORTAL_ID, STANDARD_ACCEPT_LABEL, STANDARD_DECLINE_LABEL } from "./constants"
 import { Backdrop, Cancel, InnerContainer, ButtonsContainer, TextContainer } from "./styled"
 import { ModalProps, ModalSize, ModalPropsInner } from "./types"
+import CrossIcon from "./../../assets/images/cross.svg"
 
 const Modal: React.FC<ModalPropsInner> = ({
     children,
@@ -43,7 +44,7 @@ const Modal: React.FC<ModalPropsInner> = ({
                     {children || (
                         <>
                             <Cancel onClick={CloseWrapper()}>
-                                <CancelCross />
+                                <IconCircle icon={CrossIcon} />
                             </Cancel>
                             {header && <SectionHeader noTopMargin>{header}</SectionHeader>}
                             <TextContainer> {text && <StandardText centered>{text}</StandardText>}</TextContainer>
@@ -80,15 +81,3 @@ export const ShowModal = (props: ModalProps) => {
             portal
         )
 }
-
-setTimeout(
-    () =>
-        ShowModal({
-            header: "Test",
-            text: "Test Test TestTestTestTestTestTestTest Test",
-            size: ModalSize.standard,
-            hasAccept: true,
-            hasDecline: true
-        }),
-    1000
-)

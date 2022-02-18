@@ -32,7 +32,8 @@ export const CSS_CONSTANTS = {
     smallMargin: "2px",
     standardIndent: "10px",
     zIndexImportant: "999",
-    shadowBase: "4px"
+    shadowBase: "4px",
+    shadowLight: "1px"
 }
 
 export const convertCssSecondsToIntMs = (value: string) => (parseFloat(value) || 0) * 1000

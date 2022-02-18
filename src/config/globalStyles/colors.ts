@@ -17,7 +17,9 @@ export enum COLORS {
     deepSecondary = "#C9C95B",
     fullSecondary = "#7D7D5E",
 
-    error = "#a30000"
+    error = "#a30000",
+    error1 = "#dd1d1d",
+    error2 = "#b72d2d"
 }
 
 export const hexToRgba = (hex: COLORS, alpha: number): string => {

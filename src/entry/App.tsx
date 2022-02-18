@@ -16,14 +16,18 @@ import { ThemeVariant } from "../components/types"
 import { Calendar } from "../components/Calendar"
 import { Input } from "../components/Inputs"
 import { ModalPortal, ShowModal } from "../components/Modals"
+import { WebRTC } from "../apps/Supervisor"
+//import { NotificationsPortal } from "../components/Notifications"
 
 const App: React.FC = () => {
     return (
         <Provider store={store}>
             <Global styles={GlobalStyles} />
+            {/* <NotificationsPortal /> */}
             <ModalPortal />
             <AppContainer>
                 <StandardContainer>
+                    <WebRTC />
                     <Calendar />
                     <Input onChange={() => {}} value="testtesttesttesttestfdfd" label="Label" />
 

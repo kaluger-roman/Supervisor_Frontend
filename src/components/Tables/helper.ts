@@ -1,6 +1,7 @@
 import { min, range } from "lodash"
 import { always, cond, dec, equals, inc, T } from "ramda"
-import { CellRect, Coords, Positions, SpanCell, TableConfig, TableContent, TableTemplate, Zones } from "./types"
+import { Coords } from "../../types"
+import { CellRect, Positions, SpanCell, TableConfig, TableContent, TableTemplate, Zones } from "./types"
 
 const fillCols =
     (colsNumber: number) =>

@@ -2,7 +2,6 @@ import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
 import { COLORS, withOpacity } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
-import { CancelCross } from "../Buttons"
 import { CenteredDiv, CenteredDivStyle, FullScreenStyle } from "../styled"
 import { ModalSize } from "./types"
 

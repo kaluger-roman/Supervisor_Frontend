@@ -17,7 +17,7 @@ export const InputLabel = styled.div<{ isError?: boolean; isFocused?: boolean; h
     height: ${CSS_CONSTANTS.hintFontSize};
     margin-bottom: ${CSS_CONSTANTS.smallMargin};
 `
-export const InputBody = styled(NormalizedInput)<{ isError?: boolean; isFocused?: boolean }>`
+export const InputBody = styled(NormalizedInput)<{ isError?: boolean; isFocused?: boolean; centered?: boolean }>`
     border: ${CSS_CONSTANTS.borderWidth} solid ${COLORS.lightDark};
     border-radius: ${CSS_CONSTANTS.borderRadius};
     height: ${CSS_CONSTANTS.controlHeight};
@@ -30,6 +30,7 @@ export const InputBody = styled(NormalizedInput)<{ isError?: boolean; isFocused?
     padding-right: ${CSS_CONSTANTS.paddingMore};
     color: ${COLORS.deepDark};
     font-size: ${CSS_CONSTANTS.controlFontSize};
+    ${({ centered }) => centered && "text-align: center;"}
     ${({ isFocused }) => isFocused && "&::placeholder { color: transparent; }"};
 `
 export const InputError = styled.div<{ isError?: boolean }>`
