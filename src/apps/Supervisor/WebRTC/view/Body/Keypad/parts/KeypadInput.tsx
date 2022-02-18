@@ -18,7 +18,12 @@ export const KeypadInput: React.FC = () => {
     return (
         <InputWrapper>
             <MaskIcon icon={ClearAll} onClick={() => dispatch(clickClearDialNumber())} />
-            <Input centered onChange={(val) => dispatch(changeDialNumber(val))} value={dialInput} />
+            <Input
+                centered
+                placeholder="Введите номер"
+                onChange={(val) => dispatch(changeDialNumber(val))}
+                value={dialInput}
+            />
             <MaskIcon icon={ClearOne} onClick={() => dispatch(clickRemoveOneDialNumber())} />
         </InputWrapper>
     )

@@ -1,21 +1,22 @@
 import React from "react"
-import { useHandlerTypedDispatch } from "../../../../../../config/redux/hooks"
+import { useHandlerTypedDispatch, useSESelector } from "../../../../../../config/redux/hooks"
 import { clickCallBtn } from "../../../../../../config/redux/reducers/webRTC"
 import { ButtonType } from "../../types"
-import { CallBtn, CallBtnIcon, PhonePageWrapper } from "../styled"
+import { CallBtn, CallButtonsContainer, PhonePageWrapper } from "../styled"
 import { KeypadNumbersInput } from "./parts/KeypadButtons"
 import { KeypadInput } from "./parts/KeypadInput"
 
 export const Keypad: React.FC = () => {
     const dispatchHandler = useHandlerTypedDispatch()
+    const { dialInput } = useSESelector((state) => state.webRTC)
 
     return (
         <PhonePageWrapper>
             <KeypadInput />
             <KeypadNumbersInput />
-            <CallBtn onClick={dispatchHandler(clickCallBtn())} btnType={ButtonType.call}>
-                <CallBtnIcon />
-            </CallBtn>
+            <CallButtonsContainer>
+                <CallBtn disabled={!dialInput} onClick={dispatchHandler(clickCallBtn())} btnType={ButtonType.call} />
+            </CallButtonsContainer>
         </PhonePageWrapper>
     )
 }

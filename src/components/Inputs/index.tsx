@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { InputContainer, InputLabel, InputBody, InputError } from "./styled"
 import { InputProps } from "./types"
 
-export const Input: React.FC<InputProps> = ({ onChange, value, hasError, label, centered }) => {
+export const Input: React.FC<InputProps> = ({ onChange, value, hasError, label, centered, placeholder }) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
     const error = hasError && hasError(value)
 
@@ -15,7 +15,7 @@ export const Input: React.FC<InputProps> = ({ onChange, value, hasError, label, 
                 isFocused={isFocused}
                 isError={!!error}
                 value={value}
-                placeholder={label}
+                placeholder={placeholder || label}
                 centered={centered}
                 onBlur={() => setIsFocused(false)}
                 onFocus={() => setIsFocused(true)}

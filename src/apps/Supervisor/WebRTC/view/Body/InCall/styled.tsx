@@ -1,8 +1,10 @@
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
+import React from "react"
 import { CenteredDiv } from "../../../../../../components/styled"
 import { COLORS } from "../../../../../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../../../../../config/globalStyles/common"
+import CallInboundIcon from "../../../../icons/call-inbound.svg"
 
 export const CallActionButtonsContainer = styled(CenteredDiv)`
     flex-wrap: wrap;
@@ -112,3 +114,60 @@ export const WaitAnimation = styled.div`
         -18px 0 0 0 ${COLORS.deepSecondary}, -12.72984px -12.72984px 0 0 ${COLORS.deepSecondary};
     animation: ${dotSpin} 1.5s infinite linear;
 `
+
+const pulse = keyframes`
+  0% {
+      transform: scale(0.5);
+      opacity: 0
+  }
+
+  50% {
+      transform: scale(1);
+      opacity: 1
+  }
+
+  100% {
+      transform: scale(1.3);
+      opacity: 0
+  }
+`
+
+const RingingInboundAnimation = styled.div`
+    height: 70px;
+    width: 70px;
+    background-color: ${COLORS.primarySecondary};
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 95px;
+    top: 130px;
+
+    &:before {
+        content: "";
+        position: absolute;
+        border: 1px solid ${COLORS.primarySecondary};
+        width: calc(100% + 30px);
+        height: calc(100% + 30px);
+        border-radius: 50%;
+        animation: ${pulse} 1s linear infinite;
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        border: 1px solid ${COLORS.primarySecondary};
+        width: calc(100% + 30px);
+        height: calc(100% + 30px);
+        border-radius: 50%;
+        animation: ${pulse} 1s linear infinite;
+        animation-delay: 0.3s;
+    }
+`
+
+export const RingingAnimation: React.FC = () => (
+    <RingingInboundAnimation>
+        <CallActionButtonIcon icon={CallInboundIcon} />
+    </RingingInboundAnimation>
+)

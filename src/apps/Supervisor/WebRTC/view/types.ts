@@ -8,5 +8,6 @@ export type CallAction = {
 export enum ButtonType {
     answer = "answer",
     reject = "reject",
+    break = "break",
     call = "call"
 }

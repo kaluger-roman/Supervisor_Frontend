@@ -6,5 +6,7 @@ export enum Pages {
 export enum CallPages {
     none = "none",
     call = "call",
-    waitingOutbound = "waitingOutbound"
+    ringingInbound = "ringingInbound",
+    waitingOutbound = "waitingOutbound",
+    callEnded = "callEnded"
 }

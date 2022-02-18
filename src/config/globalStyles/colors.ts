@@ -19,7 +19,11 @@ export enum COLORS {
 
     error = "#a30000",
     error1 = "#dd1d1d",
-    error2 = "#b72d2d"
+    error2 = "#b72d2d",
+
+    success = "#03d800",
+    success1 = "#3b9a39",
+    success2 = "#1b7c19"
 }
 
 export const hexToRgba = (hex: COLORS, alpha: number): string => {

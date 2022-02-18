@@ -33,36 +33,55 @@ export const BreakBtnIcon = styled.div`
     background: ${COLORS.primaryDark};
 `
 
-export const CallBtn = styled(CenteredDiv)<{ btnType?: ButtonType }>`
-    width: 120px;
+export const CallBtnContainer = styled(CenteredDiv)<{ btnType?: ButtonType; disabled?: boolean }>`
+    ${({ disabled }) => disabled && "pointer-events:none; opacity: 0.5; "}
+    width: ${({ btnType }) => ([ButtonType.reject, ButtonType.answer].includes(btnType as ButtonType) ? 100 : 120)}px;
     height: 40px;
-    position: absolute;
-    bottom: 22px;
-    left: calc(50% - 60px);
     border-radius: ${CSS_CONSTANTS.borderRadius};
     background: ${({ btnType }) =>
-        btnType === ButtonType.call
-            ? COLORS.primaryMain
-            : btnType === ButtonType.reject
+        [ButtonType.call, ButtonType.answer].includes(btnType as ButtonType)
+            ? COLORS.success
+            : [ButtonType.reject, ButtonType.break].includes(btnType as ButtonType)
             ? COLORS.error1
             : COLORS.primaryMain};
     box-shadow: 1px 1px 1px ${COLORS.deepDark};
     &:hover {
         background: ${({ btnType }) =>
-            btnType === ButtonType.call
-                ? COLORS.lightMain
-                : btnType === ButtonType.reject
+            [ButtonType.call, ButtonType.answer].includes(btnType as ButtonType)
+                ? COLORS.success1
+                : [ButtonType.reject, ButtonType.break].includes(btnType as ButtonType)
                 ? COLORS.error2
                 : COLORS.lightMain};
     }
     &:active {
         background: ${({ btnType }) =>
-            btnType === ButtonType.call
-                ? COLORS.fullMain
-                : btnType === ButtonType.reject
+            [ButtonType.call, ButtonType.answer].includes(btnType as ButtonType)
+                ? COLORS.success2
+                : [ButtonType.reject, ButtonType.break].includes(btnType as ButtonType)
                 ? COLORS.error
                 : COLORS.fullMain};
     }
+`
+
+export const CallBtn: React.FC<{ btnType?: ButtonType; onClick?: () => void; disabled?: boolean }> = ({
+    btnType,
+    onClick,
+    disabled
+}) => (
+    <CallBtnContainer disabled={disabled} onClick={onClick} btnType={btnType}>
+        {[ButtonType.reject, ButtonType.break].includes(btnType as ButtonType) && <CallDismissBtnIcon />}
+        {[ButtonType.call, ButtonType.answer].includes(btnType as ButtonType) && <CallBtnIcon />}
+    </CallBtnContainer>
+)
+
+export const CallButtonsContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    bottom: 22px;
+    left: 0;
+    gap: 20px;
 `
 
 export const PhonePageWrapper = styled.div`
