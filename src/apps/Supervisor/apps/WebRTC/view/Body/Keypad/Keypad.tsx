@@ -1,6 +1,6 @@
 import React from "react"
-import { useHandlerTypedDispatch, useSESelector } from "../../../../../redux/hooks"
-import { clickCallBtn } from "../../../../../redux/reducers/webRTC"
+import { useHandlerTypedDispatch, useSESelector } from "Supervisor/redux/hooks"
+import { clickCallBtn } from "Supervisor/redux/reducers/webRTC"
 import { ButtonType } from "../../types"
 import { CallBtn, CallButtonsContainer, PhonePageWrapper } from "../styled"
 import { KeypadNumbersInput } from "./parts/KeypadButtons"

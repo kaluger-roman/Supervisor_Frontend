@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import { COLORS } from "../../../../../config/globalStyles/colors"
-import { CSS_CONSTANTS } from "../../../../../config/globalStyles/common"
+import { COLORS } from "config/globalStyles/colors"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const WebRTCWrapper = styled.div`
     width: 260px;

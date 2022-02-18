@@ -1,10 +1,10 @@
 import styled from "@emotion/styled"
 import CallIcon from "../../../../icons/call-icon.svg"
-import CallDismissIcon from "../../../../icons/call-dismiss.svg"
+import CallDismissIcon from "Supervisor/icons/call-dismiss.svg"
 import { ButtonType } from "../types"
-import { COLORS } from "../../../../../../config/globalStyles/colors"
-import { CenteredDiv } from "../../../../../../components/styled"
-import { CSS_CONSTANTS } from "../../../../../../config/globalStyles/common"
+import { CenteredDiv } from "components/styled"
+import { COLORS } from "config/globalStyles/colors"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const CallBtnIcon = styled.div`
     width: 20px;

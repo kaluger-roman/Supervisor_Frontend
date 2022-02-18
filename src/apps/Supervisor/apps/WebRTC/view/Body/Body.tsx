@@ -1,6 +1,6 @@
 import { always, cond, equals, T } from "ramda"
 import React from "react"
-import { useSESelector } from "../../../../redux/hooks"
+import { useSESelector } from "Supervisor/redux/hooks"
 import { Pages } from "../../types"
 import { InCall } from "./InCall"
 import { Keypad } from "./Keypad"

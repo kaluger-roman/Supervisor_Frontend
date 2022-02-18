@@ -1,10 +1,10 @@
+import React from "react"
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
-import React from "react"
-import { CenteredDiv } from "../../../../../../../components/styled"
-import { COLORS } from "../../../../../../../config/globalStyles/colors"
-import { CSS_CONSTANTS } from "../../../../../../../config/globalStyles/common"
-import CallInboundIcon from "../../../../../icons/call-inbound.svg"
+import { CenteredDiv } from "components/styled"
+import { COLORS } from "config/globalStyles/colors"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
+import CallInboundIcon from "Supervisor/icons/call-inbound.svg"
 
 export const CallActionButtonsContainer = styled(CenteredDiv)`
     flex-wrap: wrap;

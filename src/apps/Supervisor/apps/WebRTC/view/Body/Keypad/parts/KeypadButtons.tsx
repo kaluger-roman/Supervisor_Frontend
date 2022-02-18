@@ -1,6 +1,6 @@
 import React from "react"
-import { useHandlerTypedDispatch } from "../../../../../../redux/hooks"
-import { clickDialNumber } from "../../../../../../redux/reducers/webRTC"
+import { useHandlerTypedDispatch } from "Supervisor/redux/hooks"
+import { clickDialNumber } from "Supervisor/redux/reducers/webRTC"
 import { KeypadButtonsWrapper, KeypadNumberButton } from "../styled"
 
 const NUMBER_BUTTONS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]

@@ -25,13 +25,13 @@
         "apps/Supervisor/*"
       ],
       "components/*": [
-        "./components"
+        "./components/*"
       ],
       "assets/*": [
-        "./assets"
+        "./assets/*"
       ],
       "config/*": [
-        "./config"
+        "./config/*"
       ]
     }
   }

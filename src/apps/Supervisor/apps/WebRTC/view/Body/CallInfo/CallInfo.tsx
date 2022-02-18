@@ -1,6 +1,6 @@
 import React from "react"
-import { useSESelector } from "../../../../../redux/hooks"
-import { CallPages } from "../../../types"
+import { CallPages } from "Supervisor/apps/WebRTC/types"
+import { useSESelector } from "Supervisor/redux/hooks"
 import { CallInfoWrapper } from "./styled"
 import { Timer } from "./Timer"
 

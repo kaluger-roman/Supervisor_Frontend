@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import { CenteredDiv } from "../../../../../../../components/styled"
-import { withOpacity, COLORS } from "../../../../../../../config/globalStyles/colors"
+import { CenteredDiv } from "components/styled"
+import { withOpacity, COLORS } from "config/globalStyles/colors"
 
 export const InputWrapper = styled.div`
     width: 100%;

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
-import { CenteredDiv } from "../../../../../../../components/styled"
-import { COLORS } from "../../../../../../../config/globalStyles/colors"
+import { CenteredDiv } from "components/styled"
+import { COLORS } from "config/globalStyles/colors"
 
 export const CallInfoWrapper = styled(CenteredDiv)`
     position: absolute;
