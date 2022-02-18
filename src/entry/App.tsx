@@ -4,7 +4,7 @@ import { Global } from "@emotion/react"
 
 import { RejectButton, StandardButton } from "../components/Buttons"
 import { GlobalStyles } from "../config/globalStyles"
-import store from "../config/redux/store"
+import store from "../apps/Supervisor/redux/store"
 import { AppContainer } from "./styled"
 import Checkboxes from "../components/Checkboxes"
 import { AppIntro } from "../components/Intro"

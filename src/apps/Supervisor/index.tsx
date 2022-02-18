@@ -1,1 +1,1 @@
-export { WebRTC } from "./WebRTC"
+export { WebRTC } from "./apps/WebRTC"

@@ -1,3 +1,17 @@
 {
-  "plugins": ["@emotion"]
+    "plugins": [
+        "@emotion",
+        [
+            "module-resolver",
+            {
+                "root": ["./"],
+                "alias": {
+                    "Supervisor": "./src/apps/Supervisor",
+                    "components": "./src/components",
+                    "assets": "./src/assets",
+                    "config": "./src/config"
+                }
+            }
+        ]
+    ]
 }
