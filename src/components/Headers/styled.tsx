@@ -10,6 +10,7 @@ export const HeaderBase = styled(CenteredDiv)<{ fontSize: number; noTopMargin?: 
     text-shadow: ${CSS_CONSTANTS.shadowBase} ${CSS_CONSTANTS.shadowBase} ${CSS_CONSTANTS.shadowBase} ${COLORS.deepDark};
     font-size: ${({ fontSize }) => fontSize}px;
     ${({ noTopMargin }) => noTopMargin && "margin-top: 0;"}
+    text-align: center;
 `
 
 export const PageHeader: React.FC<HeaderBaseProps> = ({ children, ...props }) => (

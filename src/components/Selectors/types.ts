@@ -5,10 +5,11 @@ export type SelectorProps = {
     value: string
     label?: string
     placeholder?: string
-    hasError?: (value: string) => null | string
     centered?: boolean
     inputWidth?: InputWidth
     options: Option<string>[]
+    withEmpty?: boolean
+    required?: boolean
 }
 
 export enum InputWidth {

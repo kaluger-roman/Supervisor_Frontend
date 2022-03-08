@@ -19,7 +19,7 @@ export type AuthSlice = {
     oldPasswordInput: string
     passwordInput: string
     secondPasswordInput: string
-    secretQuestion: SecretQuestsKey
+    secretQuestion: SecretQuestsKey | ""
     secretAnswerInput: string
     emailInput: string
     capthaPassed: boolean

@@ -5,7 +5,9 @@ import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { InputWidth } from "./types"
 
-const ActiveSelector = `
+const ActiveSelector = (isError?: boolean) =>
+    !isError &&
+    `
 & > div:nth-child(1) {
     background: ${COLORS.primaryMain};
 }
@@ -14,9 +16,10 @@ const ActiveSelector = `
 }
 input {
     border-color: ${COLORS.primaryMain};
-}`
+}
+`
 
-export const SelectorContainer = styled.div<{ isOpened: boolean; inputWidth?: InputWidth }>`
+export const SelectorContainer = styled.div<{ isOpened: boolean; inputWidth?: InputWidth; isError?: boolean }>`
     position: relative;
     cursor: pointer;
     user-select: none;
@@ -26,10 +29,10 @@ export const SelectorContainer = styled.div<{ isOpened: boolean; inputWidth?: In
         background: ${COLORS.deepDark};
     }
 
-    ${({ isOpened }) => isOpened && ActiveSelector}
+    ${({ isOpened, isError }) => isOpened && ActiveSelector(isError)}
 
     &:hover {
-        ${ActiveSelector}
+        ${({ isError }) => ActiveSelector(isError)}
     }
 `
 

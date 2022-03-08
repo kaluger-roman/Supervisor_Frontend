@@ -8,7 +8,7 @@ const initialState: AuthSlice = {
     oldPasswordInput: "",
     passwordInput: "",
     secondPasswordInput: "",
-    secretQuestion: SecretQuestsKey.favouriteTeacher,
+    secretQuestion: "",
     secretAnswerInput: "",
     emailInput: "",
     capthaPassed: false

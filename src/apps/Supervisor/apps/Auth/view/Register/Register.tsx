@@ -6,7 +6,7 @@ import { Input } from "components/Inputs"
 import { InputWidth } from "components/Inputs/types"
 import { Selector } from "components/Selectors"
 import { ThemeVariant } from "components/types"
-import React, { useState } from "react"
+import React from "react"
 import { useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
 import {
     changeAuthPage,
@@ -55,7 +55,8 @@ export const RegisterForm: React.FC = () => {
         !emailInput ||
         !secondPasswordInput ||
         !secretQuestion ||
-        !secretAnswerInput
+        !secretAnswerInput ||
+        !secretQuestion
 
     return (
         <AuthContainer>
@@ -94,11 +95,13 @@ export const RegisterForm: React.FC = () => {
                             hasError={() => secondPasswordError}
                         />
                         <Selector
+                            withEmpty
                             options={SECRET_QUESTS_OPTIONS}
                             inputWidth={InputWidth.long}
                             label="Секретный вопрос"
                             onChange={(val) => dispatch(changeSecretQuestion(val as SecretQuestsKey))}
                             value={secretQuestion}
+                            required
                         />
                         <Input
                             inputWidth={InputWidth.long}
