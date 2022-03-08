@@ -5,6 +5,7 @@ import { AuthSlice } from "./types"
 const initialState: AuthSlice = {
     page: AuthPage.auth,
     userNameInput: "",
+    oldPasswordInput: "",
     passwordInput: "",
     secondPasswordInput: "",
     secretQuestion: SecretQuestsKey.favouriteTeacher,
@@ -18,6 +19,8 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         changeUserNameInput: (state, action: PayloadAction<string>) => void (state.userNameInput = action.payload),
+        changeOldPasswordInput: (state, action: PayloadAction<string>) =>
+            void (state.oldPasswordInput = action.payload),
         changePasswordInput: (state, action: PayloadAction<string>) => void (state.passwordInput = action.payload),
         changeSecondPasswordInput: (state, action: PayloadAction<string>) =>
             void (state.secondPasswordInput = action.payload),
@@ -39,7 +42,8 @@ export const {
     changeEmail,
     changeSecretAnswer,
     changeSecretQuestion,
-    changeCaptchaPassed
+    changeCaptchaPassed,
+    changeOldPasswordInput
 } = authSlice.actions
 
 export default authSlice.reducer

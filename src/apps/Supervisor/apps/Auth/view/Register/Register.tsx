@@ -22,17 +22,8 @@ import { AUTH_ERRORS, CAPTCHA_KEY, SECRET_QUESTS_OPTIONS } from "../../constants
 import { AuthPage, SecretQuestsKey } from "../../types"
 import { InputsContainer, ReCAPTCHAWrapper } from "./styled"
 import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
-import { Tooltip } from "components/Text/styled"
 import EmailValidator from "email-validator"
-
-const usernameValidate = (val: string) => !val.length || /^[a-zA-Z0-9_.-]{6,}$/g.test(val)
-const passwordValidate = (val: string) =>
-    !val.length ||
-    (/^[a-zA-Z0-9_.!=-]{6,}$/g.test(val) &&
-        /[a-z]/g.test(val) &&
-        /[A-Z]/g.test(val) &&
-        /[0-9]/g.test(val) &&
-        /[_.!=-]/g.test(val))
+import { passwordValidate, usernameValidate } from "../../helpers"
 
 export const RegisterForm: React.FC = () => {
     const dispatch = useTypedDispatch()
@@ -125,7 +116,6 @@ export const RegisterForm: React.FC = () => {
                         </ReCAPTCHAWrapper>
                     </InputsContainer>
                     <ButtonsContainer width={400}>
-                        <Tooltip />
                         <StandardButton
                             data-tip={someError ? AUTH_ERRORS.CAPTCHA : ""}
                             disabled={!!someError}

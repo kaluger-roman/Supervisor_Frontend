@@ -7,6 +7,7 @@ import store from "../apps/Supervisor/redux/store"
 import { AppContainer } from "./styled"
 import { ModalPortal } from "../components/Modals"
 import { Supervisor } from "Supervisor/index"
+import { Tooltip } from "components/Text/styled"
 //import { NotificationsPortal } from "../components/Notifications"
 
 const App: React.FC = () => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Provider store={store}>
             <Global styles={GlobalStyles} />
             {/* <NotificationsPortal /> */}
+            <Tooltip />
             <ModalPortal />
             <AppContainer>
                 <Supervisor />

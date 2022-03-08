@@ -45,7 +45,6 @@ export const Selector: React.FC<SelectorProps> = ({
                     </ListOption>
                 ))}
             </OptionsContainer>
-            <Tooltip />
         </SelectorContainer>
     )
 }

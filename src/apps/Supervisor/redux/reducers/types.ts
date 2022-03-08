@@ -16,6 +16,7 @@ export type WebRTCSlice = {
 export type AuthSlice = {
     page: AuthPage
     userNameInput: string
+    oldPasswordInput: string
     passwordInput: string
     secondPasswordInput: string
     secretQuestion: SecretQuestsKey
@@ -26,4 +27,5 @@ export type AuthSlice = {
 
 export type MainSlice = {
     page: AppPage
+    isAuthorized: boolean
 }
