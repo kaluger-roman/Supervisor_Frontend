@@ -9,7 +9,8 @@ const initialState: AuthSlice = {
     secondPasswordInput: "",
     secretQuestion: SecretQuestsKey.favouriteTeacher,
     secretAnswerInput: "",
-    emailInput: ""
+    emailInput: "",
+    capthaPassed: false
 }
 
 const authSlice = createSlice({
@@ -24,6 +25,7 @@ const authSlice = createSlice({
         changeEmail: (state, action: PayloadAction<string>) => void (state.emailInput = action.payload),
 
         changeSecretAnswer: (state, action: PayloadAction<string>) => void (state.secretAnswerInput = action.payload),
+        changeCaptchaPassed: (state, action: PayloadAction<boolean>) => void (state.capthaPassed = action.payload),
         changeSecretQuestion: (state, action: PayloadAction<SecretQuestsKey>) =>
             void (state.secretQuestion = action.payload)
     }
@@ -36,7 +38,8 @@ export const {
     changeSecondPasswordInput,
     changeEmail,
     changeSecretAnswer,
-    changeSecretQuestion
+    changeSecretQuestion,
+    changeCaptchaPassed
 } = authSlice.actions
 
 export default authSlice.reducer

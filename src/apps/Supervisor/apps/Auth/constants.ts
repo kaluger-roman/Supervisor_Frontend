@@ -14,3 +14,12 @@ export const SECRET_QUESTS_OPTIONS: Option<SecretQuestsKey>[] = Object.entries(S
 }))
 
 export const CAPTCHA_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+
+export const AUTH_ERRORS = {
+    EMAIL: "Некорректный логин, допустимы только буквы/цифры от 6 знаков",
+    PASWORD:
+        "Пароль должен содержать минимум 6 символов, хотя бы 1 заглавную, 1 строчную букву латиницей, 1 цифру, 1 спецсимвол _.-!=",
+    SECOND_PASWORD: "Пароли не совпадают",
+    USERNAME: "Некорректные данные, допустимы только буквы/цифры от 6 знаков",
+    CAPTCHA: "Пройдите капчу и заполните все поля"
+}

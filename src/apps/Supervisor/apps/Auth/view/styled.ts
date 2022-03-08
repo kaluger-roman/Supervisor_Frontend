@@ -5,7 +5,6 @@ import { CSS_CONSTANTS } from "config/globalStyles/common"
 export const InnerContainer = styled.div<{ height: number }>`
     height: ${({ height }) => height}px;
     width: 500px;
-    padding: ${CSS_CONSTANTS.padding};
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -6,7 +6,7 @@ export const useOverflow = <T extends HTMLElement>() => {
 
     useEffect(() => {
         if (elRef.current) setIsOverflow(elRef.current.clientWidth >= (elRef.current.parentElement?.clientWidth || 0))
-    }, [elRef.current])
+    })
 
     return { isOverflow, elRef }
 }

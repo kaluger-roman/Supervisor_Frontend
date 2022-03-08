@@ -1,9 +1,12 @@
 import styled from "@emotion/styled"
-import { CenteredDivStyle, FullScreenStyle } from "components/styled"
 
 export const InputsContainer = styled.div`
     margin-bottom: 70px;
     position: relative;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `
 
 export const ReCAPTCHAWrapper = styled.div`

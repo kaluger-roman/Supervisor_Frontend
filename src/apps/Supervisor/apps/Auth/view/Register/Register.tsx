@@ -10,6 +10,7 @@ import React, { useState } from "react"
 import { useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
 import {
     changeAuthPage,
+    changeCaptchaPassed,
     changeEmail,
     changePasswordInput,
     changeSecondPasswordInput,
@@ -17,21 +18,53 @@ import {
     changeSecretQuestion,
     changeUserNameInput
 } from "Supervisor/redux/reducers/auth"
-import { CAPTCHA_KEY, SECRET_QUESTS_OPTIONS } from "../../constants"
+import { AUTH_ERRORS, CAPTCHA_KEY, SECRET_QUESTS_OPTIONS } from "../../constants"
 import { AuthPage, SecretQuestsKey } from "../../types"
 import { InputsContainer, ReCAPTCHAWrapper } from "./styled"
 import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
 import { Tooltip } from "components/Text/styled"
 import EmailValidator from "email-validator"
 
-const usernameValidate = (val: string) => /^[a-zA-Z0-9_.-]{6,}$/g.test(val)
+const usernameValidate = (val: string) => !val.length || /^[a-zA-Z0-9_.-]{6,}$/g.test(val)
+const passwordValidate = (val: string) =>
+    !val.length ||
+    (/^[a-zA-Z0-9_.!=-]{6,}$/g.test(val) &&
+        /[a-z]/g.test(val) &&
+        /[A-Z]/g.test(val) &&
+        /[0-9]/g.test(val) &&
+        /[_.!=-]/g.test(val))
 
 export const RegisterForm: React.FC = () => {
     const dispatch = useTypedDispatch()
-    const [captchaValidated, setCaptchaValidated] = useState<boolean>(false)
-    const { userNameInput, passwordInput, emailInput, secondPasswordInput, secretQuestion, secretAnswerInput } =
-        useSESelector((state) => state.auth)
-    const emailInvalid = emailInput && !EmailValidator.validate(emailInput)
+    const {
+        capthaPassed,
+        userNameInput,
+        passwordInput,
+        emailInput,
+        secondPasswordInput,
+        secretQuestion,
+        secretAnswerInput
+    } = useSESelector((state) => state.auth)
+    const emailError = emailInput && !EmailValidator.validate(emailInput) && AUTH_ERRORS.EMAIL
+    const usernameError = !usernameValidate(userNameInput) && AUTH_ERRORS.USERNAME
+    const passwordError = !passwordValidate(passwordInput) && AUTH_ERRORS.PASWORD
+    const secondPasswordError =
+        secondPasswordInput && passwordInput !== secondPasswordInput && AUTH_ERRORS.SECOND_PASWORD
+    const secretError = !usernameValidate(secretAnswerInput) && AUTH_ERRORS.USERNAME
+
+    const someError =
+        emailError ||
+        usernameError ||
+        passwordError ||
+        secondPasswordError ||
+        secretError ||
+        !capthaPassed ||
+        !userNameInput ||
+        !passwordInput ||
+        !emailInput ||
+        !secondPasswordInput ||
+        !secretQuestion ||
+        !secretAnswerInput
 
     return (
         <AuthContainer>
@@ -44,18 +77,14 @@ export const RegisterForm: React.FC = () => {
                             label="Почта"
                             onChange={(val) => dispatch(changeEmail(val))}
                             value={emailInput}
-                            hasError={() => (emailInvalid ? "Некорректный Email" : null)}
+                            hasError={() => emailError}
                         />
                         <Input
                             inputWidth={InputWidth.long}
                             label="Логин"
                             onChange={(val) => dispatch(changeUserNameInput(val))}
                             value={userNameInput}
-                            hasError={(val) =>
-                                usernameValidate(val)
-                                    ? null
-                                    : "Некорректный логин, допустимы только буквы/цифры от 6 знаков"
-                            }
+                            hasError={() => usernameError}
                         />
                         <Input
                             inputWidth={InputWidth.long}
@@ -63,6 +92,7 @@ export const RegisterForm: React.FC = () => {
                             label="Пароль"
                             onChange={(val) => dispatch(changePasswordInput(val))}
                             value={passwordInput}
+                            hasError={() => passwordError}
                         />
                         <Input
                             inputWidth={InputWidth.long}
@@ -70,6 +100,7 @@ export const RegisterForm: React.FC = () => {
                             label="Пароль x2"
                             onChange={(val) => dispatch(changeSecondPasswordInput(val))}
                             value={secondPasswordInput}
+                            hasError={() => secondPasswordError}
                         />
                         <Selector
                             options={SECRET_QUESTS_OPTIONS}
@@ -83,16 +114,21 @@ export const RegisterForm: React.FC = () => {
                             label="Ответ"
                             onChange={(val) => dispatch(changeSecretAnswer(val))}
                             value={secretAnswerInput}
+                            hasError={() => secretError}
                         />
                         <ReCAPTCHAWrapper>
-                            <ReCAPTCHA theme="dark" sitekey={CAPTCHA_KEY} onChange={() => setCaptchaValidated(true)} />
+                            <ReCAPTCHA
+                                theme="dark"
+                                sitekey={CAPTCHA_KEY}
+                                onChange={() => dispatch(changeCaptchaPassed(true))}
+                            />
                         </ReCAPTCHAWrapper>
                     </InputsContainer>
                     <ButtonsContainer width={400}>
                         <Tooltip />
                         <StandardButton
-                            data-tip={captchaValidated ? "" : "Пройдите капчу и заполните все поля"}
-                            disabled={!captchaValidated}
+                            data-tip={someError ? AUTH_ERRORS.CAPTCHA : ""}
+                            disabled={!!someError}
                             width={180}
                         >
                             Зарегистрироваться

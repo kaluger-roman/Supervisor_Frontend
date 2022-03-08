@@ -21,6 +21,7 @@ export type AuthSlice = {
     secretQuestion: SecretQuestsKey
     secretAnswerInput: string
     emailInput: string
+    capthaPassed: boolean
 }
 
 export type MainSlice = {
