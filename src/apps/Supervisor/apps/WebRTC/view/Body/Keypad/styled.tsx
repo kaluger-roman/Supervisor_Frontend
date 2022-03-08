@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { CenteredDiv } from "components/styled"
 import { withOpacity, COLORS } from "config/globalStyles/colors"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const InputWrapper = styled.div`
     width: 100%;
@@ -27,7 +28,8 @@ export const KeypadNumberButton = styled(CenteredDiv)`
     border-radius: 50%;
     background: ${withOpacity(COLORS.lightSecondary, 0.7)};
     color: ${COLORS.deepDark};
-    box-shadow: 1px 1px 1px ${COLORS.deepDark};
+    box-shadow: ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight}
+        ${COLORS.deepDark};
     font-size: 20px;
     &:hover {
         background: ${withOpacity(COLORS.deepLightSecondary, 0.7)};

@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import webRTC from "./reducers/webRTC"
+import auth from "./reducers/auth"
+import main from "./reducers/main"
 
 const store = configureStore({
     reducer: {
-        webRTC
+        webRTC,
+        auth,
+        main
     }
 })
 

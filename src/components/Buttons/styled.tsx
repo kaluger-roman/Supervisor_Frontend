@@ -12,16 +12,19 @@ const useButton = (
     backgroundDisable: COLORS,
     hover: COLORS,
     active: COLORS,
-    border: COLORS
+    border: COLORS,
+    width?: number
 ) => `
+  width: ${width ? `${width}px` : "auto"};
   border: ${CSS_CONSTANTS.borderWidth} solid ${border};
   color: ${color};
   background: ${disabled ? backgroundDisable : background};
+  cursor: ${disabled ? "not-allowed" : "pointer"};
   &:hover {
-    background: ${hover};
+    background: ${disabled ? backgroundDisable : hover};
   }
   &:active {
-    background: ${active};
+    background: ${disabled ? backgroundDisable : active};
   }`
 
 const ButtonBase = styled(Control)<{ disabled?: boolean }>`
@@ -29,6 +32,7 @@ const ButtonBase = styled(Control)<{ disabled?: boolean }>`
     font-size: ${CSS_CONSTANTS.controlFontSize};
     min-width: ${CSS_CONSTANTS.buttonWidth};
     border-radius: ${CSS_CONSTANTS.borderRadius};
+    padding: ${CSS_CONSTANTS.padding};
 `
 
 const IconCircleOuter = styled(CenteredDiv)<{ scale?: number }>`
@@ -86,8 +90,8 @@ export const IconCircle: React.FC<IconProps> = ({ icon, scale }) => (
     </IconCircleOuter>
 )
 
-export const StandardButton = styled(ButtonBase)<{ disabled?: boolean }>`
-    ${({ disabled }) =>
+export const StandardButton = styled(ButtonBase)<{ disabled?: boolean; width?: number }>`
+    ${({ disabled, width }) =>
         useButton(
             !!disabled,
             COLORS.deepLightSecondary,
@@ -95,12 +99,13 @@ export const StandardButton = styled(ButtonBase)<{ disabled?: boolean }>`
             COLORS.fullMain,
             COLORS.lightMain,
             COLORS.deepMain,
-            COLORS.deepDark
+            COLORS.deepDark,
+            width
         )}
 `
 
-export const RejectButton = styled(ButtonBase)<{ disabled?: boolean }>`
-    ${({ disabled }) =>
+export const RejectButton = styled(ButtonBase)<{ disabled?: boolean; width?: number }>`
+    ${({ disabled, width }) =>
         useButton(
             !!disabled,
             COLORS.deepLightSecondary,
@@ -108,6 +113,7 @@ export const RejectButton = styled(ButtonBase)<{ disabled?: boolean }>`
             COLORS.fullDark,
             COLORS.lightDark,
             COLORS.deepDark,
-            COLORS.deepDark
+            COLORS.deepDark,
+            width
         )}
 `

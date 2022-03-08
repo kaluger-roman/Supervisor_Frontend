@@ -1,0 +1,1 @@
+export const MAX_SYMBOLS_UNTIL_TOOLTIP = 24

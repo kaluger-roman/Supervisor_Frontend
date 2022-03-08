@@ -9,7 +9,7 @@ const initialState: WebRTCSlice = {
     dialInput: ""
 }
 
-export const mainSlice = createSlice({
+const webRTCSlice = createSlice({
     name: "webRTC",
     initialState,
     reducers: {
@@ -43,6 +43,6 @@ export const {
     clickClearDialNumber,
     clickRemoveOneDialNumber,
     changeDialNumber
-} = mainSlice.actions
+} = webRTCSlice.actions
 
-export default mainSlice.reducer
+export default webRTCSlice.reducer
