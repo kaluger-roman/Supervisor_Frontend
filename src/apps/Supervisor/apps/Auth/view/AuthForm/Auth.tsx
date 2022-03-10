@@ -5,15 +5,28 @@ import { Input } from "components/Inputs"
 import { InputWidth } from "components/Inputs/types"
 import { Link } from "components/Text/styled"
 import { ThemeVariant } from "components/types"
-import React from "react"
-import { useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
+import React, { useCallback, useEffect } from "react"
+import { useQueryError, useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
+import { useAuthMutation } from "Supervisor/redux/reducers/api/auth.api"
 import { changeAuthPage, changePasswordInput, changeUserNameInput } from "Supervisor/redux/reducers/auth"
+import { changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
+import { AUTH_ERRORS } from "../../constants"
 import { AuthPage } from "../../types"
 import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
 
 export const AuthForm: React.FC = () => {
     const dispatch = useTypedDispatch()
     const { userNameInput, passwordInput } = useSESelector((state) => state.auth)
+    const [tryAuth, { isLoading, error }] = useAuthMutation()
+    const onAuthClick = useCallback(
+        () => tryAuth({ username: userNameInput, password: passwordInput }),
+        [userNameInput, passwordInput, tryAuth]
+    )
+    useEffect(() => {
+        dispatch(changeIsBlockingLoader(isLoading))
+    }, [isLoading])
+    const isEmptyFields = !userNameInput || !passwordInput
+    const errorAuth = useQueryError(error)
 
     return (
         <AuthContainer>
@@ -26,6 +39,7 @@ export const AuthForm: React.FC = () => {
                             label="Логин"
                             onChange={(val) => dispatch(changeUserNameInput(val))}
                             value={userNameInput}
+                            hasError={() => errorAuth && errorAuth.message}
                         />
                         <Input
                             inputWidth={InputWidth.long}
@@ -33,10 +47,17 @@ export const AuthForm: React.FC = () => {
                             label="Пароль"
                             onChange={(val) => dispatch(changePasswordInput(val))}
                             value={passwordInput}
+                            hasError={() => errorAuth && errorAuth.message}
                         />
                     </div>
                     <ButtonsContainer width={280}>
-                        <StandardButton>Вход</StandardButton>
+                        <StandardButton
+                            data-tip={isEmptyFields ? AUTH_ERRORS.REQUIRED_FIELDS : ""}
+                            disabled={isEmptyFields}
+                            onClick={onAuthClick}
+                        >
+                            Вход
+                        </StandardButton>
                         <RejectButton onClick={() => dispatch(changeAuthPage(AuthPage.register))}>
                             Регистрация
                         </RejectButton>

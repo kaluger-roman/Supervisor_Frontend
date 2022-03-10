@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from "react"
 import ReactDOM from "react-dom"
+import { useSESelector } from "Supervisor/redux/hooks"
+import { Triangle } from "react-loader-spinner"
+import { COLORS } from "config/globalStyles/colors"
 import { convertCssSecondsToIntMs, CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { StandardButton, RejectButton, IconCircle } from "../Buttons"
 import { StandardContainer } from "../Containers"
@@ -80,4 +83,15 @@ export const ShowModal = (props: ModalProps) => {
             </Modal>,
             portal
         )
+}
+
+export const BlockingLoader: React.FC = () => {
+    const isBlockingLoader = useSESelector((state) => state.main.isBlockingLoader)
+    if (!isBlockingLoader) return null
+
+    return (
+        <Backdrop>
+            <Triangle height="100" width="100" color={COLORS.primaryMain} ariaLabel="loading" />
+        </Backdrop>
+    )
 }

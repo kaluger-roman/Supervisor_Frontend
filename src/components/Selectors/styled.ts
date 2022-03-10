@@ -30,10 +30,6 @@ export const SelectorContainer = styled.div<{ isOpened: boolean; inputWidth?: In
     }
 
     ${({ isOpened, isError }) => isOpened && ActiveSelector(isError)}
-
-    &:hover {
-        ${({ isError }) => ActiveSelector(isError)}
-    }
 `
 
 export const SelectorArrow = styled.div<{ isOpened: boolean }>`
