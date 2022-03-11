@@ -27,3 +27,15 @@ export type EmittedToken = {
     access_token?: string
     error?: string
 }
+
+export enum Roles {
+    admin = "admin",
+    user = "user",
+    supervisor = "supervisor"
+}
+
+export type DecodedToken = {
+    userName: string
+    userId: number
+    role: Roles
+}

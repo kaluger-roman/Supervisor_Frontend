@@ -9,7 +9,7 @@ import React, { useCallback, useEffect } from "react"
 import { useQueryError, useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
 import { useAuthMutation } from "Supervisor/redux/reducers/api/auth.api"
 import { changeAuthPage, changePasswordInput, changeUserNameInput } from "Supervisor/redux/reducers/auth"
-import { changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
+import { changeAuthToken, changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
 import { AUTH_ERRORS } from "../../constants"
 import { AuthPage } from "../../types"
 import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
@@ -17,13 +17,17 @@ import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
 export const AuthForm: React.FC = () => {
     const dispatch = useTypedDispatch()
     const { userNameInput, passwordInput } = useSESelector((state) => state.auth)
-    const [tryAuth, { isLoading, error }] = useAuthMutation()
+    const [tryAuth, { isSuccess, isLoading, error, data }] = useAuthMutation()
     const onAuthClick = useCallback(
         () => tryAuth({ username: userNameInput, password: passwordInput }),
         [userNameInput, passwordInput, tryAuth]
     )
     useEffect(() => {
         dispatch(changeIsBlockingLoader(isLoading))
+
+        if (isSuccess && data?.access_token) {
+            dispatch(changeAuthToken(data.access_token))
+        }
     }, [isLoading])
     const isEmptyFields = !userNameInput || !passwordInput
     const errorAuth = useQueryError(error)

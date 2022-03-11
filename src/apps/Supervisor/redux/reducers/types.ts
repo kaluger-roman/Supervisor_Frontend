@@ -27,6 +27,9 @@ export type AuthSlice = {
 
 export type MainSlice = {
     page: AppPage
-    authToken: string
+    authToken: string | null
+    role: string | null
+    userName: string | null
+    userId: number | null
     isBlockingLoader: boolean
 }

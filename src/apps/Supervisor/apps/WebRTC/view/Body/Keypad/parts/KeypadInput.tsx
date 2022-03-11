@@ -6,6 +6,7 @@ import { MaskIcon } from "components/Buttons"
 import { Input } from "components/Inputs"
 import { useTypedDispatch, useSESelector } from "Supervisor/redux/hooks"
 import { clickClearDialNumber, changeDialNumber, clickRemoveOneDialNumber } from "Supervisor/redux/reducers/webRTC"
+import { InputWidth } from "components/Inputs/types"
 
 export const KeypadInput: React.FC = () => {
     const dispatch = useTypedDispatch()
@@ -16,6 +17,7 @@ export const KeypadInput: React.FC = () => {
             <MaskIcon icon={ClearAll} onClick={() => dispatch(clickClearDialNumber())} />
             <Input
                 centered
+                inputWidth={InputWidth.standard}
                 placeholder="Введите номер"
                 onChange={(val) => dispatch(changeDialNumber(val))}
                 value={dialInput}

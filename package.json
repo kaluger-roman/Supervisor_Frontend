@@ -23,6 +23,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "customize-cra": "^1.0.0",
     "email-validator": "^2.0.4",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "ramda": "^0.27.1",
