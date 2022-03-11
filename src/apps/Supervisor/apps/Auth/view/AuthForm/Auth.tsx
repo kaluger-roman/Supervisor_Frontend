@@ -37,17 +37,17 @@ export const AuthForm: React.FC = () => {
                         <Input
                             inputWidth={InputWidth.long}
                             label="Логин"
-                            onChange={(val) => dispatch(changeUserNameInput(val))}
+                            onChange={(val) => dispatch(changeUserNameInput(val.trim()))}
                             value={userNameInput}
-                            hasError={() => errorAuth && errorAuth.message}
+                            hasError={() => errorAuth?.all && " "}
                         />
                         <Input
                             inputWidth={InputWidth.long}
                             isPassword
                             label="Пароль"
-                            onChange={(val) => dispatch(changePasswordInput(val))}
+                            onChange={(val) => dispatch(changePasswordInput(val.trim()))}
                             value={passwordInput}
-                            hasError={() => errorAuth && errorAuth.message}
+                            hasError={() => errorAuth?.all}
                         />
                     </div>
                     <ButtonsContainer width={280}>

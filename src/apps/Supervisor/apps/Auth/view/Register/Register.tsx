@@ -6,8 +6,8 @@ import { Input } from "components/Inputs"
 import { InputWidth } from "components/Inputs/types"
 import { Selector } from "components/Selectors"
 import { ThemeVariant } from "components/types"
-import React from "react"
-import { useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
+import React, { useCallback, useEffect } from "react"
+import { useQueryError, useSESelector, useTypedDispatch } from "Supervisor/redux/hooks"
 import {
     changeAuthPage,
     changeCaptchaPassed,
@@ -24,6 +24,8 @@ import { InputsContainer, ReCAPTCHAWrapper } from "./styled"
 import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
 import EmailValidator from "email-validator"
 import { passwordValidate, usernameValidate } from "../../helpers"
+import { useRegisterMutation } from "Supervisor/redux/reducers/api/auth.api"
+import { changeAuthToken, changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
 
 export const RegisterForm: React.FC = () => {
     const dispatch = useTypedDispatch()
@@ -58,6 +60,27 @@ export const RegisterForm: React.FC = () => {
         !secretAnswerInput ||
         !secretQuestion
 
+    const [tryReg, { isLoading, error, data, isSuccess }] = useRegisterMutation()
+    const onRegClick = useCallback(
+        () =>
+            tryReg({
+                username: userNameInput,
+                password: passwordInput,
+                secret: secretQuestion,
+                secretAnswer: secretAnswerInput,
+                email: emailInput
+            }),
+        [userNameInput, passwordInput, secretQuestion, secretAnswerInput, emailInput, tryReg]
+    )
+    useEffect(() => {
+        dispatch(changeIsBlockingLoader(isLoading))
+
+        if (isSuccess && data?.access_token) {
+            dispatch(changeAuthToken(data.access_token))
+        }
+    }, [isLoading, isSuccess, data])
+    const errorReg = useQueryError(error)
+
     return (
         <AuthContainer>
             <StandardContainer variant={ThemeVariant.dark}>
@@ -69,14 +92,14 @@ export const RegisterForm: React.FC = () => {
                             label="Почта"
                             onChange={(val) => dispatch(changeEmail(val))}
                             value={emailInput}
-                            hasError={() => emailError}
+                            hasError={() => emailError || (errorReg?.all && " ")}
                         />
                         <Input
                             inputWidth={InputWidth.long}
                             label="Логин"
                             onChange={(val) => dispatch(changeUserNameInput(val))}
                             value={userNameInput}
-                            hasError={() => usernameError}
+                            hasError={() => usernameError || errorReg?.all}
                         />
                         <Input
                             inputWidth={InputWidth.long}
@@ -123,6 +146,7 @@ export const RegisterForm: React.FC = () => {
                             data-tip={someError ? AUTH_ERRORS.CAPTCHA : ""}
                             disabled={!!someError}
                             width={180}
+                            onClick={onRegClick}
                         >
                             Зарегистрироваться
                         </StandardButton>

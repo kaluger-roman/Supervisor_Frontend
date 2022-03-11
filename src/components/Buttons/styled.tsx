@@ -1,9 +1,9 @@
-import styled from "@emotion/styled"
+import styled, { StyledComponent } from "@emotion/styled"
 import React from "react"
 import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { CenteredDiv, Control } from "../styled"
-import { IconProps } from "./types"
+import { ButtonProps, IconProps } from "./types"
 
 const useButton = (
     disabled: boolean,
@@ -90,7 +90,14 @@ export const IconCircle: React.FC<IconProps> = ({ icon, scale }) => (
     </IconCircleOuter>
 )
 
-export const StandardButton = styled(ButtonBase)<{ disabled?: boolean; width?: number }>`
+const ButtonHoc = (Component: StyledComponent<ButtonProps>) => (props: ButtonProps) =>
+    (
+        <Component {...props} onClick={props.disabled ? undefined : props.onClick}>
+            {props.children}
+        </Component>
+    )
+
+export const StandardButton = ButtonHoc(styled(ButtonBase)<ButtonProps>`
     ${({ disabled, width }) =>
         useButton(
             !!disabled,
@@ -102,9 +109,9 @@ export const StandardButton = styled(ButtonBase)<{ disabled?: boolean; width?: n
             COLORS.deepDark,
             width
         )}
-`
+`)
 
-export const RejectButton = styled(ButtonBase)<{ disabled?: boolean; width?: number }>`
+export const RejectButton = ButtonHoc(styled(ButtonBase)<ButtonProps>`
     ${({ disabled, width }) =>
         useButton(
             !!disabled,
@@ -116,4 +123,4 @@ export const RejectButton = styled(ButtonBase)<{ disabled?: boolean; width?: num
             COLORS.deepDark,
             width
         )}
-`
+`)

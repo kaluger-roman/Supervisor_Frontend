@@ -6,10 +6,10 @@ import { changeAppPage } from "./redux/reducers/main"
 import { AppPage } from "./redux/reducers/types"
 
 export const Supervisor: React.FC = () => {
-    const { page, isAuthorized } = useSESelector((state) => state.main)
+    const { page, authToken } = useSESelector((state) => state.main)
     const dispatch = useTypedDispatch()
 
-    if (!isAuthorized) {
+    if (!authToken) {
         dispatch(changeAppPage(AppPage.Authentication))
     }
 

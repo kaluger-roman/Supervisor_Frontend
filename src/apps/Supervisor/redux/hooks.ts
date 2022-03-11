@@ -18,21 +18,12 @@ export const useSESelector = <T extends unknown>(selector: (state: RootState) =>
     return useSelector(selector, shallowEqual)
 }
 
-export const isErrorWithMessage = (error: unknown): error is { data: { message: string; statusCode: number } } =>
-    typeof error === "object" &&
-    error != null &&
-    "data" in error &&
-    "message" in (error as any).data &&
-    "statusCode" in (error as any).data &&
-    typeof (error as any).data.message === "string" &&
-    typeof (error as any).data.statusCode === "number"
+export const isErrorWithMessage = (error: unknown): error is { data: { [key: string]: string } } =>
+    typeof error === "object" && error != null && "data" in error && typeof (error as any).data === "object"
 
-export const useQueryError = (error: unknown): { status: number; message: string } | null => {
+export const useQueryError = (error: unknown): { [key: string]: string } | null => {
     if (isErrorWithMessage(error)) {
-        return {
-            status: error.data.statusCode,
-            message: error.data.message
-        }
+        return error.data
     }
 
     return null

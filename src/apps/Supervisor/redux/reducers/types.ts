@@ -27,6 +27,6 @@ export type AuthSlice = {
 
 export type MainSlice = {
     page: AppPage
-    isAuthorized: boolean
+    authToken: string
     isBlockingLoader: boolean
 }

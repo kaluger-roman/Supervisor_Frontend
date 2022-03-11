@@ -1,4 +1,4 @@
-export const usernameValidate = (val: string) => !val.length || /^[a-zA-Z0-9_.-]{6,}$/g.test(val)
+export const usernameValidate = (val: string) => !val.length || /^[а-яА-Яa-zA-Z0-9_.-]{6,}$/g.test(val)
 export const passwordValidate = (val: string) =>
     !val.length ||
     (/^[a-zA-Z0-9_.!=-]{6,}$/g.test(val) &&

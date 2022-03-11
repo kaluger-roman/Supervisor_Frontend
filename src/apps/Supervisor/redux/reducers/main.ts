@@ -3,7 +3,7 @@ import { AppPage, MainSlice } from "./types"
 
 const initialState: MainSlice = {
     page: AppPage.Authentication,
-    isAuthorized: false,
+    authToken: "",
     isBlockingLoader: true
 }
 
@@ -12,12 +12,12 @@ const mainSlice = createSlice({
     initialState,
     reducers: {
         changeAppPage: (state, action: PayloadAction<AppPage>) => void (state.page = action.payload),
-        changeIsAuthorized: (state, action: PayloadAction<boolean>) => void (state.isAuthorized = action.payload),
+        changeAuthToken: (state, action: PayloadAction<string>) => void (state.authToken = action.payload),
         changeIsBlockingLoader: (state, action: PayloadAction<boolean>) =>
             void (state.isBlockingLoader = action.payload)
     }
 })
 
-export const { changeAppPage, changeIsAuthorized, changeIsBlockingLoader } = mainSlice.actions
+export const { changeAppPage, changeAuthToken, changeIsBlockingLoader } = mainSlice.actions
 
 export default mainSlice.reducer

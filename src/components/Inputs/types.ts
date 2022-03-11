@@ -3,7 +3,7 @@ export type InputProps = {
     value: string
     label?: string
     placeholder?: string
-    hasError?: (value: string) => null | false | string
+    hasError?: (value: string) => null | false | string | undefined
     customizedStyles?: CustomizedInputStyles
     centered?: boolean
     isPassword?: boolean
