@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { ROUTES } from "../constants"
+import { ROUTES } from "../../constants"
 import { AuthPayload, ChangePasswordPayload, EmittedToken, RecoverPasswordPayload, RegisterPayload } from "./types"
 
 export const authApi = createApi({

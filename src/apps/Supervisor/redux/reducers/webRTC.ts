@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
-import { DIAL_NUMBER_REGEXP } from "./constants"
+import { DIAL_NUMBER_REGEXP } from "../constants"
 import { WebRTCSlice } from "./types"
 
 const initialState: WebRTCSlice = {
     page: Pages.keypad,
     callPage: CallPages.none,
-    dialInput: ""
+    dialInput: "",
+    isPeersConnected: false
 }
 
 const webRTCSlice = createSlice({
@@ -27,6 +28,8 @@ const webRTCSlice = createSlice({
             state.page = Pages.call
             state.callPage = CallPages.waitingOutbound
         },
+        chanheIsPeersConnected: (state, action: PayloadAction<boolean>) =>
+            void (state.isPeersConnected = action.payload),
         clickAnswerBtn: (state) => state,
         clickRejectBtn: (state) => state
     }
@@ -42,7 +45,8 @@ export const {
     clickDialNumber,
     clickClearDialNumber,
     clickRemoveOneDialNumber,
-    changeDialNumber
+    changeDialNumber,
+    chanheIsPeersConnected
 } = webRTCSlice.actions
 
 export default webRTCSlice.reducer

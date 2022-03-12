@@ -11,6 +11,7 @@ export type WebRTCSlice = {
     page: Pages
     callPage: CallPages
     dialInput: string
+    isPeersConnected: boolean
 }
 
 export type AuthSlice = {
@@ -32,4 +33,5 @@ export type MainSlice = {
     userName: string | null
     userId: number | null
     isBlockingLoader: boolean
+    isSocketConected: boolean
 }

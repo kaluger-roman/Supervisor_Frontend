@@ -9,7 +9,8 @@ const initialState: MainSlice = {
     role: null,
     userName: null,
     userId: null,
-    isBlockingLoader: true
+    isBlockingLoader: true,
+    isSocketConected: false
 }
 
 const mainSlice = createSlice({
@@ -42,10 +43,12 @@ const mainSlice = createSlice({
             }
         },
         changeIsBlockingLoader: (state, action: PayloadAction<boolean>) =>
-            void (state.isBlockingLoader = action.payload)
+            void (state.isBlockingLoader = action.payload),
+        changeIsSocketConected: (state, action: PayloadAction<boolean>) =>
+            void (state.isSocketConected = action.payload)
     }
 })
 
-export const { changeAppPage, changeAuthToken, changeIsBlockingLoader } = mainSlice.actions
+export const { changeAppPage, changeAuthToken, changeIsBlockingLoader, changeIsSocketConected } = mainSlice.actions
 
 export default mainSlice.reducer
