@@ -4,10 +4,14 @@ import { changeIsSocketConected } from "../reducers/main"
 import store from "../store"
 
 class CableSocket {
-    socket: Socket
+    socket: Socket | null = null
 
-    constructor() {
-        this.socket = io(HOST)
+    init() {
+        this.socket = io(HOST, {
+            transports: ["websocket"],
+            query: { token: store.getState().main.authToken }
+        })
+
         this.socket.on("connect", () => {
             store.dispatch(changeIsSocketConected(true))
         })

@@ -1,5 +1,6 @@
 import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
+import { CallRecord } from "./api/types"
 
 export enum AppPage {
     Authentication = "Authentication",
@@ -12,6 +13,7 @@ export type WebRTCSlice = {
     callPage: CallPages
     dialInput: string
     isPeersConnected: boolean
+    currentCall: CallRecord | null
 }
 
 export type AuthSlice = {

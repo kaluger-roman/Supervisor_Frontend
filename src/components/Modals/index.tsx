@@ -1,17 +1,16 @@
 import React, { useCallback, useState } from "react"
 import ReactDOM from "react-dom"
-import { useSESelector } from "Supervisor/redux/hooks"
 import { Triangle } from "react-loader-spinner"
 import { COLORS } from "config/globalStyles/colors"
 import { convertCssSecondsToIntMs, CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { StandardButton, RejectButton, IconCircle } from "../Buttons"
 import { StandardContainer } from "../Containers"
-import { SectionHeader } from "../Headers"
+import { Header, LargeHeader } from "../Headers"
 import { StandardText } from "../Text"
 import { ThemeVariant } from "../types"
-import { MODAL_PORTAL_ID, STANDARD_ACCEPT_LABEL, STANDARD_DECLINE_LABEL } from "./constants"
-import { Backdrop, Cancel, InnerContainer, ButtonsContainer, TextContainer } from "./styled"
-import { ModalProps, ModalSize, ModalPropsInner } from "./types"
+import { BLOCKING_LOADER_ID, MODAL_PORTAL_ID, STANDARD_ACCEPT_LABEL, STANDARD_DECLINE_LABEL } from "./constants"
+import { Backdrop, Cancel, InnerContainer, ButtonsContainer, TextContainer, HeaderWrapper } from "./styled"
+import { ModalProps, ModalSize, ModalPropsInner, BlockingLoaderProps } from "./types"
 import CrossIcon from "./../../assets/images/cross.svg"
 
 const Modal: React.FC<ModalPropsInner> = ({
@@ -40,6 +39,7 @@ const Modal: React.FC<ModalPropsInner> = ({
         []
     )
 
+    const HeaderComponent = size === ModalSize.small ? Header : LargeHeader
     return (
         <Backdrop beforeUnmount={beforeUnmount}>
             <StandardContainer variant={ThemeVariant.dark}>
@@ -49,20 +49,26 @@ const Modal: React.FC<ModalPropsInner> = ({
                             <Cancel onClick={CloseWrapper()}>
                                 <IconCircle icon={CrossIcon} />
                             </Cancel>
-                            {header && <SectionHeader noTopMargin>{header}</SectionHeader>}
+                            {header && (
+                                <HeaderWrapper>
+                                    <HeaderComponent noTopMargin>{header}</HeaderComponent>
+                                </HeaderWrapper>
+                            )}
                             <TextContainer> {text && <StandardText centered>{text}</StandardText>}</TextContainer>
-                            <ButtonsContainer>
-                                {hasAccept && (
-                                    <StandardButton onClick={CloseWrapper(onDecline)}>
-                                        {acceptLabel || STANDARD_ACCEPT_LABEL}
-                                    </StandardButton>
-                                )}
-                                {hasDecline && (
-                                    <RejectButton onClick={CloseWrapper(onAccept)}>
-                                        {declineLabel || STANDARD_DECLINE_LABEL}
-                                    </RejectButton>
-                                )}
-                            </ButtonsContainer>
+                            {(hasAccept || hasDecline) && (
+                                <ButtonsContainer>
+                                    {hasAccept && (
+                                        <StandardButton onClick={CloseWrapper(onDecline)}>
+                                            {acceptLabel || STANDARD_ACCEPT_LABEL}
+                                        </StandardButton>
+                                    )}
+                                    {hasDecline && (
+                                        <RejectButton onClick={CloseWrapper(onAccept)}>
+                                            {declineLabel || STANDARD_DECLINE_LABEL}
+                                        </RejectButton>
+                                    )}
+                                </ButtonsContainer>
+                            )}
                         </>
                     )}
                 </InnerContainer>
@@ -72,6 +78,7 @@ const Modal: React.FC<ModalPropsInner> = ({
 }
 
 export const ModalPortal: React.FC = () => <div id={MODAL_PORTAL_ID} />
+export const LoaderPortal: React.FC = () => <div id={BLOCKING_LOADER_ID} />
 
 export const ShowModal = (props: ModalProps) => {
     const portal: HTMLDivElement | null = document.querySelector(`#${MODAL_PORTAL_ID}`)
@@ -85,13 +92,15 @@ export const ShowModal = (props: ModalProps) => {
         )
 }
 
-export const BlockingLoader: React.FC = () => {
-    const isBlockingLoader = useSESelector((state) => state.main.isBlockingLoader)
-    if (!isBlockingLoader) return null
-
-    return (
-        <Backdrop>
-            <Triangle height="100" width="100" color={COLORS.primaryMain} ariaLabel="loading" />
-        </Backdrop>
-    )
+export const ShowBlockingLoader = (props: BlockingLoaderProps) => {
+    const portal: HTMLDivElement | null = document.querySelector(`#${BLOCKING_LOADER_ID}`)
+    if (portal) {
+        ReactDOM.render(props.isShown ? <BlockingLoader /> : <></>, portal)
+    }
 }
+
+export const BlockingLoader: React.FC = () => (
+    <Backdrop>
+        <Triangle height="100" width="100" color={COLORS.primaryMain} ariaLabel="loading" />
+    </Backdrop>
+)

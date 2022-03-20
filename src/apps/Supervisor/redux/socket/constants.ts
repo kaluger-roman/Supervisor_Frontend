@@ -5,6 +5,11 @@ export const EVENT_TYPES = {
     SIGNALING: {
         ANSWER: "SIGNALING_ANSWER",
         OFFER: "SIGNALING_OFFER",
-        NEW_ICE: "NEW_ICE_CANDIDATE"
+        NEW_ICE: "NEW_ICE_CANDIDATE",
+        ENDED: "ENDED",
+        FAILED: "FAILED"
+    },
+    CALL: {
+        CHANGE: "CHANGE_CALL"
     }
 }

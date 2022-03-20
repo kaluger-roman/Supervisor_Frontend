@@ -11,6 +11,10 @@ export type ModalProps = {
     children?: JSX.Element
 }
 
+export type BlockingLoaderProps = {
+    isShown: boolean
+}
+
 export type ModalPropsInner = ModalProps & { closeModal: () => void }
 
 export enum ModalSize {

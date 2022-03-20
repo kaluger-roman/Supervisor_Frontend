@@ -63,7 +63,7 @@ export const Backdrop = styled(CenteredDiv)<{ beforeUnmount?: boolean }>`
 const TypeToSize = {
     [ModalSize.large]: "width: 60vw; height: 60vh;",
     [ModalSize.standard]: "width: 40vw; height: 40vh;",
-    [ModalSize.small]: "width: 20vw; height: 20vh;"
+    [ModalSize.small]: "width: 30vw; height: 30vh;"
 }
 
 export const InnerContainer = styled.div<{ sizeType: ModalSize }>`
@@ -93,4 +93,8 @@ export const ButtonsContainer = styled.div`
 export const TextContainer = styled.div`
     flex-grow: 1;
     ${CenteredDivStyle};
+`
+
+export const HeaderWrapper = styled.div`
+    padding: 0 ${CSS_CONSTANTS.iconBigSize};
 `

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { ShowBlockingLoader } from "components/Modals"
 import jwt_decode from "jwt-decode"
 import { DecodedToken, Roles } from "./api/types"
 import { AppPage, MainSlice } from "./types"
@@ -42,8 +43,10 @@ const mainSlice = createSlice({
                 localStorage.authToken = ""
             }
         },
-        changeIsBlockingLoader: (state, action: PayloadAction<boolean>) =>
-            void (state.isBlockingLoader = action.payload),
+        changeIsBlockingLoader: (state, action: PayloadAction<boolean>) => {
+            state.isBlockingLoader = action.payload
+            ShowBlockingLoader({ isShown: action.payload })
+        },
         changeIsSocketConected: (state, action: PayloadAction<boolean>) =>
             void (state.isSocketConected = action.payload)
     }
