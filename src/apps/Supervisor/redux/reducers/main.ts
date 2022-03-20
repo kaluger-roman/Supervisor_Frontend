@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ShowBlockingLoader } from "components/Modals"
-import jwt_decode from "jwt-decode"
+import jwt from "jsonwebtoken"
 import { DecodedToken, Roles } from "./api/types"
 import { AppPage, MainSlice } from "./types"
 
@@ -23,7 +23,7 @@ const mainSlice = createSlice({
             state.authToken = action.payload
 
             if (action.payload) {
-                const decoded = jwt_decode<DecodedToken>(action.payload)
+                const decoded = jwt.decode(action.payload) as DecodedToken
                 state.role = decoded.role
                 state.userName = decoded.userName
                 state.userId = decoded.userId
@@ -48,10 +48,20 @@ const mainSlice = createSlice({
             ShowBlockingLoader({ isShown: action.payload })
         },
         changeIsSocketConected: (state, action: PayloadAction<boolean>) =>
-            void (state.isSocketConected = action.payload)
+            void (state.isSocketConected = action.payload),
+        logout: (state) => {
+            localStorage.authToken = ""
+
+            state.page = AppPage.Authentication
+            state.authToken = null
+            state.role = null
+            state.userId = null
+            state.userName = null
+        }
     }
 })
 
-export const { changeAppPage, changeAuthToken, changeIsBlockingLoader, changeIsSocketConected } = mainSlice.actions
+export const { changeAppPage, changeAuthToken, changeIsBlockingLoader, changeIsSocketConected, logout } =
+    mainSlice.actions
 
 export default mainSlice.reducer

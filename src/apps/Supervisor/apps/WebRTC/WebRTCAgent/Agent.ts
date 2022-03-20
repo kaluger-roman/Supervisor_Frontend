@@ -21,7 +21,11 @@ class Agent {
         this.initPeerListeners()
     }
 
-    initSocketListeners() {
+    close() {
+        this.peerConnection?.close()
+    }
+
+    private initSocketListeners() {
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.ANSWER, async (data: { answer: RTCSessionDescriptionInit }) => {
             if (data.answer) {
                 const remoteDesc = new RTCSessionDescription(data.answer)
@@ -52,7 +56,7 @@ class Agent {
         })
     }
 
-    initPeerListeners() {
+    private initPeerListeners() {
         if (this.peerConnection) {
             this.peerConnection.addEventListener("icecandidate", (event) => {
                 if (event.candidate) {

@@ -5,9 +5,18 @@ import { AuthPayload, ChangePasswordPayload, EmittedToken, RecoverPasswordPayloa
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: ROUTES.AUTH.BASE
+        baseUrl: ROUTES.AUTH.BASE,
+        prepareHeaders: (headers) => {
+            headers.set("Authorization", `Bearer ${localStorage.authToken}`)
+            return headers
+        }
     }),
     endpoints: (builder) => ({
+        verifyToken: builder.query<void, void>({
+            query: () => ({
+                url: ROUTES.AUTH.VERIFY
+            })
+        }),
         auth: builder.mutation<EmittedToken, AuthPayload>({
             query: (body) => ({
                 url: ROUTES.AUTH.LOGIN,
@@ -39,5 +48,11 @@ export const authApi = createApi({
     })
 })
 
-export const { useAuthMutation, useRegisterMutation, useRecoverPasswordMutation, useChangePasswordMutation } = authApi
+export const {
+    useAuthMutation,
+    useRegisterMutation,
+    useRecoverPasswordMutation,
+    useChangePasswordMutation,
+    useVerifyTokenQuery
+} = authApi
 export default authApi.reducer

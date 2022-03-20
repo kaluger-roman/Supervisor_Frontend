@@ -8,6 +8,8 @@ export const ROUTES = {
         BASE: BASE_API + "/auth",
         LOGIN: "/login",
         REGISTER: "/register",
+        LOGOUT: "/logout",
+        VERIFY: "/verify_token",
         RECOVER_PASSWORD: "/recover_password",
         CHANGE_PASSWORD: "/change_password"
     }
