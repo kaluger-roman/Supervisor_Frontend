@@ -2,9 +2,11 @@ import styled from "@emotion/styled"
 import { COLORS } from "config/globalStyles/colors"
 import { CSS_CONSTANTS } from "config/globalStyles/common"
 
+export const WEB_RTC_HEIGHT = 450
+
 export const WebRTCWrapper = styled.div`
     width: 260px;
-    height: 450px;
+    height: ${WEB_RTC_HEIGHT}px;
     position: relative;
     background: ${COLORS.primaryDark};
     background: linear-gradient(135deg, ${COLORS.primarySecondary} 0%, ${COLORS.primaryDark} 100%);
@@ -12,4 +14,5 @@ export const WebRTCWrapper = styled.div`
     border-radius: ${CSS_CONSTANTS.borderRadius};
     overflow: hidden;
     cursor: pointer;
+    z-index: 12;
 `

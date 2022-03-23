@@ -58,12 +58,12 @@ const Modal: React.FC<ModalPropsInner> = ({
                             {(hasAccept || hasDecline) && (
                                 <ButtonsContainer>
                                     {hasAccept && (
-                                        <StandardButton onClick={CloseWrapper(onDecline)}>
+                                        <StandardButton onClick={CloseWrapper(onAccept)}>
                                             {acceptLabel || STANDARD_ACCEPT_LABEL}
                                         </StandardButton>
                                     )}
                                     {hasDecline && (
-                                        <RejectButton onClick={CloseWrapper(onAccept)}>
+                                        <RejectButton onClick={CloseWrapper(onDecline)}>
                                             {declineLabel || STANDARD_DECLINE_LABEL}
                                         </RejectButton>
                                     )}
@@ -82,7 +82,8 @@ export const LoaderPortal: React.FC = () => <div id={BLOCKING_LOADER_ID} />
 
 export const ShowModal = (props: ModalProps) => {
     const portal: HTMLDivElement | null = document.querySelector(`#${MODAL_PORTAL_ID}`)
-    const closeModal = () => portal?.firstChild?.remove()
+    const closeModal = () => portal?.firstChild && ReactDOM.unmountComponentAtNode(portal)
+
     if (portal)
         ReactDOM.render(
             <Modal {...props} closeModal={closeModal}>
@@ -90,6 +91,8 @@ export const ShowModal = (props: ModalProps) => {
             </Modal>,
             portal
         )
+
+    return closeModal
 }
 
 export const ShowBlockingLoader = (props: BlockingLoaderProps) => {
@@ -104,3 +107,5 @@ export const BlockingLoader: React.FC = () => (
         <Triangle height="100" width="100" color={COLORS.primaryMain} ariaLabel="loading" />
     </Backdrop>
 )
+
+export { ModalSize }

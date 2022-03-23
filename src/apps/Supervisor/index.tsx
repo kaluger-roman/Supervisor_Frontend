@@ -1,8 +1,10 @@
+import { NavBar } from "components/Navbar"
 import { always, cond, equals, T } from "ramda"
 import { useEffect, useLayoutEffect } from "react"
 import { Auth } from "./apps/Auth"
 import { WebRTC } from "./apps/WebRTC"
 import { WebRTCAgent } from "./apps/WebRTC/WebRTCAgent"
+import { menuStructure } from "./menu"
 import { useSESelector, useTypedDispatch } from "./redux/hooks"
 import { useVerifyTokenQuery } from "./redux/reducers/api/auth.api"
 import { changeAppPage, changeAuthToken, changeIsBlockingLoader, logout } from "./redux/reducers/main"
@@ -42,9 +44,14 @@ export const Supervisor: React.FC = () => {
         }
     }, [authToken])
 
-    return cond<AppPage, JSX.Element>([
-        [equals<AppPage>(AppPage.Authentication), always(<Auth />)],
-        [equals<AppPage>(AppPage.AgentWorkPlace), always(<WebRTC />)],
-        [T, always(<Auth />)]
-    ])(page)
+    return (
+        <>
+            {authToken && <NavBar {...menuStructure} />}
+            {cond<AppPage, JSX.Element>([
+                [equals<AppPage>(AppPage.Authentication), always(<Auth />)],
+                [equals<AppPage>(AppPage.AgentWorkPlace), always(<WebRTC />)],
+                [T, always(<Auth />)]
+            ])(page)}
+        </>
+    )
 }
