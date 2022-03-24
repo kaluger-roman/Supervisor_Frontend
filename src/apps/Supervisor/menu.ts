@@ -1,5 +1,6 @@
-import { EXIT_HANDLER } from "components/Navbar/constants"
-import { NavBarProps, StructureType } from "components/Navbar/types"
+import { EXIT_HANDLER, STATUS_HANDLER } from "components/Navbar/constants"
+import { NavBarProps, StructureType, UserStatuses } from "components/Navbar/types"
+import { agentApi } from "./redux/reducers/api/agent.api"
 import { changeAppPage, logout } from "./redux/reducers/main"
 import { AppPage } from "./redux/reducers/types"
 import store from "./redux/store"
@@ -37,6 +38,9 @@ export const menuStructure: NavBarProps = {
         },
         [EXIT_HANDLER]: () => {
             store.dispatch(logout())
+        },
+        [STATUS_HANDLER]: async (status: UserStatuses) => {
+            store.dispatch(agentApi.endpoints.changeStatus.initiate(status))
         }
     }
 }

@@ -1,7 +1,7 @@
 import { ShowModal, ModalSize } from "components/Modals"
-import React, { useState } from "react"
-import { MenuGroupKeys } from "Supervisor/menu"
-import { EXIT_HANDLER } from "./constants"
+import React, { useCallback } from "react"
+import { useChangeStatusMutation } from "Supervisor/redux/reducers/api/agent.api"
+import { EXIT_HANDLER, STATUS_COLOR, STATUS_HANDLER, STATUS_LABELS } from "./constants"
 import {
     ExitIcon,
     NavBarContainer,
@@ -11,46 +11,72 @@ import {
     NavGroup,
     NavGroupItem,
     NavGroupItems,
-    NavGroupLabel
+    NavGroupLabel,
+    StatusCircle,
+    StatusOption,
+    StatusOptionLabel,
+    UserNameLabel,
+    UserStatusContainer,
+    UserStatusOptions
 } from "./styled"
-import { NavBarProps } from "./types"
+import { NavBarProps, UserStatuses, UserStatusProps } from "./types"
 
-export const NavBar: React.FC<NavBarProps> = ({ structure, handlers }) => {
-    const [hoveredGroup, setHoveredGroup] = useState<MenuGroupKeys | null>(null)
+const UserStatus: React.FC<UserStatusProps> = ({ userName, status, onChange }) => {
+    const rt = useChangeStatusMutation()[0]
+    return (
+        <UserStatusContainer>
+            <StatusCircle color={STATUS_COLOR[status]} />
+            <UserNameLabel>{userName}</UserNameLabel>
+            <UserStatusOptions>
+                {Object.values(UserStatuses).map((newStatus) => (
+                    <StatusOption
+                        isSelected={newStatus === status}
+                        key={newStatus}
+                        onClick={() => newStatus !== status && rt(newStatus) /*onChange(newStatus)*/}
+                    >
+                        <StatusCircle color={STATUS_COLOR[newStatus]} />
+                        <StatusOptionLabel>{STATUS_LABELS[newStatus]}</StatusOptionLabel>
+                    </StatusOption>
+                ))}
+            </UserStatusOptions>
+        </UserStatusContainer>
+    )
+}
+
+export const NavBar: React.FC<NavBarProps> = ({ structure, userInfo, handlers }) => {
+    const exitHandler = useCallback(() => {
+        ShowModal({
+            header: "Выход",
+            text: "Вы действительно хотите выйти?",
+            size: ModalSize.small,
+            onAccept: handlers[EXIT_HANDLER],
+            acceptLabel: "Да",
+            declineLabel: "Нет",
+            hasAccept: true,
+            hasDecline: true
+        })
+    }, [handlers[EXIT_HANDLER]])
 
     return (
         <NavBarContainer>
             <NavBarLogo>Supervisor</NavBarLogo>
             <NavBarMain>
                 {Object.entries(structure).map(([key, group]) => (
-                    <NavGroup
-                        onMouseMove={() => setHoveredGroup(key as MenuGroupKeys)}
-                        onMouseLeave={() => setHoveredGroup(null)}
-                    >
+                    <NavGroup key={key}>
                         <NavGroupLabel>{group.label}</NavGroupLabel>
-                        <NavGroupItems isShown={hoveredGroup === key}>
+                        <NavGroupItems>
                             {group.items.map((element) => (
-                                <NavGroupItem onClick={handlers[element.key]}>{element.label}</NavGroupItem>
+                                <NavGroupItem key={element.key} onClick={handlers[element.key]}>
+                                    {element.label}
+                                </NavGroupItem>
                             ))}
                         </NavGroupItems>
                     </NavGroup>
                 ))}
             </NavBarMain>
             <NavBarSide>
-                <ExitIcon
-                    onClick={() => {
-                        ShowModal({
-                            header: "Выход",
-                            text: "Вы действительно хотите выйти?",
-                            size: ModalSize.small,
-                            onAccept: handlers[EXIT_HANDLER],
-                            acceptLabel: "Да",
-                            declineLabel: "Нет",
-                            hasAccept: true,
-                            hasDecline: true
-                        })
-                    }}
-                />
+                {userInfo && <UserStatus {...userInfo} onChange={handlers[STATUS_HANDLER]} />}
+                <ExitIcon onClick={exitHandler} />
             </NavBarSide>
         </NavBarContainer>
     )

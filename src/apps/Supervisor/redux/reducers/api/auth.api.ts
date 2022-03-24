@@ -1,15 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { ROUTES } from "../../constants"
+import { addAuthHeader } from "./helpers"
 import { AuthPayload, ChangePasswordPayload, EmittedToken, RecoverPasswordPayload, RegisterPayload } from "./types"
 
 export const authApi = createApi({
     reducerPath: "authApi",
     baseQuery: fetchBaseQuery({
         baseUrl: ROUTES.AUTH.BASE,
-        prepareHeaders: (headers) => {
-            headers.set("Authorization", `Bearer ${localStorage.authToken}`)
-            return headers
-        }
+        prepareHeaders: addAuthHeader
     }),
     endpoints: (builder) => ({
         verifyToken: builder.query<void, void>({

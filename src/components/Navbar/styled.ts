@@ -37,7 +37,6 @@ export const NavBarSide = styled.div`
     position: relative;
     height: 100%;
     padding: 0 ${CSS_CONSTANTS.paddingLarge};
-    width: 250px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -64,20 +63,6 @@ export const NavGroupLabel = styled(CenteredDiv)`
     text-align: center;
 `
 
-export const NavGroup = styled(CenteredDiv)`
-    position: relative;
-    height: 100%;
-    align-items: end;
-    cursor: pointer;
-    width: 20%;
-    min-width: fit-content;
-    padding: 0 ${CSS_CONSTANTS.padding};
-
-    &:hover {
-        background: ${withOpacity(COLORS.lightDark, 0.7)};
-    }
-`
-
 export const NavGroupItem = styled(CenteredDiv)`
     height: 44px;
     width: 100%;
@@ -88,8 +73,8 @@ export const NavGroupItem = styled(CenteredDiv)`
     }
 `
 
-export const NavGroupItems = styled.div<{ isShown?: boolean }>`
-    display: ${({ isShown }) => (isShown ? "block" : "none")};
+const OptionsContainer = `
+    display: none;
     width: 100%;
     position: absolute;
     left: 0;
@@ -97,5 +82,76 @@ export const NavGroupItems = styled.div<{ isShown?: boolean }>`
     background: ${withOpacity(COLORS.deepDark, 0.7)};
     border-radius: 0 0 ${CSS_CONSTANTS.borderRadius} ${CSS_CONSTANTS.borderRadius};
     overflow: hidden;
+`
+
+const SelectorContainer = `
+    position: relative;
+    height: 100%;
+    align-items: center;
+    cursor: pointer;
+    width: 20%;
+    min-width: fit-content;
+    padding: 0 ${CSS_CONSTANTS.padding};
+
+    &:hover {
+        background: ${withOpacity(COLORS.lightDark, 0.7)};
+
+        & > div:last-child {
+            display: block;
+        }
+    }
+`
+
+export const NavGroupItems = styled.div`
+    ${OptionsContainer}
     text-align: center;
+`
+
+export const NavGroup = styled(CenteredDiv)`
+    ${SelectorContainer}
+`
+
+export const UserStatusOptions = styled.div`
+    ${OptionsContainer}
+`
+
+export const UserStatusContainer = styled(CenteredDiv)`
+    ${SelectorContainer}
+    padding: 0 ${CSS_CONSTANTS.padding};
+    margin-right: ${CSS_CONSTANTS.paddingLarge};
+`
+
+export const StatusCircle = styled.div<{ color: string }>`
+    border-radius: 50%;
+    background: ${({ color }) => color};
+    width: 10px;
+    height: 10px;
+`
+
+export const UserNameLabel = styled.div`
+    font-size: ${parseInt(CSS_CONSTANTS.controlHeight) - 18}px;
+    color: ${COLORS.primarySecondary};
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 0 0 ${CSS_CONSTANTS.padding};
+`
+
+export const StatusOptionLabel = styled.div`
+    padding: 0 ${CSS_CONSTANTS.padding};
+    font-size: 16px;
+`
+
+export const StatusOption = styled(CenteredDiv)<{ isSelected?: boolean }>`
+    height: 32px;
+    width: 100%;
+    color: ${({ isSelected }) => (isSelected ? COLORS.lightSecondary : COLORS.fullSecondary)};
+    font-size: 18px;
+    justify-content: flex-start;
+    padding: 0 ${CSS_CONSTANTS.padding};
+    background: ${({ isSelected }) => isSelected && withOpacity(COLORS.lightSecondary, 0.3)}!important;
+    user-select: none;
+    &:hover {
+        background: ${withOpacity(COLORS.lightDark, 0.5)};
+    }
 `

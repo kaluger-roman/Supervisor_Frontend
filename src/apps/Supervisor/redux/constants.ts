@@ -12,5 +12,9 @@ export const ROUTES = {
         VERIFY: "/verify_token",
         RECOVER_PASSWORD: "/recover_password",
         CHANGE_PASSWORD: "/change_password"
+    },
+    AGENT: {
+        BASE: BASE_API + "/agent",
+        STATUS: "/status"
     }
 }

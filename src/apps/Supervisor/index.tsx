@@ -12,7 +12,7 @@ import { AppPage } from "./redux/reducers/types"
 import { EventSocket } from "./redux/socket"
 
 export const Supervisor: React.FC = () => {
-    const { page, authToken } = useSESelector((state) => state.main)
+    const { page, authToken, userName, status } = useSESelector((state) => state.main)
     const dispatch = useTypedDispatch()
     const { isError, isSuccess, isLoading } = useVerifyTokenQuery()
 
@@ -28,8 +28,6 @@ export const Supervisor: React.FC = () => {
         if (isError && localStorage.authToken) {
             dispatch(logout())
         }
-
-        console.log(isSuccess, isError)
     }, [isSuccess, isError])
 
     useEffect(() => {
@@ -44,9 +42,11 @@ export const Supervisor: React.FC = () => {
         }
     }, [authToken])
 
+    if (!isError && !isSuccess) return null
+
     return (
         <>
-            {authToken && <NavBar {...menuStructure} />}
+            {authToken && <NavBar {...menuStructure} userInfo={{ userName, status }} />}
             {cond<AppPage, JSX.Element>([
                 [equals<AppPage>(AppPage.Authentication), always(<Auth />)],
                 [equals<AppPage>(AppPage.AgentWorkPlace), always(<WebRTC />)],

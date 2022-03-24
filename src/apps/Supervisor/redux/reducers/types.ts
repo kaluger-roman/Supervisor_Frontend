@@ -1,3 +1,4 @@
+import { UserStatuses } from "components/Navbar/types"
 import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
 import { CallRecord } from "./api/types"
@@ -36,4 +37,5 @@ export type MainSlice = {
     userId: number | null
     isBlockingLoader: boolean
     isSocketConected: boolean
+    status: UserStatuses
 }

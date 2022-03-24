@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ShowBlockingLoader } from "components/Modals"
+import { UserStatuses } from "components/Navbar/types"
 import jwt from "jsonwebtoken"
 import { DecodedToken, Roles } from "./api/types"
 import { AppPage, MainSlice } from "./types"
@@ -11,7 +12,8 @@ const initialState: MainSlice = {
     userName: null,
     userId: null,
     isBlockingLoader: true,
-    isSocketConected: false
+    isSocketConected: false,
+    status: UserStatuses.away
 }
 
 const mainSlice = createSlice({
@@ -49,6 +51,7 @@ const mainSlice = createSlice({
         },
         changeIsSocketConected: (state, action: PayloadAction<boolean>) =>
             void (state.isSocketConected = action.payload),
+        changeStatus: (state, action: PayloadAction<UserStatuses>) => void (state.status = action.payload),
         logout: (state) => {
             localStorage.authToken = ""
 
@@ -61,7 +64,7 @@ const mainSlice = createSlice({
     }
 })
 
-export const { changeAppPage, changeAuthToken, changeIsBlockingLoader, changeIsSocketConected, logout } =
+export const { changeAppPage, changeAuthToken, changeIsBlockingLoader, changeIsSocketConected, logout, changeStatus } =
     mainSlice.actions
 
 export default mainSlice.reducer
