@@ -21,27 +21,24 @@ import {
 } from "./styled"
 import { NavBarProps, UserStatuses, UserStatusProps } from "./types"
 
-const UserStatus: React.FC<UserStatusProps> = ({ userName, status, onChange }) => {
-    const rt = useChangeStatusMutation()[0]
-    return (
-        <UserStatusContainer>
-            <StatusCircle color={STATUS_COLOR[status]} />
-            <UserNameLabel>{userName}</UserNameLabel>
-            <UserStatusOptions>
-                {Object.values(UserStatuses).map((newStatus) => (
-                    <StatusOption
-                        isSelected={newStatus === status}
-                        key={newStatus}
-                        onClick={() => newStatus !== status && rt(newStatus) /*onChange(newStatus)*/}
-                    >
-                        <StatusCircle color={STATUS_COLOR[newStatus]} />
-                        <StatusOptionLabel>{STATUS_LABELS[newStatus]}</StatusOptionLabel>
-                    </StatusOption>
-                ))}
-            </UserStatusOptions>
-        </UserStatusContainer>
-    )
-}
+const UserStatus: React.FC<UserStatusProps> = ({ userName, status, onChange }) => (
+    <UserStatusContainer>
+        <StatusCircle color={STATUS_COLOR[status]} />
+        <UserNameLabel>{userName}</UserNameLabel>
+        <UserStatusOptions>
+            {Object.values(UserStatuses).map((newStatus) => (
+                <StatusOption
+                    isSelected={newStatus === status}
+                    key={newStatus}
+                    onClick={() => newStatus !== status && onChange(newStatus)}
+                >
+                    <StatusCircle color={STATUS_COLOR[newStatus]} />
+                    <StatusOptionLabel>{STATUS_LABELS[newStatus]}</StatusOptionLabel>
+                </StatusOption>
+            ))}
+        </UserStatusOptions>
+    </UserStatusContainer>
+)
 
 export const NavBar: React.FC<NavBarProps> = ({ structure, userInfo, handlers }) => {
     const exitHandler = useCallback(() => {

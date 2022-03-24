@@ -12,7 +12,7 @@ export const agentApi = createApi({
         prepareHeaders: addAuthHeader
     }),
     endpoints: (builder) => ({
-        changeStatus: builder.mutation<void, UserStatuses>({
+        changeStatus: builder.mutation<{ status: UserStatuses }, UserStatuses>({
             query: (status) => ({
                 url: ROUTES.AGENT.STATUS,
                 method: "POST",
@@ -22,7 +22,11 @@ export const agentApi = createApi({
                 const oldStatus = (getState() as RootState).main.status
                 dispatch(changeStatus(status))
                 try {
-                    await queryFulfilled
+                    const newStatus = await queryFulfilled
+
+                    if (newStatus.data.status !== status) {
+                        dispatch(changeStatus(oldStatus))
+                    }
                 } catch {
                     dispatch(changeStatus(oldStatus))
                 }

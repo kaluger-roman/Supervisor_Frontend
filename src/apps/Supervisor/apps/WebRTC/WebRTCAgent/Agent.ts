@@ -1,5 +1,7 @@
 import { ShowModal } from "components/Modals"
 import { ModalSize } from "components/Modals/types"
+import { UserStatuses } from "components/Navbar/types"
+import { agentApi } from "Supervisor/redux/reducers/api/agent.api"
 import { changeCurrentCall, changeIsPeersConnected } from "Supervisor/redux/reducers/webRTC"
 import { EventSocket } from "Supervisor/redux/socket"
 import { EVENT_TYPES } from "Supervisor/redux/socket/constants"
@@ -124,6 +126,7 @@ class Agent {
     }
 
     attachAudioToConnection() {
+        console.log("dfdfdf")
         if (this.localAudioStream) {
             this.localAudioStream.getTracks().forEach((track) => {
                 try {

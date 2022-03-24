@@ -1,3 +1,4 @@
+import { ModalSize, ShowModal } from "components/Modals"
 import { EXIT_HANDLER, STATUS_HANDLER } from "components/Navbar/constants"
 import { NavBarProps, StructureType, UserStatuses } from "components/Navbar/types"
 import { agentApi } from "./redux/reducers/api/agent.api"
@@ -41,6 +42,19 @@ export const menuStructure: NavBarProps = {
         },
         [STATUS_HANDLER]: async (status: UserStatuses) => {
             store.dispatch(agentApi.endpoints.changeStatus.initiate(status))
+
+            if (status === UserStatuses.offline) {
+                ShowModal({
+                    header: "Переход в оффлайн",
+                    text: "В статусе 'Оффлайн' вы автоматически будете разлогинены",
+                    size: ModalSize.small,
+                    onAccept: () => store.dispatch(logout()),
+                    acceptLabel: "Ок",
+                    declineLabel: "Отмена",
+                    hasAccept: true,
+                    hasDecline: true
+                })
+            }
         }
     }
 }
