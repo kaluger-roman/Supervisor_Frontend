@@ -40,16 +40,12 @@ export type DecodedToken = {
     role: Roles
 }
 
-export type CallRecord = {
+export type CurrentCall = {
+    callee: { username: string; webrtcNumber: string }
+    status: string
+    statusSequence: string[]
+    statusTimestampsSequence: string[]
     id: number
-    statusSequence: CallStatus[]
-    statusTimestampsSequence: number[]
-    calleeWebrtcNumber: string
-    callerWebrtcNumber: string
-    callerId: number
-    caller: User
-    calleeId: number
-    callee: User
 }
 
 export enum CallStatus {

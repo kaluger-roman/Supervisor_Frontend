@@ -5,12 +5,12 @@ import { CallInfoWrapper } from "./styled"
 import { Timer } from "./Timer"
 
 export const CallInfo: React.FC = () => {
-    const { callPage } = useSESelector((state) => state.webRTC)
+    const { callPage, currentCall } = useSESelector((state) => state.webRTC)
 
     return (
         <CallInfoWrapper>
-            <div>Name</div>
-            <div>Number</div>
+            <div>{currentCall?.callee.username}</div>
+            <div>{currentCall?.callee.webrtcNumber}</div>
             {callPage === CallPages.call && <Timer startAt={Date.now() - 4774} />}
         </CallInfoWrapper>
     )

@@ -6,7 +6,7 @@ import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { HOST } from "../constants"
 import { changeIsSocketConected, logout } from "../reducers/main"
 import store from "../store"
-import { WS_ERR_STATUS } from "./constants"
+import { EVENT_TYPES, WS_ERR_STATUS } from "./constants"
 import { SocketErrors, SocketException, SocketStandardActions } from "./types"
 
 class CableSocket {
@@ -17,6 +17,8 @@ class CableSocket {
             transports: ["websocket"],
             query: { token: store.getState().main.authToken }
         })
+
+        this.socket.emit(EVENT_TYPES.INIT, {})
 
         this.initListeners()
     }

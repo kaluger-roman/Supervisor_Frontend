@@ -22,17 +22,18 @@ class Agent {
     playingAudio: HTMLAudioElement | null = null
 
     async init() {
-        this.peerConnection = new RTCPeerConnection(this.configuration)
-        ;(window as any).peer = this.peerConnection
-
         await this.getMediaPermissions()
 
         this.initSocketListeners()
-        this.initPeerListeners()
     }
 
     close() {
         this.peerConnection?.close()
+    }
+
+    initPeer() {
+        this.peerConnection = new RTCPeerConnection(this.configuration)
+        this.initPeerListeners()
     }
 
     private initSocketListeners() {
@@ -61,6 +62,7 @@ class Agent {
 
         EventSocket.socket!.on(EVENT_TYPES.CALL.CHANGE, async (data: ChangeCallPayload) => {
             if (data.call) {
+                console.log(data.call)
                 store.dispatch(changeCurrentCall(data.call))
             }
         })
@@ -124,6 +126,7 @@ class Agent {
     }
 
     async createOfferConnection(callNumber: string) {
+        this.initPeer()
         const offer = await this.peerConnection!.createOffer({
             offerToReceiveAudio: true,
             offerToReceiveVideo: false
@@ -162,6 +165,19 @@ class Agent {
         await this.createOfferConnection(callNumber)
     }
 
+    async cancelCall() {
+        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.CANCEL, {
+            callId: store.getState().webRTC.currentCall?.id
+        })
+
+        this.peerConnection?.close()
+
+        store.dispatch(changeCurrentCall(null))
+        store.dispatch(changeCallEndCode(CallEndCodes.Cancelled))
+
+        setTimeout(() => store.dispatch(changeCallEndCode(null)), 1000)
+    }
+
     async offlineReject(callEndCode: CallEndCodes) {
         this.playingAudio = new Audio(OfflineSound)
         store.dispatch(changeCallEndCode(callEndCode))
@@ -169,7 +185,7 @@ class Agent {
     }
 
     async playAudio() {
-        await this.peerConnection!.setLocalDescription(undefined)
+        this.peerConnection?.close()
         if (this.playingAudio) {
             this.playingAudio.play()
             this.playingAudio.addEventListener("ended", () => {

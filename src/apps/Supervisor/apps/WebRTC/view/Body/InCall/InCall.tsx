@@ -1,6 +1,7 @@
-import React from "react"
+import React, { useCallback } from "react"
 import { WebRTCAgent } from "Supervisor/apps/WebRTC/WebRTCAgent"
 import { useSESelector } from "Supervisor/redux/hooks"
+import { CallStatus } from "Supervisor/redux/reducers/api/types"
 import { CallPages } from "../../../types"
 import { ButtonType } from "../../types"
 import { CallInfo } from "../CallInfo"
@@ -11,6 +12,11 @@ import { RingingAnimation, WaitAnimation } from "./styled"
 
 export const InCall: React.FC = () => {
     const { callPage, callEndCode, currentCall } = useSESelector((state) => state.webRTC)
+    const breakBtnHandler = useCallback(() => {
+        if (currentCall?.status === CallStatus.answerWaiting) {
+            WebRTCAgent.cancelCall()
+        }
+    }, [currentCall])
 
     return (
         <PhonePageWrapper>
@@ -26,7 +32,7 @@ export const InCall: React.FC = () => {
                             <CallBtn onClick={() => WebRTCAgent.answerCall()} btnType={ButtonType.answer} />
                         )}
                         <CallBtn
-                            onClick={() => {}}
+                            onClick={breakBtnHandler}
                             btnType={callPage === CallPages.ringingInbound ? ButtonType.reject : ButtonType.break}
                         />
                     </CallButtonsContainer>

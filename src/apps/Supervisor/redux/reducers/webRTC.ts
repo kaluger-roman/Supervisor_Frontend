@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { WebRTCAgent } from "Supervisor/apps/WebRTC/WebRTCAgent"
 import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
 import { DIAL_NUMBER_REGEXP } from "../constants"
-import { CallRecord } from "./api/types"
+import { CurrentCall } from "./api/types"
 import { WebRTCSlice } from "./types"
 
 const initialState: WebRTCSlice = {
@@ -35,7 +34,8 @@ const webRTCSlice = createSlice({
         },
         changeIsPeersConnected: (state, action: PayloadAction<boolean>) =>
             void (state.isPeersConnected = action.payload),
-        changeCurrentCall: (state, action: PayloadAction<CallRecord>) => void (state.currentCall = action.payload),
+        changeCurrentCall: (state, action: PayloadAction<CurrentCall | null>) =>
+            void (state.currentCall = action.payload),
         changeCallEndCode: (state, action: PayloadAction<CallEndCodes | null>) =>
             void (state.callEndCode = action.payload)
     }

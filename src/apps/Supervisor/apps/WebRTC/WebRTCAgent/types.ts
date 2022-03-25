@@ -1,4 +1,4 @@
-import { CallRecord } from "Supervisor/redux/reducers/api/types"
+import { CurrentCall } from "Supervisor/redux/reducers/api/types"
 
 export type AgentConfiguration = {
     iceServers: { urls: string }[]
@@ -13,7 +13,7 @@ export type CallOffer = {
 }
 
 export type ChangeCallPayload = {
-    call: CallRecord
+    call: CurrentCall
 }
 
 export enum ConnectionState {
@@ -28,5 +28,6 @@ export enum CallEndCodes {
     WrongCalleeWebrtcNumber = "WrongCalleeWebrtcNumber",
     AgentOffline = "AgentOffline",
     Busy = "Busy",
-    Standard = "Standard"
+    Standard = "Standard",
+    Cancelled = "Cancelled"
 }
