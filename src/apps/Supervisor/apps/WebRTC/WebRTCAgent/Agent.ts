@@ -1,18 +1,26 @@
 import { ShowModal } from "components/Modals"
 import { ModalSize } from "components/Modals/types"
-import { UserStatuses } from "components/Navbar/types"
-import { agentApi } from "Supervisor/redux/reducers/api/agent.api"
-import { changeCurrentCall, changeIsPeersConnected } from "Supervisor/redux/reducers/webRTC"
+import OfflineSound from "Supervisor/sounds/offlineError.mp3"
+import { changeCallEndCode, changeCurrentCall, changeIsPeersConnected } from "Supervisor/redux/reducers/webRTC"
 import { EventSocket } from "Supervisor/redux/socket"
 import { EVENT_TYPES } from "Supervisor/redux/socket/constants"
 import store from "Supervisor/redux/store"
-import { AgentConfiguration, CallOffer, ChangeCallPayload, ConnectionState, MakeCallPayload } from "./types"
+import {
+    AgentConfiguration,
+    CallEndCodes,
+    CallOffer,
+    ChangeCallPayload,
+    ConnectionState,
+    MakeCallPayload
+} from "./types"
 
 class Agent {
     configuration: AgentConfiguration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }
     peerConnection: RTCPeerConnection | null = null
     localAudioStream: MediaStream | null = null
     attachedTrack: RTCRtpSender | null = null
+    playingAudio: HTMLAudioElement | null = null
+
     async init() {
         this.peerConnection = new RTCPeerConnection(this.configuration)
         ;(window as any).peer = this.peerConnection
@@ -126,7 +134,6 @@ class Agent {
     }
 
     attachAudioToConnection() {
-        console.log("dfdfdf")
         if (this.localAudioStream) {
             this.localAudioStream.getTracks().forEach((track) => {
                 try {
@@ -153,6 +160,22 @@ class Agent {
     async makeCall({ callNumber }: MakeCallPayload) {
         this.attachAudioToConnection()
         await this.createOfferConnection(callNumber)
+    }
+
+    async offlineReject(callEndCode: CallEndCodes) {
+        this.playingAudio = new Audio(OfflineSound)
+        store.dispatch(changeCallEndCode(callEndCode))
+        this.playAudio()
+    }
+
+    async playAudio() {
+        await this.peerConnection!.setLocalDescription(undefined)
+        if (this.playingAudio) {
+            this.playingAudio.play()
+            this.playingAudio.addEventListener("ended", () => {
+                store.dispatch(changeCallEndCode(null))
+            })
+        }
     }
 }
 

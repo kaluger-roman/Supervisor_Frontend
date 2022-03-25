@@ -34,7 +34,7 @@ export const InputBody = styled(NormalizedInput)<{
         isError ? COLORS.error : isFocused ? COLORS.primaryMain : COLORS.deepDark};
     text-overflow: ellipsis;
     padding-left: ${parseInt(CSS_CONSTANTS.paddingMore) - parseInt(CSS_CONSTANTS.borderWidth)}px;
-    padding-right: ${CSS_CONSTANTS.paddingLarge};
+    padding-right: ${({ centered }) => (centered ? CSS_CONSTANTS.paddingMore : CSS_CONSTANTS.paddingLarge)};
     color: ${COLORS.deepDark};
     font-size: ${CSS_CONSTANTS.controlFontSize};
     width: 100%;

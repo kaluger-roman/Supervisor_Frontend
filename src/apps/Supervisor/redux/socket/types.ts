@@ -4,4 +4,11 @@ export enum SocketStandardActions {
     exception = "exception"
 }
 
-export type SocketException = { status: number; message: string }
+export type SocketException = { status: number | string; message: string }
+
+export enum SocketErrors {
+    WrongCallerWebrtcNumber = "WrongCallerWebrtcNumber",
+    WrongCalleeWebrtcNumber = "WrongCalleeWebrtcNumber",
+    AgentOffline = "AgentOffline",
+    Busy = "Busy"
+}

@@ -1,5 +1,6 @@
 import { UserStatuses } from "components/Navbar/types"
 import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
+import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
 import { CallRecord } from "./api/types"
 
@@ -15,6 +16,7 @@ export type WebRTCSlice = {
     dialInput: string
     isPeersConnected: boolean
     currentCall: CallRecord | null
+    callEndCode: CallEndCodes | null
 }
 
 export type AuthSlice = {

@@ -22,3 +22,11 @@ export enum ConnectionState {
     failed = "failed",
     closed = "closed"
 }
+
+export enum CallEndCodes {
+    WrongCallerWebrtcNumber = "WrongCallerWebrtcNumber",
+    WrongCalleeWebrtcNumber = "WrongCalleeWebrtcNumber",
+    AgentOffline = "AgentOffline",
+    Busy = "Busy",
+    Standard = "Standard"
+}

@@ -1,0 +1,1 @@
+export const CALL_ERR_AUDIO_DURATION = 4000

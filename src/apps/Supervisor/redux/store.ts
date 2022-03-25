@@ -4,6 +4,7 @@ import auth from "./reducers/auth"
 import main from "./reducers/main"
 import authApi, { authApi as authApiSlice } from "./reducers/api/auth.api"
 import agentApi, { agentApi as agentApiSlice } from "./reducers/api/agent.api"
+import { sideEffectsMiddleware } from "./middleware/sideEffects"
 
 const store = configureStore({
     reducer: {
@@ -14,7 +15,7 @@ const store = configureStore({
         agentApi
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([authApiSlice.middleware, agentApiSlice.middleware])
+        getDefaultMiddleware().concat([authApiSlice.middleware, agentApiSlice.middleware, sideEffectsMiddleware])
 })
 
 export default store

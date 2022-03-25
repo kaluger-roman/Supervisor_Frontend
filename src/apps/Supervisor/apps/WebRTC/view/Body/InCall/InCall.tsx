@@ -10,24 +10,28 @@ import { CallEnded } from "./parts/CallEnded"
 import { RingingAnimation, WaitAnimation } from "./styled"
 
 export const InCall: React.FC = () => {
-    const { callPage } = useSESelector((state) => state.webRTC)
+    const { callPage, callEndCode, currentCall } = useSESelector((state) => state.webRTC)
 
     return (
         <PhonePageWrapper>
-            <CallInfo />
-            {callPage === CallPages.call && <CallActionButtons />}
-            {callPage === CallPages.waitingOutbound && <WaitAnimation />}
-            {callPage === CallPages.ringingInbound && <RingingAnimation />}
-            <CallButtonsContainer>
-                {callPage === CallPages.ringingInbound && (
-                    <CallBtn onClick={() => WebRTCAgent.answerCall()} btnType={ButtonType.answer} />
-                )}
-                <CallBtn
-                    onClick={() => {}}
-                    btnType={callPage === CallPages.ringingInbound ? ButtonType.reject : ButtonType.break}
-                />
-            </CallButtonsContainer>
-            {callPage === CallPages.callEnded && <CallEnded />}
+            {callEndCode && <CallEnded callEndCode={callEndCode} />}
+            {!callEndCode && currentCall && (
+                <>
+                    <CallInfo />
+                    {callPage === CallPages.call && <CallActionButtons />}
+                    {callPage === CallPages.waitingOutbound && <WaitAnimation />}
+                    {callPage === CallPages.ringingInbound && <RingingAnimation />}
+                    <CallButtonsContainer>
+                        {callPage === CallPages.ringingInbound && (
+                            <CallBtn onClick={() => WebRTCAgent.answerCall()} btnType={ButtonType.answer} />
+                        )}
+                        <CallBtn
+                            onClick={() => {}}
+                            btnType={callPage === CallPages.ringingInbound ? ButtonType.reject : ButtonType.break}
+                        />
+                    </CallButtonsContainer>
+                </>
+            )}
         </PhonePageWrapper>
     )
 }

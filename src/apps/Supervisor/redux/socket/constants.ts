@@ -13,3 +13,5 @@ export const EVENT_TYPES = {
         CHANGE: "CHANGE_CALL"
     }
 }
+
+export const WS_ERR_STATUS = "error"
