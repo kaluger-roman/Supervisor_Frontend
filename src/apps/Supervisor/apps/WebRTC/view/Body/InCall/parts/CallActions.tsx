@@ -22,7 +22,7 @@ export const CallActionButtons: React.FC = () => {
     return (
         <CallActionButtonsContainer>
             {CallActions.map((action) => (
-                <CallActButton action={action} />
+                <CallActButton key={action.name} action={action} />
             ))}
         </CallActionButtonsContainer>
     )

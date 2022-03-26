@@ -1,3 +1,4 @@
+import { last } from "lodash"
 import React, { useMemo } from "react"
 import { CallPages } from "Supervisor/apps/WebRTC/types"
 import { useSESelector } from "Supervisor/redux/hooks"
@@ -17,7 +18,7 @@ export const CallInfo: React.FC = () => {
         <CallInfoWrapper>
             <div>{otherSide?.username}</div>
             <div>{otherSide?.webrtcNumber}</div>
-            {callPage === CallPages.call && <Timer startAt={Date.now() - 4774} />}
+            {callPage === CallPages.call && <Timer startAt={Number(last(currentCall?.statusTimestampsSequence))} />}
         </CallInfoWrapper>
     )
 }

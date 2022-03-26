@@ -24,7 +24,10 @@ export const Supervisor: React.FC = () => {
     }, [isLoading])
 
     useEffect(() => {
-        window.addEventListener("beforeunload", () => triggerStatus(UserStatuses.offline))
+        window.addEventListener("beforeunload", () => {
+            triggerStatus(UserStatuses.offline)
+            WebRTCAgent.endCall()
+        })
     }, [])
 
     useEffect(() => {

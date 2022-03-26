@@ -26,6 +26,11 @@ const changeCurrentCallSideEffect = (action: ReturnType<typeof changeCurrentCall
         store.dispatch(changePage(Pages.call))
         store.dispatch(changeCallPage(CallPages.ringingInbound))
     }
+
+    if (action.payload?.status === CallStatus.active) {
+        store.dispatch(changePage(Pages.call))
+        store.dispatch(changeCallPage(CallPages.call))
+    }
 }
 
 export const sideEffectsMiddleware: Middleware = () => (next) => (action: AnyAction) => {

@@ -18,11 +18,22 @@ import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
 
 class Agent {
-    configuration: AgentConfiguration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }
+    configuration: AgentConfiguration = {
+        iceServers: [
+            {
+                urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"]
+            },
+            {
+                urls: ["stun:global.stun.twilio.com:3478?transport=udp"]
+            }
+        ]
+    }
     peerConnection: RTCPeerConnection | null = null
     localAudioStream: MediaStream | null = null
     attachedTrack: RTCRtpSender | null = null
     playingAudio: HTMLAudioElement | null = null
+    playingPeerAudio: HTMLAudioElement | null = null
+    localIcesCache: RTCIceCandidate[] = []
 
     async init() {
         await this.getMediaPermissions()
@@ -39,29 +50,32 @@ class Agent {
         this.initPeerListeners()
     }
 
+    emitIce(iceCandidate: RTCIceCandidate) {
+        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.NEW_ICE, {
+            iceCandidate,
+            callId: store.getState().webRTC.currentCall?.id
+        })
+    }
+
     private initSocketListeners() {
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.ANSWER, async (data: { answer: RTCSessionDescriptionInit }) => {
-            if (data.answer) {
+            if (data.answer && this.peerConnection) {
+                this.pauseDropAudio()
                 const remoteDesc = new RTCSessionDescription(data.answer)
-                await this.peerConnection!.setRemoteDescription(remoteDesc)
+                await this.peerConnection.setRemoteDescription(remoteDesc)
+
+                this.localIcesCache.forEach((ice) => this.emitIce(ice))
+                this.localIcesCache = []
             }
         })
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.OFFER, async (data: CallOffer) => {
             this.initPeer()
-            if (data.offer) {
-                this.peerConnection!.setRemoteDescription(new RTCSessionDescription(data.offer))
-            }
+            if (data.offer) this.peerConnection!.setRemoteDescription(new RTCSessionDescription(data.offer))
         })
 
-        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.NEW_ICE, async (message: { iceCandidate: RTCIceCandidate }) => {
-            if (message.iceCandidate) {
-                try {
-                    await this.peerConnection!.addIceCandidate(message.iceCandidate)
-                } catch (e) {
-                    console.error("Error adding received ice candidate", e)
-                }
-            }
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.NEW_ICE, (message: { iceCandidate: RTCIceCandidate }) => {
+            if (message.iceCandidate && this.peerConnection) this.peerConnection.addIceCandidate(message.iceCandidate)
         })
 
         EventSocket.socket!.on(EVENT_TYPES.CALL.CHANGE, async (data: ChangeCallPayload) => {
@@ -89,6 +103,10 @@ class Agent {
             this.interruptCall(CallEndCodes.Rejected)
         })
 
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.ENDED, async () => {
+            this.interruptCall(CallEndCodes.Standard)
+        })
+
         EventSocket.socket!.on(SocketStandardActions.exception, async (data: SocketException) => {
             if (data.status === WS_ERR_STATUS) {
                 switch (data.message) {
@@ -109,13 +127,25 @@ class Agent {
 
     private initPeerListeners() {
         if (this.peerConnection) {
-            this.peerConnection.addEventListener("icecandidate", (event) => {
-                if (event.candidate) {
-                    EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.NEW_ICE, {
-                        iceCandidate: event.candidate,
-                        callId: store.getState().webRTC.currentCall?.id
-                    })
+            this.peerConnection.addEventListener("track", async (event) => {
+                if (!this.playingPeerAudio) {
+                    this.playingPeerAudio = new Audio()
                 }
+
+                const [remoteStream] = event.streams
+                this.playingPeerAudio.srcObject = remoteStream
+                this.playingPeerAudio.play()
+            })
+
+            this.peerConnection?.addEventListener("icecandidate", (event) => {
+                if (!event.candidate) return
+
+                if (!this.peerConnection?.remoteDescription) {
+                    this.localIcesCache.push(event.candidate)
+                    return
+                }
+
+                this.emitIce(event.candidate)
             })
 
             this.peerConnection.addEventListener("connectionstatechange", (event) => {
@@ -168,7 +198,8 @@ class Agent {
         if (this.localAudioStream) {
             this.localAudioStream.getTracks().forEach((track) => {
                 try {
-                    this.attachedTrack = this.peerConnection!.addTrack(track, this.localAudioStream!)
+                    if (this.peerConnection)
+                        this.attachedTrack = this.peerConnection.addTrack(track, this.localAudioStream!)
                 } catch (e) {
                     console.error(e)
                 }
@@ -188,7 +219,17 @@ class Agent {
         this.playingAudio.play()
     }
 
+    pauseDropAudio() {
+        if (this.playingAudio) {
+            this.playingAudio.pause()
+            this.playingAudio = null
+        }
+    }
+
     async answerCall() {
+        this.pauseDropAudio()
+        this.attachAudioToConnection()
+
         const answer = await this.peerConnection!.createAnswer()
         await this.peerConnection!.setLocalDescription(answer)
         EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.ANSWER, { answer })
@@ -216,16 +257,14 @@ class Agent {
         }
 
         this.peerConnection?.close()
+        this.attachedTrack = null
 
         store.dispatch(changeCurrentCall(null))
         store.dispatch(changeCallEndCode(endCode))
 
         setTimeout(() => store.dispatch(changeCallEndCode(null)), 1000)
 
-        if (this.playingAudio) {
-            this.playingAudio.pause()
-            this.playingAudio = null
-        }
+        this.pauseDropAudio()
     }
 
     async cancelCall() {
@@ -236,11 +275,12 @@ class Agent {
         this.interruptCall(CallEndCodes.Rejected, EVENT_TYPES.SIGNALING.REJECT)
     }
 
+    async endCall() {
+        this.interruptCall(CallEndCodes.Standard, EVENT_TYPES.SIGNALING.ENDED)
+    }
+
     async offlineReject(callEndCode: CallEndCodes) {
-        if (this.playingAudio) {
-            this.playingAudio.pause()
-            this.playingAudio = null
-        }
+        this.pauseDropAudio()
         this.playingAudio = new Audio(OfflineSound)
         store.dispatch(changeCallEndCode(callEndCode))
         this.peerConnection?.close()

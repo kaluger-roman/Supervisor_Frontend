@@ -1,7 +1,7 @@
 import { CurrentCall } from "Supervisor/redux/reducers/api/types"
 
 export type AgentConfiguration = {
-    iceServers: { urls: string }[]
+    iceServers: { urls: string[] }[]
 }
 
 export type MakeCallPayload = {

@@ -22,6 +22,10 @@ export const InCall: React.FC = () => {
         if (currentCall?.status === CallStatus.answerWaiting && currentCall.callee.id === userId) {
             WebRTCAgent.rejectCall()
         }
+
+        if (currentCall?.status === CallStatus.active) {
+            WebRTCAgent.endCall()
+        }
     }, [currentCall])
 
     return (
