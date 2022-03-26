@@ -40,7 +40,7 @@ export const menuStructure: NavBarProps = {
         [EXIT_HANDLER]: () => {
             store.dispatch(logout())
         },
-        [STATUS_HANDLER]: async (status: UserStatuses) => {
+        [STATUS_HANDLER]: (status: UserStatuses) => {
             store.dispatch(agentApi.endpoints.changeStatus.initiate(status))
 
             if (status === UserStatuses.offline) {

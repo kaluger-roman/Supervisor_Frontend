@@ -25,8 +25,7 @@ import { AuthContainer, ButtonsContainer, InnerContainer } from "../styled"
 import EmailValidator from "email-validator"
 import { passwordValidate, usernameValidate } from "../../helpers"
 import { useRegisterMutation } from "Supervisor/redux/reducers/api/auth.api"
-import { changeAppPage, changeAuthToken, changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
-import { AppPage } from "Supervisor/redux/reducers/types"
+import { changeAuthToken, changeIsBlockingLoader } from "Supervisor/redux/reducers/main"
 
 export const RegisterForm: React.FC = () => {
     const dispatch = useTypedDispatch()

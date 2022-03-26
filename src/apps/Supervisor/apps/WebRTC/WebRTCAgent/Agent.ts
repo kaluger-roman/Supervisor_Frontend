@@ -71,11 +71,16 @@ class Agent {
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.OFFER, async (data: CallOffer) => {
             this.initPeer()
-            if (data.offer) this.peerConnection!.setRemoteDescription(new RTCSessionDescription(data.offer))
+            if (data.offer) this.peerConnection?.setRemoteDescription(new RTCSessionDescription(data.offer))
         })
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.NEW_ICE, (message: { iceCandidate: RTCIceCandidate }) => {
-            if (message.iceCandidate && this.peerConnection) this.peerConnection.addIceCandidate(message.iceCandidate)
+            try {
+                if (message.iceCandidate && this.peerConnection)
+                    this.peerConnection.addIceCandidate(message.iceCandidate)
+            } catch {
+                console.error("addIceCandidate error")
+            }
         })
 
         EventSocket.socket!.on(EVENT_TYPES.CALL.CHANGE, async (data: ChangeCallPayload) => {
@@ -93,6 +98,10 @@ class Agent {
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.TIME_EXCEED, async () => {
             this.interruptCall(CallEndCodes.TimeExceed)
+        })
+
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.FAILED, async () => {
+            this.interruptCall(CallEndCodes.failed)
         })
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.CANCEL, async () => {
@@ -246,12 +255,12 @@ class Agent {
         })
         await this.peerConnection!.setLocalDescription(offer)
 
-        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.OFFER, { offer, callNumber })
+        EventSocket.socket?.emit(EVENT_TYPES.SIGNALING.OFFER, { offer, callNumber })
     }
 
     async interruptCall(endCode: CallEndCodes, actionType?: string) {
-        if (actionType) {
-            EventSocket.socket!.emit(actionType, {
+        if (actionType && EventSocket.socket) {
+            EventSocket.socket.emit(actionType, {
                 callId: store.getState().webRTC.currentCall?.id
             })
         }

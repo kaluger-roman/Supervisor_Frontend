@@ -17,5 +17,6 @@ export const CALL_ENDED_LABEL = {
     [CallEndCodes.Cancelled]: "Звонок был отменен",
     [CallEndCodes.AgentAway]: "Абонента нет на месте",
     [CallEndCodes.Rejected]: "Вызов был отклонен",
-    [CallEndCodes.TimeExceed]: "Превышено время ожидания звонка"
+    [CallEndCodes.TimeExceed]: "Превышено время ожидания звонка",
+    [CallEndCodes.failed]: "Не удалось установить соединение, повторите попытку"
 }

@@ -24,7 +24,7 @@ const authSlice = createSlice({
         changePasswordInput: (state, action: PayloadAction<string>) => void (state.passwordInput = action.payload),
         changeSecondPasswordInput: (state, action: PayloadAction<string>) =>
             void (state.secondPasswordInput = action.payload),
-        changeAuthPage: (state, action: PayloadAction<AuthPage>) => ({ ...initialState, page: action.payload }),
+        changeAuthPage: (_, action: PayloadAction<AuthPage>) => ({ ...initialState, page: action.payload }),
 
         changeEmail: (state, action: PayloadAction<string>) => void (state.emailInput = action.payload),
 

@@ -27,19 +27,18 @@ export const Supervisor: React.FC = () => {
         window.addEventListener("beforeunload", () => {
             triggerStatus(UserStatuses.offline)
             WebRTCAgent.endCall()
+            EventSocket.close()
+            WebRTCAgent.close()
         })
     }, [])
 
     useEffect(() => {
         if (isSuccess && localStorage.authToken) {
             dispatch(changeAuthToken(localStorage.authToken))
-
-            triggerStatus(UserStatuses.away)
         }
 
         if (isError && localStorage.authToken) {
             dispatch(logout())
-            triggerStatus(UserStatuses.offline)
         }
     }, [isSuccess, isError])
 

@@ -13,7 +13,7 @@ const initialState: MainSlice = {
     userId: null,
     isBlockingLoader: true,
     isSocketConected: false,
-    status: UserStatuses.away,
+    status: UserStatuses.offline,
     webrtcNumber: null
 }
 
@@ -25,28 +25,19 @@ const mainSlice = createSlice({
         changeAuthToken: (state, action: PayloadAction<string>) => {
             state.authToken = action.payload
 
-            if (action.payload) {
-                const decoded = jwt.decode(action.payload) as DecodedToken
-                state.role = decoded.role
-                state.userName = decoded.userName
-                state.userId = decoded.userId
-                state.webrtcNumber = decoded.webrtcNumber
-                state.page =
-                    decoded.role === Roles.user
-                        ? AppPage.AgentWorkPlace
-                        : decoded.role === Roles.supervisor
-                        ? AppPage.SupervisorWorkPlace
-                        : AppPage.AgentWorkPlace
+            const decoded = jwt.decode(action.payload) as DecodedToken
+            state.role = decoded.role
+            state.userName = decoded.userName
+            state.userId = decoded.userId
+            state.webrtcNumber = decoded.webrtcNumber
+            state.page =
+                decoded.role === Roles.user
+                    ? AppPage.AgentWorkPlace
+                    : decoded.role === Roles.supervisor
+                    ? AppPage.SupervisorWorkPlace
+                    : AppPage.AgentWorkPlace
 
-                localStorage.authToken = action.payload
-            } else {
-                state.webrtcNumber = null
-                state.role = null
-                state.userName = null
-                state.userId = null
-                state.page = AppPage.Authentication
-                localStorage.authToken = ""
-            }
+            localStorage.authToken = action.payload
         },
         changeIsBlockingLoader: (state, action: PayloadAction<boolean>) => {
             state.isBlockingLoader = action.payload

@@ -32,5 +32,6 @@ export enum CallEndCodes {
     Standard = "Standard",
     Cancelled = "Cancelled",
     Rejected = "Rejected",
-    TimeExceed = "TimeExceed"
+    TimeExceed = "TimeExceed",
+    failed = "failed"
 }

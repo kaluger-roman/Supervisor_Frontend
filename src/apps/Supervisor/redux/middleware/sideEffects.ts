@@ -1,6 +1,9 @@
 import { AnyAction, Middleware } from "@reduxjs/toolkit"
+import { UserStatuses } from "components/Navbar/types"
 import { CallPages, Pages } from "Supervisor/apps/WebRTC/types"
+import { agentApi } from "../reducers/api/agent.api"
 import { CallStatus } from "../reducers/api/types"
+import { changeAuthToken, logout } from "../reducers/main"
 import { changeCallEndCode, changeCallPage, changeCurrentCall, changeDialNumber, changePage } from "../reducers/webRTC"
 import store from "../store"
 
@@ -33,7 +36,18 @@ const changeCurrentCallSideEffect = (action: ReturnType<typeof changeCurrentCall
     }
 }
 
+const logoutSideEffect = () => {
+    store.dispatch(agentApi.endpoints.changeStatus.initiate(UserStatuses.offline))
+}
+
+const changeAuthTokenSideEffect = (action: ReturnType<typeof changeAuthToken>) => {
+    if (action.payload) {
+        store.dispatch(agentApi.endpoints.changeStatus.initiate(UserStatuses.away))
+    }
+}
+
 export const sideEffectsMiddleware: Middleware = () => (next) => (action: AnyAction) => {
+    // before state change
     switch (action.type) {
         case changeCallEndCode.toString():
             changeCallEndCodeSideEffect(action as ReturnType<typeof changeCallEndCode>)
@@ -41,7 +55,17 @@ export const sideEffectsMiddleware: Middleware = () => (next) => (action: AnyAct
         case changeCurrentCall.toString():
             changeCurrentCallSideEffect(action as ReturnType<typeof changeCurrentCall>)
             break
+        case logout.toString():
+            logoutSideEffect()
+            break
     }
 
     next(action)
+
+    // after state change
+    switch (action.type) {
+        case changeAuthToken.toString():
+            changeAuthTokenSideEffect(action as ReturnType<typeof changeAuthToken>)
+            break
+    }
 }
