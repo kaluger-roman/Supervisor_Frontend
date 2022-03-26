@@ -13,7 +13,8 @@ const initialState: MainSlice = {
     userId: null,
     isBlockingLoader: true,
     isSocketConected: false,
-    status: UserStatuses.away
+    status: UserStatuses.away,
+    webrtcNumber: null
 }
 
 const mainSlice = createSlice({
@@ -29,6 +30,7 @@ const mainSlice = createSlice({
                 state.role = decoded.role
                 state.userName = decoded.userName
                 state.userId = decoded.userId
+                state.webrtcNumber = decoded.webrtcNumber
                 state.page =
                     decoded.role === Roles.user
                         ? AppPage.AgentWorkPlace
@@ -38,6 +40,7 @@ const mainSlice = createSlice({
 
                 localStorage.authToken = action.payload
             } else {
+                state.webrtcNumber = null
                 state.role = null
                 state.userName = null
                 state.userId = null
@@ -60,6 +63,7 @@ const mainSlice = createSlice({
             state.role = null
             state.userId = null
             state.userName = null
+            state.webrtcNumber = null
         }
     }
 })

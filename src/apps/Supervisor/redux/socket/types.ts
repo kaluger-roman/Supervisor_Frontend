@@ -11,5 +11,7 @@ export enum SocketErrors {
     WrongCalleeWebrtcNumber = "WrongCalleeWebrtcNumber",
     AgentOffline = "AgentOffline",
     AgentAway = "AgentAway",
-    Busy = "Busy"
+    Busy = "Busy",
+    Rejected = "Rejected",
+    TimeExceed = "TimeExceed"
 }

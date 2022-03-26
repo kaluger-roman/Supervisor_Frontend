@@ -30,5 +30,7 @@ export enum CallEndCodes {
     AgentAway = "AgentAway",
     Busy = "Busy",
     Standard = "Standard",
-    Cancelled = "Cancelled"
+    Cancelled = "Cancelled",
+    Rejected = "Rejected",
+    TimeExceed = "TimeExceed"
 }

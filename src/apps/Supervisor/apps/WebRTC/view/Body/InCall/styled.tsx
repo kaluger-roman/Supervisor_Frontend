@@ -69,6 +69,7 @@ export const CallActionButtonIcon = styled.div<{ icon: string }>`
 export const CallEndedLabel = styled(CenteredDiv)`
     width: 100%;
     height: 100%;
+    text-align: center;
 `
 
 const dotSpin = keyframes`

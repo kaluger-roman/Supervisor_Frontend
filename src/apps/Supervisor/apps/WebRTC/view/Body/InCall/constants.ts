@@ -14,6 +14,8 @@ export const CALL_ENDED_LABEL = {
     [CallEndCodes.Standard]: "Звершение звонка",
     [CallEndCodes.WrongCalleeWebrtcNumber]: "Вызываемый абонент не найден",
     [CallEndCodes.WrongCallerWebrtcNumber]: "Не удалось вас идентифицировать",
-    [CallEndCodes.Cancelled]: "Вы отменили звонок",
-    [CallEndCodes.AgentAway]: "Абонента нет на месте"
+    [CallEndCodes.Cancelled]: "Звонок был отменен",
+    [CallEndCodes.AgentAway]: "Абонента нет на месте",
+    [CallEndCodes.Rejected]: "Вызов был отклонен",
+    [CallEndCodes.TimeExceed]: "Превышено время ожидания звонка"
 }

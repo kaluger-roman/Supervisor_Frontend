@@ -9,7 +9,9 @@ export const EVENT_TYPES = {
         NEW_ICE: "NEW_ICE_CANDIDATE",
         ENDED: "ENDED",
         FAILED: "FAILED",
-        CANCEL: "CANCEL"
+        CANCEL: "CANCEL",
+        REJECT: "REJECT",
+        TIME_EXCEED: "TIME_EXCEED"
     },
     CALL: {
         CHANGE: "CHANGE_CALL"

@@ -33,6 +33,7 @@ export type AuthSlice = {
 
 export type MainSlice = {
     page: AppPage
+    webrtcNumber: string | null
     authToken: string | null
     role: string | null
     userName: string | null

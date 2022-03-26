@@ -1,13 +1,11 @@
 import { ShowModal } from "components/Modals"
 import { ModalSize } from "components/Modals/types"
 import { io, Socket } from "socket.io-client"
-import { WebRTCAgent } from "Supervisor/apps/WebRTC/WebRTCAgent"
-import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { HOST } from "../constants"
 import { changeIsSocketConected, logout } from "../reducers/main"
 import store from "../store"
-import { EVENT_TYPES, WS_ERR_STATUS } from "./constants"
-import { SocketErrors, SocketException, SocketStandardActions } from "./types"
+import { EVENT_TYPES } from "./constants"
+import { SocketException, SocketStandardActions } from "./types"
 
 class CableSocket {
     socket: Socket | null = null
@@ -37,19 +35,6 @@ class CableSocket {
         })
 
         EventSocket.socket!.on(SocketStandardActions.exception, async (data: SocketException) => {
-            if (data.status === WS_ERR_STATUS) {
-                switch (data.message) {
-                    case SocketErrors.AgentOffline:
-                    case SocketErrors.Busy:
-                    case SocketErrors.WrongCalleeWebrtcNumber:
-                    case SocketErrors.WrongCallerWebrtcNumber:
-                    case SocketErrors.AgentAway:
-                        WebRTCAgent.offlineReject(data.message as unknown as CallEndCodes)
-                        break
-                    default:
-                        return
-                }
-            }
             if (data.status === 401) {
                 store.dispatch(logout())
                 ShowModal({

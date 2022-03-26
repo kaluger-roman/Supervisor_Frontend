@@ -13,6 +13,7 @@ export const Keypad: React.FC = () => {
     const dispatch = useTypedDispatch()
     const [triggerStatus] = useChangeStatusMutation()
     const { dialInput, callEndCode } = useSESelector((state) => state.webRTC)
+    const { webrtcNumber } = useSESelector((state) => state.main)
     const onCallClick = useCallback(() => {
         dispatch(clickCallBtn())
         triggerStatus(UserStatuses.online)
@@ -36,7 +37,11 @@ export const Keypad: React.FC = () => {
             <KeypadInput />
             <KeypadNumbersInput />
             <CallButtonsContainer>
-                <CallBtn disabled={!dialInput} onClick={onCallClick} btnType={ButtonType.call} />
+                <CallBtn
+                    disabled={!dialInput || dialInput === webrtcNumber}
+                    onClick={onCallClick}
+                    btnType={ButtonType.call}
+                />
             </CallButtonsContainer>
         </PhonePageWrapper>
     )

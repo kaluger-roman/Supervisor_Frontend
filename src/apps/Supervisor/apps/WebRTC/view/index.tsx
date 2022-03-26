@@ -2,6 +2,7 @@ import { CSS_CONSTANTS } from "config/globalStyles/common"
 import React from "react"
 import Draggable from "react-draggable"
 import { Body } from "./Body"
+import { CID } from "./CID"
 import { DRAGGABLE_CLASS } from "./constants"
 import { Footer } from "./Footer"
 import { Header } from "./Header"
@@ -19,6 +20,7 @@ export const WebRTC = () => {
             <WebRTCWrapper>
                 <Header />
                 <Body />
+                <CID />
                 <Footer />
             </WebRTCWrapper>
         </Draggable>

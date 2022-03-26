@@ -1,9 +1,10 @@
 import { ShowModal } from "components/Modals"
 import { ModalSize } from "components/Modals/types"
 import OfflineSound from "Supervisor/sounds/offlineError.mp3"
+import RingingSound from "Supervisor/sounds/ringing.mp3"
 import { changeCallEndCode, changeCurrentCall, changeIsPeersConnected } from "Supervisor/redux/reducers/webRTC"
 import { EventSocket } from "Supervisor/redux/socket"
-import { EVENT_TYPES } from "Supervisor/redux/socket/constants"
+import { EVENT_TYPES, WS_ERR_STATUS } from "Supervisor/redux/socket/constants"
 import store from "Supervisor/redux/store"
 import {
     AgentConfiguration,
@@ -13,6 +14,8 @@ import {
     ConnectionState,
     MakeCallPayload
 } from "./types"
+import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
+import { CallStatus } from "Supervisor/redux/reducers/api/types"
 
 class Agent {
     configuration: AgentConfiguration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] }
@@ -63,8 +66,43 @@ class Agent {
 
         EventSocket.socket!.on(EVENT_TYPES.CALL.CHANGE, async (data: ChangeCallPayload) => {
             if (data.call) {
-                console.log(data.call)
                 store.dispatch(changeCurrentCall(data.call))
+
+                if (
+                    data.call.status === CallStatus.answerWaiting &&
+                    store.getState().main.userId === data.call.callee.id
+                ) {
+                    this.ringingAudioPlay()
+                }
+            }
+        })
+
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.TIME_EXCEED, async () => {
+            this.interruptCall(CallEndCodes.TimeExceed)
+        })
+
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.CANCEL, async () => {
+            this.interruptCall(CallEndCodes.Cancelled)
+        })
+
+        EventSocket.socket!.on(EVENT_TYPES.SIGNALING.REJECT, async () => {
+            this.interruptCall(CallEndCodes.Rejected)
+        })
+
+        EventSocket.socket!.on(SocketStandardActions.exception, async (data: SocketException) => {
+            if (data.status === WS_ERR_STATUS) {
+                switch (data.message) {
+                    case SocketErrors.AgentOffline:
+                    case SocketErrors.Busy:
+                    case SocketErrors.WrongCalleeWebrtcNumber:
+                    case SocketErrors.WrongCallerWebrtcNumber:
+                    case SocketErrors.AgentAway:
+                    case SocketErrors.Rejected:
+                        this.offlineReject(data.message as unknown as CallEndCodes)
+                        break
+                    default:
+                        return
+                }
             }
         })
     }
@@ -144,6 +182,12 @@ class Agent {
         }
     }
 
+    ringingAudioPlay() {
+        this.playingAudio = new Audio(RingingSound)
+        this.playingAudio.loop = true
+        this.playingAudio.play()
+    }
+
     async answerCall() {
         const answer = await this.peerConnection!.createAnswer()
         await this.peerConnection!.setLocalDescription(answer)
@@ -151,6 +195,8 @@ class Agent {
     }
 
     async makeCall({ callNumber }: MakeCallPayload) {
+        this.ringingAudioPlay()
+
         this.initPeer()
         this.attachAudioToConnection()
         const offer = await this.peerConnection!.createOffer({
@@ -162,31 +208,51 @@ class Agent {
         EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.OFFER, { offer, callNumber })
     }
 
-    async cancelCall() {
-        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.CANCEL, {
-            callId: store.getState().webRTC.currentCall?.id
-        })
+    async interruptCall(endCode: CallEndCodes, actionType?: string) {
+        if (actionType) {
+            EventSocket.socket!.emit(actionType, {
+                callId: store.getState().webRTC.currentCall?.id
+            })
+        }
 
         this.peerConnection?.close()
 
         store.dispatch(changeCurrentCall(null))
-        store.dispatch(changeCallEndCode(CallEndCodes.Cancelled))
+        store.dispatch(changeCallEndCode(endCode))
 
         setTimeout(() => store.dispatch(changeCallEndCode(null)), 1000)
+
+        if (this.playingAudio) {
+            this.playingAudio.pause()
+            this.playingAudio = null
+        }
+    }
+
+    async cancelCall() {
+        this.interruptCall(CallEndCodes.Cancelled, EVENT_TYPES.SIGNALING.CANCEL)
+    }
+
+    async rejectCall() {
+        this.interruptCall(CallEndCodes.Rejected, EVENT_TYPES.SIGNALING.REJECT)
     }
 
     async offlineReject(callEndCode: CallEndCodes) {
+        if (this.playingAudio) {
+            this.playingAudio.pause()
+            this.playingAudio = null
+        }
         this.playingAudio = new Audio(OfflineSound)
         store.dispatch(changeCallEndCode(callEndCode))
+        this.peerConnection?.close()
         this.playAudio()
     }
 
     async playAudio() {
-        this.peerConnection?.close()
         if (this.playingAudio) {
             this.playingAudio.play()
             this.playingAudio.addEventListener("ended", () => {
                 store.dispatch(changeCallEndCode(null))
+                this.playingAudio = null
             })
         }
     }

@@ -12,9 +12,15 @@ import { RingingAnimation, WaitAnimation } from "./styled"
 
 export const InCall: React.FC = () => {
     const { callPage, callEndCode, currentCall } = useSESelector((state) => state.webRTC)
+    const { userId } = useSESelector((state) => state.main)
+
     const breakBtnHandler = useCallback(() => {
-        if (currentCall?.status === CallStatus.answerWaiting) {
+        if (currentCall?.status === CallStatus.answerWaiting && currentCall.caller.id === userId) {
             WebRTCAgent.cancelCall()
+        }
+
+        if (currentCall?.status === CallStatus.answerWaiting && currentCall.callee.id === userId) {
+            WebRTCAgent.rejectCall()
         }
     }, [currentCall])
 

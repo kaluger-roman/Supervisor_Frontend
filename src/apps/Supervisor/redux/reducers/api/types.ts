@@ -38,10 +38,14 @@ export type DecodedToken = {
     userName: string
     userId: number
     role: Roles
+    webrtcNumber: string
 }
 
+export type CallSide = { username: string; webrtcNumber: string; id: number }
+
 export type CurrentCall = {
-    callee: { username: string; webrtcNumber: string; id: number }
+    callee: CallSide
+    caller: CallSide
     status: string
     statusSequence: string[]
     statusTimestampsSequence: string[]
