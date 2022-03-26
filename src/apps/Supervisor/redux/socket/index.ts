@@ -43,6 +43,7 @@ class CableSocket {
                     case SocketErrors.Busy:
                     case SocketErrors.WrongCalleeWebrtcNumber:
                     case SocketErrors.WrongCallerWebrtcNumber:
+                    case SocketErrors.AgentAway:
                         WebRTCAgent.offlineReject(data.message as unknown as CallEndCodes)
                         break
                     default:

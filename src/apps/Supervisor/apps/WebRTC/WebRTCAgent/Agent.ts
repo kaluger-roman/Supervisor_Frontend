@@ -45,6 +45,7 @@ class Agent {
         })
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.OFFER, async (data: CallOffer) => {
+            this.initPeer()
             if (data.offer) {
                 this.peerConnection!.setRemoteDescription(new RTCSessionDescription(data.offer))
             }
@@ -125,17 +126,6 @@ class Agent {
         }
     }
 
-    async createOfferConnection(callNumber: string) {
-        this.initPeer()
-        const offer = await this.peerConnection!.createOffer({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: false
-        })
-        await this.peerConnection!.setLocalDescription(offer)
-
-        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.OFFER, { offer, callNumber })
-    }
-
     attachAudioToConnection() {
         if (this.localAudioStream) {
             this.localAudioStream.getTracks().forEach((track) => {
@@ -161,8 +151,15 @@ class Agent {
     }
 
     async makeCall({ callNumber }: MakeCallPayload) {
+        this.initPeer()
         this.attachAudioToConnection()
-        await this.createOfferConnection(callNumber)
+        const offer = await this.peerConnection!.createOffer({
+            offerToReceiveAudio: true,
+            offerToReceiveVideo: false
+        })
+        await this.peerConnection!.setLocalDescription(offer)
+
+        EventSocket.socket!.emit(EVENT_TYPES.SIGNALING.OFFER, { offer, callNumber })
     }
 
     async cancelCall() {

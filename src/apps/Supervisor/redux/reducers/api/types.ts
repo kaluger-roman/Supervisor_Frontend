@@ -41,7 +41,7 @@ export type DecodedToken = {
 }
 
 export type CurrentCall = {
-    callee: { username: string; webrtcNumber: string }
+    callee: { username: string; webrtcNumber: string; id: number }
     status: string
     statusSequence: string[]
     statusTimestampsSequence: string[]

@@ -27,6 +27,7 @@ export enum CallEndCodes {
     WrongCallerWebrtcNumber = "WrongCallerWebrtcNumber",
     WrongCalleeWebrtcNumber = "WrongCalleeWebrtcNumber",
     AgentOffline = "AgentOffline",
+    AgentAway = "AgentAway",
     Busy = "Busy",
     Standard = "Standard",
     Cancelled = "Cancelled"
