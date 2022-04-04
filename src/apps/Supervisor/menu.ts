@@ -41,8 +41,6 @@ export const menuStructure: NavBarProps = {
             store.dispatch(logout())
         },
         [STATUS_HANDLER]: (status: UserStatuses) => {
-            store.dispatch(agentApi.endpoints.changeStatus.initiate(status))
-
             if (status === UserStatuses.offline) {
                 ShowModal({
                     header: "Переход в оффлайн",
@@ -54,7 +52,11 @@ export const menuStructure: NavBarProps = {
                     hasAccept: true,
                     hasDecline: true
                 })
+
+                return
             }
+
+            store.dispatch(agentApi.endpoints.changeStatus.initiate(status))
         }
     }
 }

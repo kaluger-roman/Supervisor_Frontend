@@ -16,6 +16,7 @@ import {
 } from "./types"
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
+import { CHUNK_DURATION } from "./const"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -34,6 +35,7 @@ class Agent {
     playingAudio: HTMLAudioElement | null = null
     playingPeerAudio: HTMLAudioElement | null = null
     localIcesCache: RTCIceCandidate[] = []
+    remoteIcesCache: RTCIceCandidate[] = []
     mediaRecorder: MediaRecorder | null = null
     mediaRecorderTimer: NodeJS.Timer | null = null
 
@@ -68,6 +70,9 @@ class Agent {
 
                 this.localIcesCache.forEach((ice) => this.emitIce(ice))
                 this.localIcesCache = []
+
+                this.remoteIcesCache.forEach((ice) => this.peerConnection?.addIceCandidate(ice))
+                this.remoteIcesCache = []
             }
         })
 
@@ -78,8 +83,14 @@ class Agent {
 
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.NEW_ICE, (message: { iceCandidate: RTCIceCandidate }) => {
             try {
-                if (message.iceCandidate && this.peerConnection)
+                if (message.iceCandidate && this.peerConnection) {
+                    if (!this.peerConnection?.remoteDescription) {
+                        this.remoteIcesCache.push(message.iceCandidate)
+                        return
+                    }
+
                     this.peerConnection.addIceCandidate(message.iceCandidate)
+                }
             } catch {
                 console.error("addIceCandidate error")
             }
@@ -88,6 +99,10 @@ class Agent {
         EventSocket.socket!.on(EVENT_TYPES.CALL.CHANGE, async (data: ChangeCallPayload) => {
             if (data.call) {
                 store.dispatch(changeCurrentCall(data.call))
+
+                if (data.call.status === CallStatus.active && this.localAudioStream) {
+                    this.startSpy(this.localAudioStream)
+                }
 
                 if (
                     data.call.status === CallStatus.answerWaiting &&
@@ -162,7 +177,6 @@ class Agent {
             this.peerConnection.addEventListener("connectionstatechange", (event) => {
                 if (this.peerConnection!.connectionState === ConnectionState.connected) {
                     store.dispatch(changeIsPeersConnected(true))
-                    this.localAudioStream && this.startSpy(this.localAudioStream)
                 }
                 if (
                     [ConnectionState.disconnected, ConnectionState.failed, ConnectionState.closed].includes(
@@ -170,7 +184,6 @@ class Agent {
                     )
                 ) {
                     store.dispatch(changeIsPeersConnected(false))
-                    this.stopSpy()
                 }
 
                 if (
@@ -269,6 +282,8 @@ class Agent {
             })
         }
 
+        this.stopSpy()
+
         this.peerConnection?.close()
         this.attachedTrack = null
 
@@ -315,7 +330,7 @@ class Agent {
         this.mediaRecorderTimer = setInterval(() => {
             this.mediaRecorder?.stop()
             this.mediaRecorder?.start()
-        }, 3000)
+        }, CHUNK_DURATION)
 
         this.mediaRecorder.addEventListener("dataavailable", (ev) =>
             EventSocket.socket?.emit(EVENT_TYPES.RECORD.APPEND, {
