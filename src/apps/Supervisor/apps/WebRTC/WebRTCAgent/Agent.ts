@@ -16,7 +16,8 @@ import {
 } from "./types"
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
-import { CHUNK_DURATION } from "./const"
+import { ANALIZER_ALERT_LEVEL, MAX_CHUNK_DURATION, MIN_CHUNK_DURATION } from "./const"
+import { processPercentStreamVolume } from "./helpers"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -38,6 +39,7 @@ class Agent {
     remoteIcesCache: RTCIceCandidate[] = []
     mediaRecorder: MediaRecorder | null = null
     mediaRecorderTimer: NodeJS.Timer | null = null
+    spyVolumeUnsunscribe: (() => void) | null = null
 
     async init() {
         await this.getMediaPermissions()
@@ -63,7 +65,7 @@ class Agent {
 
     private initSocketListeners() {
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.ANSWER, async (data: { answer: RTCSessionDescriptionInit }) => {
-            if (data.answer && this.peerConnection) {
+            if (data.answer && this.peerConnection && this.peerConnection.signalingState !== ConnectionState.closed) {
                 this.pauseDropAudio()
                 const remoteDesc = new RTCSessionDescription(data.answer)
                 await this.peerConnection.setRemoteDescription(remoteDesc)
@@ -84,7 +86,10 @@ class Agent {
         EventSocket.socket!.on(EVENT_TYPES.SIGNALING.NEW_ICE, (message: { iceCandidate: RTCIceCandidate }) => {
             try {
                 if (message.iceCandidate && this.peerConnection) {
-                    if (!this.peerConnection?.remoteDescription) {
+                    if (
+                        !this.peerConnection?.remoteDescription ||
+                        this.peerConnection?.signalingState === ConnectionState.closed
+                    ) {
                         this.remoteIcesCache.push(message.iceCandidate)
                         return
                     }
@@ -327,10 +332,18 @@ class Agent {
         this.mediaRecorder = new MediaRecorder(stream)
         this.mediaRecorder.start()
 
-        this.mediaRecorderTimer = setInterval(() => {
-            this.mediaRecorder?.stop()
-            this.mediaRecorder?.start()
-        }, CHUNK_DURATION)
+        let lastEmittedTimestamp = 0
+        this.spyVolumeUnsunscribe = processPercentStreamVolume(stream, (vol) => {
+            const now = Date.now()
+            const spentTime = now - lastEmittedTimestamp
+
+            if ((vol < ANALIZER_ALERT_LEVEL && spentTime > MIN_CHUNK_DURATION) || spentTime > MAX_CHUNK_DURATION) {
+                this.mediaRecorder?.stop()
+                this.mediaRecorder?.start()
+
+                lastEmittedTimestamp = now
+            }
+        }).unsubscrube
 
         this.mediaRecorder.addEventListener("dataavailable", (ev) =>
             EventSocket.socket?.emit(EVENT_TYPES.RECORD.APPEND, {
@@ -342,6 +355,8 @@ class Agent {
     }
 
     stopSpy() {
+        this.spyVolumeUnsunscribe && this.spyVolumeUnsunscribe()
+
         if (this.mediaRecorder) {
             this.mediaRecorder.stop()
             this.mediaRecorderTimer && clearInterval(this.mediaRecorderTimer)
