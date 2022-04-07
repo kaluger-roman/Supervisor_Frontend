@@ -16,8 +16,7 @@ import {
 } from "./types"
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
-import { ANALIZER_ALERT_LEVEL, MAX_CHUNK_DURATION, MIN_CHUNK_DURATION } from "./const"
-import { processPercentStreamVolume } from "./helpers"
+import { catchSilenceProcessor, processPercentStreamVolume } from "./helpers"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -332,16 +331,13 @@ class Agent {
         this.mediaRecorder = new MediaRecorder(stream)
         this.mediaRecorder.start()
 
-        let lastEmittedTimestamp = 0
+        const silenceCatch = catchSilenceProcessor()
+
         this.spyVolumeUnsunscribe = processPercentStreamVolume(stream, (vol) => {
-            const now = Date.now()
-            const spentTime = now - lastEmittedTimestamp
-
-            if ((vol < ANALIZER_ALERT_LEVEL && spentTime > MIN_CHUNK_DURATION) || spentTime > MAX_CHUNK_DURATION) {
-                this.mediaRecorder?.stop()
-                this.mediaRecorder?.start()
-
-                lastEmittedTimestamp = now
+            if (silenceCatch(vol)) {
+                console.warn("rec", vol)
+                //this.mediaRecorder?.stop()
+                //this.mediaRecorder?.start()
             }
         }).unsubscrube
 
