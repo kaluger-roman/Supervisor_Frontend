@@ -16,7 +16,7 @@ import {
 } from "./types"
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
-import { catchSilenceProcessor, processPercentStreamVolume } from "./helpers"
+import { silenceProcessor } from "./helpers"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -331,15 +331,11 @@ class Agent {
         this.mediaRecorder = new MediaRecorder(stream)
         this.mediaRecorder.start()
 
-        const silenceCatch = catchSilenceProcessor()
-
-        this.spyVolumeUnsunscribe = processPercentStreamVolume(stream, (vol) => {
-            if (silenceCatch(vol)) {
-                console.warn("rec", vol)
-                //this.mediaRecorder?.stop()
-                //this.mediaRecorder?.start()
-            }
-        }).unsubscrube
+        this.spyVolumeUnsunscribe = silenceProcessor(stream, () => {
+            console.warn("rec")
+            // this.mediaRecorder?.stop()
+            // this.mediaRecorder?.start()
+        })
 
         this.mediaRecorder.addEventListener("dataavailable", (ev) =>
             EventSocket.socket?.emit(EVENT_TYPES.RECORD.APPEND, {

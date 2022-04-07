@@ -1,101 +1,53 @@
+import quantile from "compute-quantile"
+import { Timer } from "Supervisor/helpers"
+import yallist from "yallist"
 import {
-    ANALIZER_FFT,
-    ANALIZER_MIN_DB,
-    ANALIZER_MAX_DB,
-    ANALIZER_SMOOTH,
-    ANALIZER_POLL_INTERVAL,
-    MIN_CHUNK_DURATION,
-    MAX_CHUNK_DURATION,
-    ANALIZER_LAST_BINS_SIZE,
     ANALIZER_ALERT_QUANTILE,
-    ABSOLUTE_SILENCE_LEVEL_PERC
+    ANALIZER_POLL_INTERVAL,
+    ANALIZER_STORE_COUNT,
+    MAX_CHUNK_DURATION,
+    MIN_CHUNK_DURATION
 } from "./const"
 
-export const createAudioAnalizer = (stream: MediaStream) => {
+export const silenceProcessor = (stream: MediaStream, silenceCallback: (vol: number) => void) => {
     const audioContext = new AudioContext()
-    const audioSource = audioContext.createMediaStreamSource(stream)
-    const analyser = audioContext.createAnalyser()
-    analyser.fftSize = ANALIZER_FFT
-    analyser.minDecibels = ANALIZER_MIN_DB
-    analyser.maxDecibels = ANALIZER_MAX_DB
-    analyser.smoothingTimeConstant = ANALIZER_SMOOTH
-    audioSource.connect(analyser)
+    const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream)
+    const analyserNode = audioContext.createAnalyser()
+    mediaStreamAudioSourceNode.connect(analyserNode)
 
-    return analyser
-}
+    const pcmData = new Float32Array(analyserNode.fftSize)
 
-export const processPercentStreamVolume = (stream: MediaStream, callback: (percentVolume: number) => void) => {
-    const analyser = createAudioAnalizer(stream)
+    const lastValsList = yallist.create(new Array(ANALIZER_STORE_COUNT).fill(0))
 
-    const volumes = new Uint8Array(analyser.frequencyBinCount)
-    let timeout: NodeJS.Timeout | null = null
-
-    const volumeCallback = () => {
-        analyser.getByteFrequencyData(volumes)
-        let volumeSum = 0
-
-        volumes.forEach((volume) => {
-            volumeSum += volume
-        })
-
-        const averageVolume = volumeSum / volumes.length
-        const percentVolume = (averageVolume * 100) / Math.max(Math.abs(ANALIZER_MIN_DB), Math.abs(ANALIZER_MAX_DB))
-
-        callback(percentVolume)
-        timeout = setTimeout(volumeCallback, ANALIZER_POLL_INTERVAL)
+    const cycleList = (isCycle: boolean) => {
+        lastValsList.tail!.next = isCycle ? lastValsList.head! : null
     }
 
-    volumeCallback()
+    let curList = lastValsList.head!
 
-    return {
-        unsubscrube: () => {
-            timeout && clearTimeout(timeout)
-            analyser.disconnect()
-        }
-    }
-}
+    const timer = new Timer(MIN_CHUNK_DURATION, MAX_CHUNK_DURATION)
 
-const asc = (arr: number[]) => arr.sort((a, b) => a - b)
+    const process = () => {
+        analyserNode.getFloatTimeDomainData(pcmData)
+        const sumSquares = pcmData.reduce((acc, amplitude) => (acc += amplitude * amplitude), 0.0) * 100
 
-export const quantile = (arr: number[], q: number) => {
-    const sorted = asc(arr.concat([]))
-    const pos = (sorted.length - 1) * q
-    const base = Math.floor(pos)
-    const rest = pos - base
-    if (sorted[base + 1] !== undefined) {
-        const res = sorted[base] + rest * (sorted[base + 1] - sorted[base])
-        return res
-    } else {
-        return sorted[base]
-    }
-}
+        cycleList(true)
+        curList.value = Math.sqrt(sumSquares / pcmData.length)
+        curList = curList.next!
 
-export const catchSilenceProcessor = () => {
-    let lastEmittedTimestamp = Date.now()
-    let lastBins: number[] = []
-    let curToFill = 0
+        cycleList(false)
+        const quant = quantile(lastValsList.toArray(), ANALIZER_ALERT_QUANTILE)
 
-    ;(window as any).lastBins = lastBins
-
-    return (vol: number) => {
-        const now = Date.now()
-        const spentTime = now - lastEmittedTimestamp
-
-        lastBins[curToFill] = vol
-        curToFill = curToFill > ANALIZER_LAST_BINS_SIZE ? 0 : curToFill + 1
-
-        const quant = quantile(lastBins, ANALIZER_ALERT_QUANTILE)
-
-        //console.log(quant)
-
-        console.log(quant)
-        const isSilence = vol < quant
-        if ((isSilence && spentTime > MIN_CHUNK_DURATION) || spentTime > MAX_CHUNK_DURATION) {
-            lastEmittedTimestamp = now
-
-            return true
+        console.log(sumSquares, quant)
+        if ((timer.checkRangeUpperMin() && sumSquares < quant) || timer.checkRangeUpperMax()) {
+            timer.update()
+            silenceCallback(sumSquares)
         }
 
-        return false
+        timeout = setTimeout(process, ANALIZER_POLL_INTERVAL)
     }
+
+    let timeout = setTimeout(process, ANALIZER_POLL_INTERVAL)
+
+    return () => clearTimeout(timeout)
 }
