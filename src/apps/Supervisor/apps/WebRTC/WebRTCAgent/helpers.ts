@@ -1,10 +1,10 @@
-import quantile from "compute-quantile"
 import { Timer } from "Supervisor/helpers"
 import yallist from "yallist"
 import {
-    ANALIZER_ALERT_QUANTILE,
+    ANALIZER_ALERT_MULTIPLICATOR,
     ANALIZER_POLL_INTERVAL,
     ANALIZER_STORE_COUNT,
+    ANALIZER_STORE_SILENCE_COUNT,
     MAX_CHUNK_DURATION,
     MIN_CHUNK_DURATION
 } from "./const"
@@ -18,12 +18,15 @@ export const silenceProcessor = (stream: MediaStream, silenceCallback: (vol: num
     const pcmData = new Float32Array(analyserNode.fftSize)
 
     const lastValsList = yallist.create(new Array(ANALIZER_STORE_COUNT).fill(0))
+    const lastSilenceValsList = yallist.create(new Array(ANALIZER_STORE_SILENCE_COUNT).fill(Math.PI))
 
-    const cycleList = (isCycle: boolean) => {
+    const cycleLists = (isCycle: boolean) => {
         lastValsList.tail!.next = isCycle ? lastValsList.head! : null
+        lastSilenceValsList.tail!.next = isCycle ? lastSilenceValsList.head! : null
     }
 
-    let curList = lastValsList.head!
+    let curListItem = lastValsList.head!
+    let curSilenceListItem = lastValsList.head!
 
     const timer = new Timer(MIN_CHUNK_DURATION, MAX_CHUNK_DURATION)
 
@@ -31,15 +34,22 @@ export const silenceProcessor = (stream: MediaStream, silenceCallback: (vol: num
         analyserNode.getFloatTimeDomainData(pcmData)
         const sumSquares = pcmData.reduce((acc, amplitude) => (acc += amplitude * amplitude), 0.0) * 100
 
-        cycleList(true)
-        curList.value = Math.sqrt(sumSquares / pcmData.length)
-        curList = curList.next!
+        cycleLists(true)
 
-        cycleList(false)
-        const quant = quantile(lastValsList.toArray(), ANALIZER_ALERT_QUANTILE)
+        curListItem.value = Math.sqrt(sumSquares / pcmData.length)
+        curListItem = curListItem.next!
 
-        console.log(sumSquares, quant)
-        if ((timer.checkRangeUpperMin() && sumSquares < quant) || timer.checkRangeUpperMax()) {
+        curSilenceListItem.value = sumSquares
+        curSilenceListItem = curSilenceListItem.next!
+
+        cycleLists(false)
+
+        if (
+            (timer.checkRangeUpperMin() &&
+                Math.max(...lastValsList.toArray()) <
+                    Math.min(...lastSilenceValsList.toArray()) * ANALIZER_ALERT_MULTIPLICATOR) ||
+            timer.checkRangeUpperMax()
+        ) {
             timer.update()
             silenceCallback(sumSquares)
         }
