@@ -332,9 +332,8 @@ class Agent {
         this.mediaRecorder.start()
 
         this.spyVolumeUnsunscribe = silenceProcessor(stream, () => {
-            console.warn("rec")
-            // this.mediaRecorder?.stop()
-            // this.mediaRecorder?.start()
+            this.mediaRecorder?.stop()
+            this.mediaRecorder?.start()
         })
 
         this.mediaRecorder.addEventListener("dataavailable", (ev) =>
