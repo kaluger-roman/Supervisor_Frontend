@@ -17,6 +17,7 @@ import {
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
 import { silenceProcessor } from "./helpers"
+import { CHUNK_MIME_TYPE } from "./const"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -328,7 +329,7 @@ class Agent {
             })
         }
 
-        this.mediaRecorder = new MediaRecorder(stream)
+        this.mediaRecorder = new MediaRecorder(stream, { mimeType: CHUNK_MIME_TYPE })
         this.mediaRecorder.start()
 
         this.spyVolumeUnsunscribe = silenceProcessor(stream, () => {
@@ -339,7 +340,7 @@ class Agent {
         this.mediaRecorder.addEventListener("dataavailable", (ev) =>
             EventSocket.socket?.emit(EVENT_TYPES.RECORD.APPEND, {
                 recordBlob: ev.data,
-                format: this.mediaRecorder?.mimeType,
+                format: CHUNK_MIME_TYPE,
                 callId: call?.id
             })
         )
@@ -366,6 +367,12 @@ class Agent {
                 store.dispatch(changeCallEndCode(null))
                 this.playingAudio = null
             })
+        }
+    }
+
+    mute(isMute: boolean): void {
+        if (this.attachedTrack?.track) {
+            this.attachedTrack.track.enabled = !isMute
         }
     }
 }

@@ -11,7 +11,8 @@ const initialState: WebRTCSlice = {
     dialInput: "",
     isPeersConnected: false,
     currentCall: null,
-    callEndCode: null
+    callEndCode: null,
+    isMuted: false
 }
 
 const webRTCSlice = createSlice({
@@ -37,7 +38,8 @@ const webRTCSlice = createSlice({
         changeCurrentCall: (state, action: PayloadAction<CurrentCall | null>) =>
             void (state.currentCall = action.payload),
         changeCallEndCode: (state, action: PayloadAction<CallEndCodes | null>) =>
-            void (state.callEndCode = action.payload)
+            void (state.callEndCode = action.payload),
+        changeIsMuted: (state, action: PayloadAction<boolean>) => void (state.isMuted = action.payload)
     }
 })
 
@@ -52,7 +54,8 @@ export const {
     changeDialNumber,
     changeIsPeersConnected,
     changeCurrentCall,
-    changeCallEndCode
+    changeCallEndCode,
+    changeIsMuted
 } = webRTCSlice.actions
 
 export default webRTCSlice.reducer

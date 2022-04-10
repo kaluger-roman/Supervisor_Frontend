@@ -2,6 +2,7 @@ export type CallAction = {
     name: string
     icon: string
     label: string
+    active?: boolean
     onClick?: () => void
 }
 

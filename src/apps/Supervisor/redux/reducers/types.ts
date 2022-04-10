@@ -17,6 +17,7 @@ export type WebRTCSlice = {
     isPeersConnected: boolean
     currentCall: CurrentCall | null
     callEndCode: CallEndCodes | null
+    isMuted: boolean
 }
 
 export type AuthSlice = {

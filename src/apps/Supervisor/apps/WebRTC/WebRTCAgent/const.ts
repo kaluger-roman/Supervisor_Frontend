@@ -7,3 +7,5 @@ export const ANALIZER_ALERT_SEQ = 3
 export const ANALIZER_ALERT_MULTIPLICATOR = 3
 export const ANALIZER_STORE_COUNT = 3
 export const ANALIZER_STORE_SILENCE_COUNT = 150
+
+export const CHUNK_MIME_TYPE = "audio/webm;"
