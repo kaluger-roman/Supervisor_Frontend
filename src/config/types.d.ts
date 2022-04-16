@@ -18,5 +18,11 @@ declare module "*.mp3" {
     export default content
 }
 
+declare module "*.scss" {
+    const content: object
+
+    export default content
+}
+
 declare module "*.otf"
 declare module "*.ttf"

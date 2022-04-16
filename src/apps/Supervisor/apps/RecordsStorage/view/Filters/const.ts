@@ -1,0 +1,2 @@
+export const MAX_DURATION_TRASHOLD = 60
+export const MIN_DURATION_TRASHOLD = 0

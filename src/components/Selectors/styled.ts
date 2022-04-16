@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import ArrowUpIcon from "assets/images/arrow-up.svg"
 import { LENHTCH_COEFS } from "components/Inputs/constants"
+import { CenteredDiv } from "components/styled"
 import { COLORS } from "../../config/globalStyles/colors"
 import { CSS_CONSTANTS } from "../../config/globalStyles/common"
 import { InputWidth } from "./types"
@@ -47,6 +48,7 @@ export const SelectorArrow = styled.div<{ isOpened: boolean }>`
 export const OptionsContainer = styled.div<{ isOpened: boolean; inputWidth?: InputWidth }>`
     box-shadow: ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight}
         ${COLORS.primaryDark};
+    background-color: ${COLORS.deepLightDark};
     display: ${({ isOpened }) => (isOpened ? "flex" : "none")};
     flex-direction: column;
     position: absolute;
@@ -68,4 +70,29 @@ export const ListOption = styled.div<{ isSelected: boolean }>`
     &:hover {
         background-color: ${COLORS.lightDark};
     }
+`
+
+export const MultipleSearchInput = styled.input`
+    padding: 0 ${CSS_CONSTANTS.margin};
+    border-width: 0;
+    border-bottom: 1px solid ${COLORS.primaryDark} !important;
+    background: linear-gradient(0deg, ${COLORS.lightDark}, ${COLORS.deepLightDark} 80%);
+    height: 26px;
+    font-size: 14px;
+    margin: ${CSS_CONSTANTS.margin};
+    color: ${COLORS.primaryDark};
+`
+
+export const MultipleSearchContainer = styled.div`
+    height: 200px;
+    flex-direction: column;
+    color: ${COLORS.primaryDark};
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+`
+
+export const NoValueLabel = styled(CenteredDiv)`
+    flex-grow: 1;
+    margin-bottom:: ${CSS_CONSTANTS.margin};
 `

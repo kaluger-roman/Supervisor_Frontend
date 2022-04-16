@@ -5,12 +5,14 @@ import main from "./reducers/main"
 import authApi, { authApi as authApiSlice } from "./reducers/api/auth.api"
 import agentApi, { agentApi as agentApiSlice } from "./reducers/api/agent.api"
 import { sideEffectsMiddleware } from "./middleware/sideEffects"
+import recordsStorage from "./reducers/recordsStorage"
 
 const store = configureStore({
     reducer: {
         webRTC,
         auth,
         main,
+        recordsStorage,
         authApi,
         agentApi
     },

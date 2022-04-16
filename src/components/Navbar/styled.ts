@@ -6,11 +6,8 @@ import ExitSVG from "assets/images/exit.svg"
 import { CenteredDiv } from "components/styled"
 
 export const NavBarContainer = styled.div`
-    position: fixed;
-    left: 0;
-    top: 0;
     width: 100vw;
-    height: 44px;
+    height: ${CSS_CONSTANTS.navBarHeight};
     display: flex;
     justify-content: space-between;
     background: ${withOpacity(COLORS.deepDark, 0.7)};
@@ -40,6 +37,7 @@ export const NavBarSide = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    z-index: 10;
 `
 
 export const ExitIcon = styled.div`
@@ -79,7 +77,7 @@ const OptionsContainer = `
     position: absolute;
     left: 0;
     top: 100%;
-    background: ${withOpacity(COLORS.deepDark, 0.7)};
+    background: ${COLORS.deepDark};
     border-radius: 0 0 ${CSS_CONSTANTS.borderRadius} ${CSS_CONSTANTS.borderRadius};
     overflow: hidden;
 `
@@ -92,6 +90,7 @@ const SelectorContainer = `
     width: 20%;
     min-width: fit-content;
     padding: 0 ${CSS_CONSTANTS.padding};
+    z-index: 10;
 
     &:hover {
         background: ${withOpacity(COLORS.lightDark, 0.7)};

@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
 import NOISE_IMG from "./../assets/images/noise.jpg"
 
 export const CenteredDivStyle = `
@@ -48,10 +49,12 @@ export const NormalizedInput = styled.input`
     }
 `
 
-export const BackThemeImage = styled.div<{ borderRadius?: string }>`
+export const BackThemeImage = styled.div<{ borderRadius?: string; width?: string; withMargin?: boolean }>`
     background-image: url(${NOISE_IMG});
     background-attachment: fixed;
     background-size: cover;
     position: relative;
     border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : 0)};
+    width: ${({ width }) => width};
+    margin: ${({ withMargin }) => withMargin && CSS_CONSTANTS.margin};
 `

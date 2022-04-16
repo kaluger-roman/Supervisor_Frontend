@@ -9,6 +9,8 @@ export type InputProps = {
     isPassword?: boolean
     notEditable?: boolean
     inputWidth?: InputWidth
+    onFocus?: () => void
+    onBlur?: () => void
 }
 
 export enum InputWidth {

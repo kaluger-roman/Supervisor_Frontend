@@ -1,4 +1,5 @@
 import { COLORS } from "./colors"
+import { MAIN_FONT_NAME } from "./fonts"
 
 export const CSS_CONSTANTS = {
     borderRadius: "20px",
@@ -26,7 +27,8 @@ export const CSS_CONSTANTS = {
     standardIndent: "10px",
     zIndexImportant: "999",
     shadowBase: "4px",
-    shadowLight: "1px"
+    shadowLight: "1px",
+    navBarHeight: "44px"
 }
 
 export const COMMON = `
@@ -37,6 +39,11 @@ export const COMMON = `
 
     * {
       box-sizing: border-box;
+      font-family: ${MAIN_FONT_NAME};
+    }
+
+    input:focus{
+        outline: none;
     }
 
     .ReactTooltip{

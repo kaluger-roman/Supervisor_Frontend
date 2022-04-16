@@ -34,7 +34,7 @@ const BackThemeColor = styled(FullSize)<{ variant?: ThemeVariant }>`
 `
 
 export const StandardContainer: React.FC<StandardContainerProps> = (props) => (
-    <BackThemeImage borderRadius={CSS_CONSTANTS.borderRadius}>
+    <BackThemeImage withMargin width={props.width} borderRadius={CSS_CONSTANTS.borderRadius}>
         <BackThemeColor variant={props.variant} />
         <ContainerBase>{props.children}</ContainerBase>
     </BackThemeImage>

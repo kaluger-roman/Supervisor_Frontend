@@ -1,0 +1,1 @@
+export { RecordsStorage } from "./view"

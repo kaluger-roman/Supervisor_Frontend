@@ -1,7 +1,6 @@
 import styled from "@emotion/styled"
 import { BackThemeImage, FullScreenStyle } from "../components/styled"
 import { COLORS } from "../config/globalStyles/colors"
-import { CSS_CONSTANTS } from "../config/globalStyles/common"
 import { MAIN_FONT_NAME } from "../config/globalStyles/fonts"
 
 const BackThemeColor = styled.div`
@@ -18,7 +17,8 @@ const Container = styled.div`
     font-weight: 800;
     z-index: 2;
     position: relative;
-    padding: ${CSS_CONSTANTS.padding};
+    display: flex;
+    justify-content: center;
 `
 export const AppContainer: React.FC = (props) => (
     <BackThemeImage>

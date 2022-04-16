@@ -34,8 +34,11 @@ export const menuStructure: NavBarProps = {
         }
     },
     handlers: {
-        agentWorkspace: () => {
+        [MenuKeys.agentWorkspace]: () => {
             store.dispatch(changeAppPage(AppPage.AgentWorkPlace))
+        },
+        [MenuKeys.recordsStorage]: () => {
+            store.dispatch(changeAppPage(AppPage.RecordsStorage))
         },
         [EXIT_HANDLER]: () => {
             store.dispatch(logout())

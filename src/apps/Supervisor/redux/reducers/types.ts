@@ -7,7 +7,8 @@ import { CurrentCall } from "./api/types"
 export enum AppPage {
     Authentication = "Authentication",
     AgentWorkPlace = "AgentWorkPlace",
-    SupervisorWorkPlace = "SupervisorWorkPlace"
+    SupervisorWorkPlace = "SupervisorWorkPlace",
+    RecordsStorage = "RecordsStorage"
 }
 
 export type WebRTCSlice = {
@@ -42,4 +43,16 @@ export type MainSlice = {
     isBlockingLoader: boolean
     isSocketConected: boolean
     status: UserStatuses
+}
+
+export type DurationFilter = {
+    from: number
+    to: number
+}
+
+export type RecordsStorageSlice = {
+    durationFilter: DurationFilter
+    calleesList: string[]
+    callersList: string[]
+    selectUsersInput: string
 }

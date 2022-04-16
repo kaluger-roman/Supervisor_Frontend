@@ -14,7 +14,9 @@ export const Input: React.FC<InputProps> = ({
     placeholder,
     isPassword,
     inputWidth,
-    notEditable
+    notEditable,
+    onFocus,
+    onBlur
 }) => {
     const [isFocused, setIsFocused] = useState<boolean>(false)
     const error = hasError && !isFocused && hasError(value)
@@ -45,8 +47,14 @@ export const Input: React.FC<InputProps> = ({
                 value={value}
                 placeholder={placeholder || label}
                 centered={centered}
-                onBlur={() => setIsFocused(false)}
-                onFocus={() => setIsFocused(true)}
+                onBlur={() => {
+                    setIsFocused(false)
+                    onBlur && onBlur()
+                }}
+                onFocus={() => {
+                    setIsFocused(true)
+                    onFocus && onFocus()
+                }}
                 onChange={(e) => onChange && onChange(e.target.value)}
             />
 

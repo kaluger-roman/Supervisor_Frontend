@@ -1,9 +1,20 @@
 import { Input } from "components/Inputs"
 import { StandardText } from "components/Text"
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { ListOption, OptionsContainer, SelectorArrow, SelectorContainer } from "./styled"
-import { SelectorProps } from "./types"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Watch } from "react-loader-spinner"
+import {
+    ListOption,
+    OptionsContainer,
+    SelectorArrow,
+    SelectorContainer,
+    MultipleSearchInput,
+    MultipleSearchContainer,
+    NoValueLabel
+} from "./styled"
+import { InputWidth, SelectorProps } from "./types"
 import { EMPTY_OPTION, MAX_SYMBOLS_UNTIL_TOOLTIP, REQUIRED_ERROR } from "./constants"
+import Checkboxes from "components/Checkboxes"
+import { COLORS } from "config/globalStyles/colors"
 
 export const Selector: React.FC<SelectorProps> = ({
     onChange,
@@ -14,12 +25,34 @@ export const Selector: React.FC<SelectorProps> = ({
     placeholder,
     inputWidth,
     options,
-    withEmpty
+    withEmpty,
+    searchable,
+    searchValue,
+    onSearchChange,
+    multipleChoice,
+    isOnlineSearching
 }) => {
     const [isOpened, setIsOpened] = useState<boolean>(false)
     const [wasOpened, setWasOpened] = useState<boolean>(false)
-    const outClickListener = useCallback(() => setIsOpened(false), [])
-    const preparedOptions = useMemo(() => (withEmpty ? [EMPTY_OPTION] : []).concat(options), [withEmpty, options])
+    const containerRef = useRef<HTMLDivElement>(null)
+    const outClickListener = useCallback(
+        (e) => {
+            if (
+                isOpened &&
+                containerRef.current &&
+                containerRef.current !== e.target &&
+                !containerRef.current.contains(e.target)
+            ) {
+                console.log("fdf")
+                setIsOpened(false)
+            }
+        },
+        [isOpened]
+    )
+    const preparedOptions = useMemo(
+        () => (withEmpty && !multipleChoice ? [EMPTY_OPTION] : []).concat(options),
+        [withEmpty, options]
+    )
     const selectedOption = useMemo(() => preparedOptions.find((opt) => opt.value === value), [value, preparedOptions])
     const containerClickListener = () => {
         setIsOpened(!isOpened)
@@ -28,15 +61,15 @@ export const Selector: React.FC<SelectorProps> = ({
     const isError = !selectedOption?.value && wasOpened && !!required && !isOpened && REQUIRED_ERROR
 
     useEffect(() => {
-        if (isOpened) {
-            window.addEventListener("click", outClickListener)
+        window.addEventListener("click", outClickListener)
 
-            return () => window.removeEventListener("click", outClickListener)
-        }
-    }, [isOpened])
+        return () => window.removeEventListener("click", outClickListener)
+    }, [outClickListener])
 
+    console.log(isOpened)
     return (
         <SelectorContainer
+            ref={containerRef}
             isError={!!isError}
             inputWidth={inputWidth}
             isOpened={isOpened}
@@ -45,29 +78,60 @@ export const Selector: React.FC<SelectorProps> = ({
             <SelectorArrow isOpened={isOpened} />
             <Input
                 notEditable
+                onChange={(val) => searchable && onSearchChange && onSearchChange(val)}
                 label={label}
                 centered={centered}
                 placeholder={placeholder}
-                inputWidth={inputWidth}
+                inputWidth={inputWidth || InputWidth.standard}
                 hasError={() => isError}
-                value={selectedOption?.label || ""}
+                value={(searchable ? searchValue : selectedOption?.label) || ""}
+                onFocus={() => {
+                    setIsOpened(true)
+                }}
+                onBlur={() => {
+                    setIsOpened(false)
+                }}
             />
-            <OptionsContainer onClick={(e) => e.stopPropagation()} inputWidth={inputWidth} isOpened={isOpened}>
-                {preparedOptions.map((opt) => (
-                    <ListOption
-                        key={opt.key}
-                        onClick={() => {
-                            onChange(opt.value)
-                            outClickListener()
-                        }}
-                        isSelected={selectedOption?.value === opt.value}
-                        data-tip={opt.label.length > MAX_SYMBOLS_UNTIL_TOOLTIP ? opt.label : ""}
-                    >
-                        <StandardText noIndent oneLine>
-                            {opt.label}
-                        </StandardText>
-                    </ListOption>
-                ))}
+            <OptionsContainer
+                onClick={(e) => e.stopPropagation()}
+                inputWidth={inputWidth || InputWidth.standard}
+                isOpened={isOpened}
+            >
+                {multipleChoice ? (
+                    <MultipleSearchContainer>
+                        <MultipleSearchInput placeholder="Поиск опций" />
+                        {isOnlineSearching ? (
+                            <NoValueLabel>
+                                <Watch height={70} width={70} color={COLORS.primaryDark} />
+                            </NoValueLabel>
+                        ) : preparedOptions ? (
+                            <NoValueLabel>Опций не найдено</NoValueLabel>
+                        ) : (
+                            <Checkboxes
+                                multipleChoice
+                                options={preparedOptions}
+                                selected={value as string[]}
+                                onChange={onChange}
+                            />
+                        )}
+                    </MultipleSearchContainer>
+                ) : (
+                    preparedOptions.map((opt) => (
+                        <ListOption
+                            key={opt.key}
+                            onClick={(e) => {
+                                onChange(opt.value)
+                                setIsOpened(false)
+                            }}
+                            isSelected={selectedOption?.value === opt.value}
+                            data-tip={opt.label.length > MAX_SYMBOLS_UNTIL_TOOLTIP ? opt.label : ""}
+                        >
+                            <StandardText noIndent oneLine>
+                                {opt.label}
+                            </StandardText>
+                        </ListOption>
+                    ))
+                )}
             </OptionsContainer>
         </SelectorContainer>
     )

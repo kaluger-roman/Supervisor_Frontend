@@ -1,8 +1,8 @@
 import { Option } from "../Checkboxes/types"
 
 export type SelectorProps = {
-    onChange: (value: string) => void
-    value: string
+    onChange: (value: string | string[]) => void
+    value: string | string[]
     label?: string
     placeholder?: string
     centered?: boolean
@@ -10,6 +10,11 @@ export type SelectorProps = {
     options: Option<string>[]
     withEmpty?: boolean
     required?: boolean
+    searchable?: boolean
+    searchValue?: string
+    onSearchChange?: (value: string) => void
+    multipleChoice?: boolean
+    isOnlineSearching?: boolean
 }
 
 export enum InputWidth {
