@@ -71,3 +71,8 @@ export type User = {
     email: string
     webrtcNumber: string
 }
+
+export type FindUsersPayload = {
+    username: string
+    limit: number
+}

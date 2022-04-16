@@ -16,5 +16,9 @@ export const ROUTES = {
     AGENT: {
         BASE: BASE_API + "/agent",
         STATUS: "/status"
+    },
+    SUPERVISOR: {
+        BASE: BASE_API,
+        USERS: "/users"
     }
 }

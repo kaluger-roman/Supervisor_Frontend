@@ -3,6 +3,7 @@ import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
 import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
 import { CurrentCall } from "./api/types"
+import { Option } from "components/Checkboxes/types"
 
 export enum AppPage {
     Authentication = "Authentication",
@@ -52,7 +53,8 @@ export type DurationFilter = {
 
 export type RecordsStorageSlice = {
     durationFilter: DurationFilter
-    calleesList: string[]
-    callersList: string[]
-    selectUsersInput: string
+    calleesList: Option<string>[]
+    callersList: Option<string>[]
+    searchCallerValue: string
+    searchCalleeValue: string
 }

@@ -34,7 +34,7 @@ const Checkboxes: React.FC<CheckboxesProps> = ({ options, onChange, selected, mu
                 <Option
                     key={option.key}
                     isSelected={!!_.intersection(selected, [option.key]).length}
-                    onClick={onOptionChange}
+                    onClick={onOptionChange(option.key)}
                     multipleChoice={!!multipleChoice}
                     option={option}
                 />

@@ -52,6 +52,7 @@ export const COMMON = `
         color: ${COLORS.deepLightSecondary}!important;
         opacity: 1!important;
         max-width: 250px;
+        text-align: center
     }
 `
 

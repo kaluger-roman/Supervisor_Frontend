@@ -73,14 +73,15 @@ export const ListOption = styled.div<{ isSelected: boolean }>`
 `
 
 export const MultipleSearchInput = styled.input`
-    padding: 0 ${CSS_CONSTANTS.margin};
+    padding: 0px 0 6px ${CSS_CONSTANTS.margin};
     border-width: 0;
     border-bottom: 1px solid ${COLORS.primaryDark} !important;
     background: linear-gradient(0deg, ${COLORS.lightDark}, ${COLORS.deepLightDark} 80%);
-    height: 26px;
+    min-height: 26px;
     font-size: 14px;
-    margin: ${CSS_CONSTANTS.margin};
+    margin-top: ${CSS_CONSTANTS.margin};
     color: ${COLORS.primaryDark};
+    width: 100%;
 `
 
 export const MultipleSearchContainer = styled.div`
@@ -88,11 +89,12 @@ export const MultipleSearchContainer = styled.div`
     flex-direction: column;
     color: ${COLORS.primaryDark};
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
 `
 
 export const NoValueLabel = styled(CenteredDiv)`
     flex-grow: 1;
-    margin-bottom:: ${CSS_CONSTANTS.margin};
+    text-align: center;
+    padding-bottom: ${CSS_CONSTANTS.padding};
 `

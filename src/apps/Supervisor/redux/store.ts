@@ -6,6 +6,7 @@ import authApi, { authApi as authApiSlice } from "./reducers/api/auth.api"
 import agentApi, { agentApi as agentApiSlice } from "./reducers/api/agent.api"
 import { sideEffectsMiddleware } from "./middleware/sideEffects"
 import recordsStorage from "./reducers/recordsStorage"
+import supervisorApi, { supervisorApi as supervisorApiSlice } from "./reducers/api/supervisor.api"
 
 const store = configureStore({
     reducer: {
@@ -14,10 +15,16 @@ const store = configureStore({
         main,
         recordsStorage,
         authApi,
-        agentApi
+        agentApi,
+        supervisorApi
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([authApiSlice.middleware, agentApiSlice.middleware, sideEffectsMiddleware])
+        getDefaultMiddleware().concat([
+            authApiSlice.middleware,
+            agentApiSlice.middleware,
+            supervisorApiSlice.middleware,
+            sideEffectsMiddleware
+        ])
 })
 
 export default store

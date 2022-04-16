@@ -49,10 +49,7 @@ export const Selector: React.FC<SelectorProps> = ({
         },
         [isOpened]
     )
-    const preparedOptions = useMemo(
-        () => (withEmpty && !multipleChoice ? [EMPTY_OPTION] : []).concat(options),
-        [withEmpty, options]
-    )
+    const preparedOptions = useMemo(() => (withEmpty ? [EMPTY_OPTION] : []).concat(options), [withEmpty, options])
     const selectedOption = useMemo(() => preparedOptions.find((opt) => opt.value === value), [value, preparedOptions])
     const containerClickListener = () => {
         setIsOpened(!isOpened)
@@ -66,7 +63,6 @@ export const Selector: React.FC<SelectorProps> = ({
         return () => window.removeEventListener("click", outClickListener)
     }, [outClickListener])
 
-    console.log(isOpened)
     return (
         <SelectorContainer
             ref={containerRef}
@@ -84,7 +80,13 @@ export const Selector: React.FC<SelectorProps> = ({
                 placeholder={placeholder}
                 inputWidth={inputWidth || InputWidth.standard}
                 hasError={() => isError}
-                value={(searchable ? searchValue : selectedOption?.label) || ""}
+                value={
+                    (searchable && !multipleChoice
+                        ? searchValue
+                        : searchable && multipleChoice && value.length
+                        ? `Выбрано ${value.length} опций`
+                        : selectedOption?.label) || ""
+                }
                 onFocus={() => {
                     setIsOpened(true)
                 }}
@@ -99,27 +101,34 @@ export const Selector: React.FC<SelectorProps> = ({
             >
                 {multipleChoice ? (
                     <MultipleSearchContainer>
-                        <MultipleSearchInput placeholder="Поиск опций" />
+                        <MultipleSearchInput
+                            value={searchValue}
+                            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+                            placeholder="Начните поиск"
+                        />
                         {isOnlineSearching ? (
                             <NoValueLabel>
                                 <Watch height={70} width={70} color={COLORS.primaryDark} />
                             </NoValueLabel>
-                        ) : preparedOptions ? (
+                        ) : !preparedOptions ? (
                             <NoValueLabel>Опций не найдено</NoValueLabel>
                         ) : (
-                            <Checkboxes
-                                multipleChoice
-                                options={preparedOptions}
-                                selected={value as string[]}
-                                onChange={onChange}
-                            />
+                            <>
+                                <Checkboxes
+                                    multipleChoice
+                                    options={preparedOptions}
+                                    selected={value as string[]}
+                                    onChange={onChange}
+                                />
+                                <NoValueLabel>Чтобы найти другие варианты, уточните запрос</NoValueLabel>
+                            </>
                         )}
                     </MultipleSearchContainer>
                 ) : (
                     preparedOptions.map((opt) => (
                         <ListOption
                             key={opt.key}
-                            onClick={(e) => {
+                            onClick={() => {
                                 onChange(opt.value)
                                 setIsOpened(false)
                             }}
