@@ -19,6 +19,9 @@ export const ROUTES = {
     },
     SUPERVISOR: {
         BASE: BASE_API,
-        USERS: "/users"
+        USERS: "/users",
+        FULL_RECORDS: "/records/full",
+        SRC_RECORD: "/records/src",
+        TRANSCRIPTION_RECORD: "/records/transcription"
     }
 }

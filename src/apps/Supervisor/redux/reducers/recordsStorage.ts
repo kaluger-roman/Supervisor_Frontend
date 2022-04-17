@@ -11,7 +11,8 @@ const initialState: RecordsStorageSlice = {
     calleesList: [],
     callersList: [],
     searchCallerValue: "",
-    searchCalleeValue: ""
+    searchCalleeValue: "",
+    page: 1
 }
 
 const recordsStorageSlice = createSlice({
@@ -27,7 +28,8 @@ const recordsStorageSlice = createSlice({
         changeSearchCallerValue: (state, action: PayloadAction<string>) =>
             void (state.searchCallerValue = action.payload),
         changeSearchCalleeValue: (state, action: PayloadAction<string>) =>
-            void (state.searchCalleeValue = action.payload)
+            void (state.searchCalleeValue = action.payload),
+        changeRecordsPage: (state, action: PayloadAction<number>) => void (state.page = action.payload)
     }
 })
 
@@ -37,7 +39,8 @@ export const {
     changeSearchCallerValue,
     changeSearchCalleeValue,
     changeCalleesList,
-    changeCallersList
+    changeCallersList,
+    changeRecordsPage
 } = recordsStorageSlice.actions
 
 export default recordsStorageSlice.reducer

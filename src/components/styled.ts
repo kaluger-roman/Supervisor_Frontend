@@ -49,7 +49,11 @@ export const NormalizedInput = styled.input`
     }
 `
 
-export const BackThemeImage = styled.div<{ borderRadius?: string; width?: string; withMargin?: boolean }>`
+export const BackThemeImage = styled.div<{
+    borderRadius?: string
+    width?: string
+    withMargin?: boolean
+}>`
     background-image: url(${NOISE_IMG});
     background-attachment: fixed;
     background-size: cover;

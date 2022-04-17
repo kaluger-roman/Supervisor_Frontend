@@ -1,0 +1,33 @@
+@use "src/config/globalStyles/colors";
+
+.pagination {
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+
+    & > li {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 6px;
+        font-size: 18px;
+        width: 36px;
+        height: 36px;
+        border: 1px solid colors.$primarymain;
+        background: colors.$primaryDark;
+        color: colors.$primarymain;
+        cursor: pointer;
+
+        &.selected {
+            border: 1px solid colors.$primaryDark;
+            background: colors.$primarymain;
+            color: colors.$primaryDark;
+        }
+        &:hover {
+            border: 1px solid colors.$primaryDark;
+            background: colors.$deeplightmain;
+            color: colors.$primaryDark;
+        }
+    }
+}

@@ -2,10 +2,9 @@ import { StandardContainer } from "components/Containers"
 import { Header } from "components/Headers"
 import { Selector } from "components/Selectors"
 import React, { useMemo } from "react"
-
 import { Option } from "components/Checkboxes/types"
 import { User } from "Supervisor/redux/reducers/api/types"
-import { FiltersContainer } from "./styled"
+import { FiltersContainer, FindBtnContainer } from "./styled"
 import { InputWidth } from "components/Inputs/types"
 import { Slider } from "components/Slider"
 import { useSESelector } from "Supervisor/redux/hooks"
@@ -18,9 +17,11 @@ import {
     changeCalleesList,
     changeCallersList
 } from "Supervisor/redux/reducers/recordsStorage"
-import { useUsersQuery } from "Supervisor/redux/reducers/api/supervisor.api"
-import { STANDARD_USERS_LIMIT } from "./const"
+import { useRecordsMutation, useUsersQuery } from "Supervisor/redux/reducers/api/supervisor.api"
+import { SHARE_RECORDS_KEY, STANDARD_USERS_LIMIT } from "./const"
 import { isEqual, uniqWith } from "lodash"
+import { StandardButton } from "components/Buttons"
+import { PER_PAGE_STANDARD_LIMIT } from "components/Pagination/const"
 
 const buildUserOptions = (users: User[]): Option<string>[] =>
     users.map((user) => ({ label: user.username, value: String(user.id), key: String(user.id) }))
@@ -31,7 +32,7 @@ const userOptionsByValues = (opts: Option<string>[], values: string[]): Option<s
     opts.filter((opts) => values.includes(String(opts.value)))
 
 export const Filters: React.FC = () => {
-    const { durationFilter, calleesList, callersList, searchCalleeValue, searchCallerValue } = useSESelector(
+    const { durationFilter, calleesList, callersList, searchCalleeValue, searchCallerValue, page } = useSESelector(
         (state) => state.recordsStorage
     )
     const dispatch = useDispatch()
@@ -53,6 +54,13 @@ export const Filters: React.FC = () => {
         [callersList, callerFound]
     )
 
+    const calleeVals = usersOptionsToVals(calleesList)
+    const callerVals = usersOptionsToVals(callersList)
+
+    const [fetchRecords] = useRecordsMutation({
+        fixedCacheKey: SHARE_RECORDS_KEY
+    })
+
     return (
         <StandardContainer width="90vw">
             <Header>Фильтры</Header>
@@ -62,7 +70,7 @@ export const Filters: React.FC = () => {
                     onChange={(vals) => {
                         dispatch(changeCalleesList(userOptionsByValues(calleeOptions, vals as string[])))
                     }}
-                    value={usersOptionsToVals(calleesList)}
+                    value={calleeVals}
                     options={calleeOptions}
                     inputWidth={InputWidth.long}
                     multipleChoice
@@ -76,7 +84,7 @@ export const Filters: React.FC = () => {
                     onChange={(vals) => {
                         dispatch(changeCallersList(userOptionsByValues(callerOptions, vals as string[])))
                     }}
-                    value={usersOptionsToVals(callersList)}
+                    value={callerVals}
                     options={callerOptions}
                     inputWidth={InputWidth.long}
                     multipleChoice
@@ -99,6 +107,21 @@ export const Filters: React.FC = () => {
                     minDistance={5}
                     inputWidth={InputWidth.long}
                 />
+                <FindBtnContainer>
+                    <StandardButton
+                        onClick={() =>
+                            fetchRecords({
+                                calleesList: calleeVals,
+                                callersList: callerVals,
+                                duration: durationFilter,
+                                limit: PER_PAGE_STANDARD_LIMIT,
+                                page: page
+                            })
+                        }
+                    >
+                        Найти
+                    </StandardButton>
+                </FindBtnContainer>
             </FiltersContainer>
         </StandardContainer>
     )

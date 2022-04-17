@@ -1,3 +1,5 @@
+import { DurationFilter } from "../types"
+
 export type AuthPayload = {
     username: string
     password: string
@@ -76,3 +78,43 @@ export type FindUsersPayload = {
     username: string
     limit: number
 }
+
+export type RecordSrcPayload = {
+    id: number
+}
+
+export type TranscriptionPayload = {
+    id: number
+}
+
+export type RecordFiltersPayload = {
+    calleesList: string[]
+    callersList: string[]
+    duration: DurationFilter
+    limit?: number
+    page?: number
+}
+
+export type TranscriptionUnit = {
+    conf: number
+    end: number
+    start: number
+    word: string
+}
+
+export type RecordType = {
+    id: number
+    call: {
+        id: number
+        status: CallStatus
+        statusSequence: CallStatus[]
+        statusTimestampsSequence: number[]
+        calleeWebrtcNumber: string
+        callerWebrtcNumber: string
+        callerId: number
+        calleeId: number
+    }
+    duration: number
+}
+
+export type FilteredRecords = { records: Partial<RecordType>[]; total: number }
