@@ -53,6 +53,7 @@ export const BackThemeImage = styled.div<{
     borderRadius?: string
     width?: string
     withMargin?: boolean
+    fullHeight?: boolean
 }>`
     background-image: url(${NOISE_IMG});
     background-attachment: fixed;
@@ -61,4 +62,5 @@ export const BackThemeImage = styled.div<{
     border-radius: ${({ borderRadius }) => (borderRadius ? borderRadius : 0)};
     width: ${({ width }) => width};
     margin: ${({ withMargin }) => withMargin && CSS_CONSTANTS.margin};
+    ${({ fullHeight }) => fullHeight && "height: 100%; flex-grow: 1;"}
 `

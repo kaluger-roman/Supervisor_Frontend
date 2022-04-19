@@ -12,7 +12,7 @@ const colorThemeSegregator = cond([
     [T, always(COLORS.lightDark)]
 ]) as (variant?: ThemeVariant) => COLORS
 
-export const ContainerBase = styled.div<{ minHeight?: string }>`
+export const ContainerBase = styled.div<{ minHeight?: string; fullHeight?: boolean }>`
     padding: ${CSS_CONSTANTS.padding};
     border: ${CSS_CONSTANTS.borderWidth} solid ${COLORS.primaryMain};
     border-radius: ${CSS_CONSTANTS.borderRadius};
@@ -21,6 +21,7 @@ export const ContainerBase = styled.div<{ minHeight?: string }>`
     flex-direction: column;
     align-items: center;
     min-height: ${({ minHeight }) => minHeight};
+    ${({ fullHeight }) => fullHeight && "height: 100%;"}
 `
 
 const BackThemeColor = styled(FullSize)<{ variant?: ThemeVariant }>`
@@ -33,8 +34,15 @@ const BackThemeColor = styled(FullSize)<{ variant?: ThemeVariant }>`
 `
 
 export const StandardContainer: React.FC<StandardContainerProps> = (props) => (
-    <BackThemeImage withMargin width={props.width} borderRadius={CSS_CONSTANTS.borderRadius}>
+    <BackThemeImage
+        fullHeight={props.fullHeight}
+        withMargin
+        width={props.width}
+        borderRadius={CSS_CONSTANTS.borderRadius}
+    >
         <BackThemeColor variant={props.variant} />
-        <ContainerBase minHeight={props.minHeight}>{props.children}</ContainerBase>
+        <ContainerBase fullHeight={props.fullHeight} minHeight={props.minHeight}>
+            {props.children}
+        </ContainerBase>
     </BackThemeImage>
 )

@@ -13,6 +13,10 @@ export const Thumb = css`
     top: -4px;
     box-shadow: 1px 1px 1px ${COLORS.deepDark};
 
+    &:hover {
+        background: ${COLORS.primaryMain};
+    }
+
     &:active,
     &:focus {
         outline: none;

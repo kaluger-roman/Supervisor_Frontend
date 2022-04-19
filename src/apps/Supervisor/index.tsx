@@ -13,7 +13,7 @@ import { useVerifyTokenQuery } from "./redux/reducers/api/auth.api"
 import { changeAppPage, changeAuthToken, changeIsBlockingLoader, logout } from "./redux/reducers/main"
 import { AppPage } from "./redux/reducers/types"
 import { EventSocket } from "./redux/socket"
-import { Container } from "./styled"
+import { AppContainer, Container } from "./styled"
 
 export const Supervisor: React.FC = () => {
     const { page, authToken, userName, status } = useSESelector((state) => state.main)
@@ -59,7 +59,7 @@ export const Supervisor: React.FC = () => {
     if (!isError && !isSuccess) return null
 
     return (
-        <div>
+        <AppContainer>
             {authToken && <NavBar {...menuStructure} userInfo={{ userName, status }} />}
             <Container>
                 {cond<AppPage, JSX.Element>([
@@ -69,6 +69,6 @@ export const Supervisor: React.FC = () => {
                     [T, always(<Auth />)]
                 ])(page)}
             </Container>
-        </div>
+        </AppContainer>
     )
 }

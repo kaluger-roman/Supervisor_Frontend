@@ -13,6 +13,7 @@ export const CSS_CONSTANTS = {
     controlFontSize: "16px",
     hintFontSize: "10px",
     standardFontSize: "14px",
+    largeFontSize: "18px",
     standardLetterSpacing: "0.5px",
     standardLineHeight: "16px",
     labelLineHeight: "8px",

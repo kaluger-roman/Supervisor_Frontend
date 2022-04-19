@@ -19,6 +19,10 @@ export const StandardText = styled.div<{
     ${({ oneLine }) => oneLine && "text-overflow:ellipsis; overflow: hidden; white-space: nowrap;"}
 `
 
+export const LargeText = styled(StandardText)`
+    font-size: ${CSS_CONSTANTS.largeFontSize};
+`
+
 export const Link = styled.div<{ colorType?: ThemeVariant; centered?: boolean }>`
     font-size: ${CSS_CONSTANTS.standardFontSize};
     letter-spacing: ${CSS_CONSTANTS.standardLetterSpacing};

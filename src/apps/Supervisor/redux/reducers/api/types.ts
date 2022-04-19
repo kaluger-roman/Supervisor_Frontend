@@ -113,8 +113,10 @@ export type RecordType = {
         callerWebrtcNumber: string
         callerId: number
         calleeId: number
+        caller: { username: string }
+        callee: { username: string }
     }
     duration: number
 }
 
-export type FilteredRecords = { records: Partial<RecordType>[]; total: number }
+export type FilteredRecords = { records: RecordType[]; total: number }

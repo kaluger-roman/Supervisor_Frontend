@@ -3,9 +3,9 @@ import { CenteredDiv } from "components/styled"
 
 export const FiltersContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 260px);
     justify-items: center;
-    width: 100%;
+    width: fit-content;
 `
 
 export const FindBtnContainer = styled(CenteredDiv)`
