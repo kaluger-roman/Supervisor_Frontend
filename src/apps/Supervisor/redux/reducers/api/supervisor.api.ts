@@ -8,7 +8,6 @@ import {
     FindUsersPayload,
     RecordFiltersPayload,
     RecordSrcPayload,
-    RecordType,
     TranscriptionPayload,
     TranscriptionUnit,
     User
@@ -38,7 +37,7 @@ export const supervisorApi = createApi({
                 dispatch(changeRecordsPage(1))
             }
         }),
-        recordSrc: builder.query<Buffer, RecordSrcPayload>({
+        recordSrc: builder.mutation<{ data: Buffer }, RecordSrcPayload>({
             query: (body) => ({
                 url: ROUTES.SUPERVISOR.SRC_RECORD,
                 body,
@@ -55,5 +54,5 @@ export const supervisorApi = createApi({
     })
 })
 
-export const { useUsersQuery, useRecordsMutation, useRecordSrcQuery, useRecordTranscriptionQuery } = supervisorApi
+export const { useUsersQuery, useRecordsMutation, useRecordSrcMutation, useRecordTranscriptionQuery } = supervisorApi
 export default supervisorApi.reducer

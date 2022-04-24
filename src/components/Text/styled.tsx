@@ -21,6 +21,7 @@ export const StandardText = styled.div<{
 
 export const LargeText = styled(StandardText)`
     font-size: ${CSS_CONSTANTS.largeFontSize};
+    line-height: ${CSS_CONSTANTS.largeLineHeight};
 `
 
 export const Link = styled.div<{ colorType?: ThemeVariant; centered?: boolean }>`

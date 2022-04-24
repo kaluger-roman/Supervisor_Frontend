@@ -3,6 +3,7 @@ import styled from "@emotion/styled"
 import { COLORS, withOpacity } from "config/globalStyles/colors"
 import { CSS_CONSTANTS } from "config/globalStyles/common"
 import InfoSvg from "Supervisor/icons/info.svg"
+import { CallStatus } from "Supervisor/redux/reducers/api/types"
 
 export const RecordItemContainer = styled.div<{ header?: boolean }>`
     display: flex;
@@ -14,6 +15,7 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
     background: ${withOpacity(COLORS.deepLightDark, 0.4)};
     margin-top: 10px;
     border: 1px solid ${COLORS.deepLightDark};
+    gap: 20px;
 
     &:hover {
         background: ${withOpacity(COLORS.deepLightDark, 0.7)};
@@ -22,7 +24,7 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
     ${({ header }) =>
         header &&
         `position: sticky; top: 0; left: 0; 
-        padding: 0 10px;
+        padding: 0 11px;
         background: ${withOpacity(COLORS.fullDark, 0.5)};
         &:hover {
             background: ${withOpacity(COLORS.fullDark, 0.5)};
@@ -35,9 +37,15 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
         `}
 
     &> div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 100%;
+        text-align: center;
+
+        & > div {
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     }
 
     & > div:nth-child(1) {
@@ -89,11 +97,6 @@ const openFrame = keyframes`
         opacity: 0;
     }
 
-    1%{
-        height: 0;
-        opacity: 1;
-    }
-
     100% {
         opacity: 1;
         height: 300px;
@@ -107,21 +110,32 @@ const closeFrame = keyframes`
         opacity: 1;
     }
 
-    99%{
-        height: 0;
-        opacity: 1;
-    }
-
     100% {
         opacity: 0;
         height: 0;
     }
 `
 
-export const MoreInfoContainer = styled.div<{ shown?: boolean }>`
-    animation: ${({ shown }) => (shown ? `${openFrame} 0.5s forwards` : `${closeFrame} 0.5s forwards`)};
+export const MoreInfoContainer = styled.div<{ shown?: boolean; animationOn?: boolean }>`
+    opacity: 0;
+    animation: ${({ shown, animationOn }) =>
+        animationOn ? (shown ? `${openFrame} 0.5s forwards` : `${closeFrame} 0.5s forwards`) : "none"};
     border-radius: ${CSS_CONSTANTS.borderRadius};
     background: ${withOpacity(COLORS.lightSecondary, 0.3)};
     border: 1px solid ${COLORS.primarySecondary};
     margin-top: 2px;
+    overflow: hidden;
+    padding: ${CSS_CONSTANTS.padding};
+    will-change: auto;
+`
+
+const StatusToColor: { [key: string]: string } = {
+    [CallStatus.active]: COLORS.success,
+    [CallStatus.ended]: COLORS.error,
+    [CallStatus.failed]: COLORS.error
+}
+
+export const CallStatusLabel = styled.div<{ status: CallStatus }>`
+    text-transform: capitalize;
+    color: ${({ status }) => StatusToColor[status]};
 `

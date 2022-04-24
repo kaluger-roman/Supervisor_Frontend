@@ -1,0 +1,26 @@
+@use "src/config/globalStyles/colors";
+
+$rhap_theme-color: colors.$lightmain; // Color of all buttons and volume/progress indicators
+$rhap_background-color: colors.$deeplightsecondary; // Color of the player background
+$rhap_bar-color: colors.$fullsecondary; // Color of volume and progress bar
+$rhap_time-color: colors.$fulldark; // Font color of current time and duration
+$rhap_font-family: "Slab"; // Font family of current time and duration
+
+@import "react-h5-audio-player/src/styles.scss";
+
+*:focus-visible {
+    outline: none;
+}
+
+.AudioPlayer {
+    margin: 20px;
+    width: calc(100% - 40px) !important;
+    border-radius: 20px;
+    .rhap_progress-section {
+        flex: 10 1 auto;
+    }
+
+    .rhap_horizontal-reverse .rhap_controls-section {
+        margin-right: 35px;
+    }
+}

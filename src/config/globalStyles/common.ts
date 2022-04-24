@@ -16,6 +16,7 @@ export const CSS_CONSTANTS = {
     largeFontSize: "18px",
     standardLetterSpacing: "0.5px",
     standardLineHeight: "16px",
+    largeLineHeight: "22px",
     labelLineHeight: "8px",
     controlHeight: "36px",
     controlWidth: "152px",

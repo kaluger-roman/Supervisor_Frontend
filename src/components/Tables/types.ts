@@ -8,9 +8,15 @@ export type TableConfig = {
     rowFractions: number
     colFractions: number
     content: TableContent
+    colors?: TableColors
+    flex?: boolean
 }
 
 export type TableTemplate = Array<string[]>
+
+export type TableColors = {
+    [key: string]: string
+}
 
 export type TableContent = {
     [key: string]: React.ReactChild

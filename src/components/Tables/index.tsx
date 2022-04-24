@@ -14,7 +14,7 @@ export const Table: React.FC<TableProps> = ({ config }) => {
     return (
         <TableContainer config={config}>
             {allIds.map((cellId) => (
-                <TableCell key={cellId} config={config} cellRect={findCellRect(idZones[cellId])}>
+                <TableCell key={cellId} cellId={cellId} config={config} cellRect={findCellRect(idZones[cellId])}>
                     {config.content[cellId]}
                 </TableCell>
             ))}
