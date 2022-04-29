@@ -25,13 +25,15 @@ import {
     TranscriptionBody,
     MessageBlock,
     MainText,
-    Word
+    Word,
+    Stats,
+    ConfStat
 } from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
 import { Watch } from "react-loader-spinner"
 import { COLORS } from "config/globalStyles/colors"
-import { countRecordAuthenticityRate, makeCommonTranscriptList } from "../../helpers"
+import { countAuthenticityRate, countRecordAuthenticityRate, makeCommonTranscriptList } from "../../helpers"
 
 const getStatusTime = (
     statusSequence: string[],
@@ -51,6 +53,9 @@ const Message: React.FC<ConvertedTrscrtUnitGroup> = ({ data, side }) => {
                     <Word conf={unit.conf}>{unit.word}</Word>
                 ))}
             </MainText>
+            <Stats>
+                <ConfStat>Conf={countAuthenticityRate(data)}</ConfStat>
+            </Stats>
         </MessageBlock>
     )
 }

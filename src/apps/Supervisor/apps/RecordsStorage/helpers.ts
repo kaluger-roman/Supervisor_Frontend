@@ -1,8 +1,7 @@
 import { COLORS } from "config/globalStyles/colors"
 import { first, inRange } from "lodash"
-import { ascend, compose, concat, groupBy, groupWith, map, prop, sort, sortBy } from "ramda"
+import { ascend, compose, concat, groupWith, map, prop, sort } from "ramda"
 import {
-    CallSide,
     ConvertedTrscrtUnitGroup,
     RecordTranscription,
     TranscriptionUnit,
@@ -34,7 +33,7 @@ export const makeCommonTranscriptList = (transcript: RecordTranscription): Conve
 
 export const AuthenticityToColor = (val: number) => {
     if (inRange(val, 50)) return COLORS.error1
-    if (inRange(val, 90)) return COLORS.success
+    if (inRange(val, 90, 101)) return COLORS.success1
 
-    return COLORS.primaryMain
+    return COLORS.deepMain
 }

@@ -22,7 +22,7 @@ export enum COLORS {
     error2 = "#b72d2d",
 
     success = "#03d800",
-    success1 = "#3b9a39",
+    success1 = "#19a317",
     success2 = "#1b7c19"
 }
 

@@ -3,7 +3,6 @@ import styled from "@emotion/styled"
 import { CenteredDiv } from "components/styled"
 import { COLORS, withOpacity } from "config/globalStyles/colors"
 import { CSS_CONSTANTS } from "config/globalStyles/common"
-import { inRange } from "lodash"
 import InfoSvg from "Supervisor/icons/info.svg"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
 import OutboundPNG from "../icons/outbound.png"
@@ -22,17 +21,13 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
     border: 1px solid ${COLORS.deepLightDark};
     gap: 20px;
 
-    &:first-child {
-        margin-top: 10px;
-    }
-
     &:hover {
         background: ${withOpacity(COLORS.deepLightDark, 0.7)};
     }
 
     ${({ header }) =>
-        header &&
-        `position: sticky; top: 0; left: 0; 
+        header
+            ? `position: sticky; top: 0; left: 0; 
         padding: 0 11px;
         background: ${withOpacity(COLORS.fullDark, 0.5)};
         &:hover {
@@ -42,7 +37,10 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
         border-radius: ${CSS_CONSTANTS.borderRadius} ${CSS_CONSTANTS.borderRadius} 0 0;
         border: none;
         border-bottom: ${CSS_CONSTANTS.borderWidth} solid ${COLORS.primaryMain};
-        `}
+        `
+            : `&:first-child {
+            margin-top: 10px;
+        }`}
 
     &> div {
         width: 100%;
@@ -140,7 +138,7 @@ export const MoreInfoContainer = styled.div<{ shown?: boolean; animationOn?: boo
     overflow: hidden;
     padding: 0;
     will-change: auto;
-    margin-bottom: 6px;
+    margin-bottom: ${({ shown }) => (shown ? 6 : 0)}px;
 `
 
 const StatusToColor: { [key: string]: string } = {
@@ -235,14 +233,29 @@ export const TranscriptionBody = styled.div`
     padding: 20px 30px;
 `
 
+export const Stats = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    font-size: 10px;
+    color: ${COLORS.primaryMain};
+    margin-top: 10px;
+`
+export const ConfStat = styled.div`
+    padding: 2px 6px;
+    background: ${withOpacity(COLORS.primaryDark, 1)};
+    border-radius: 10px;
+`
+
 export const MessageBlock = styled.div<{ side: CallRole }>`
     max-width: 40%;
     width: fit-content;
     ${({ side }) => (side === CallRole.caller ? "margin-right: auto" : "margin-left: auto")};
-    background: ${withOpacity(COLORS.fullDark, 0.8)};
+    background: ${({ side }) =>
+        withOpacity(side === CallRole.caller ? COLORS.primarySecondary : COLORS.deepLightMain, 0.8)};;
     border-radius: 15px 15px ${({ side }) => (side === CallRole.caller ? "15px" : "0")}
         ${({ side }) => (side === CallRole.caller ? "0" : "15px")};
-    padding: 10px 15px;
+    padding: 5px 10px 5px 10px;
     position: relative;
 
     &:after {
@@ -251,15 +264,22 @@ export const MessageBlock = styled.div<{ side: CallRole }>`
         ${({ side }) => (side === CallRole.caller ? "left: -20px;" : "right: -20px;")};
         bottom: 0px;
         display: block;
-        border: 30px solid ${withOpacity(COLORS.fullDark, 0.8)};
+        border: 30px solid transparent;
         border-width:  ${({ side }) => (side === CallRole.caller ? "20px 0 15px 20px" : "20px 20px  15px 0")};
-        border-color:  transparent  transparent ${withOpacity(COLORS.fullDark, 0.8)} transparent;
+        border-color:  transparent  transparent ${({ side }) =>
+            withOpacity(side === CallRole.caller ? COLORS.primarySecondary : COLORS.deepLightMain, 0.8)};; transparent;
         border-color: 
         width: 0;
         height: 0;
     }
+
+    ${Stats}{
+        justify-content: flex-${({ side }) => (side === CallRole.caller ? "end" : "start")};;
+    }
 `
-export const MainText = styled.div``
+export const MainText = styled.div`
+    width: fit-content;
+`
 export const Word = styled.span<{ conf: number }>`
     padding: 0 2px;
     color: ${({ conf }) => AuthenticityToColor(conf * 100)};
