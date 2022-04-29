@@ -3,9 +3,10 @@ import { COLORS } from "config/globalStyles/colors"
 import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const WEB_RTC_HEIGHT = 450
+export const WEB_RTC_WIDTH = 260
 
 export const WebRTCWrapper = styled.div`
-    width: 260px;
+    width: ${WEB_RTC_WIDTH}px;
     height: ${WEB_RTC_HEIGHT}px;
     position: relative;
     background: ${COLORS.primaryDark};

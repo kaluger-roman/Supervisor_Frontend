@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { SubHeader } from "components/Headers"
 import { CenteredDiv } from "components/styled"
+import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const InfoContainer = styled(CenteredDiv)<{ centered?: boolean }>`
     height: 100%;
@@ -10,6 +11,11 @@ export const InfoContainer = styled(CenteredDiv)<{ centered?: boolean }>`
     width: 100%;
 `
 
+export const NoDataContainer = styled(CenteredDiv)`
+    height: 100%;
+    glex-grow: 1;
+`
+
 export const WithPaginationContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -17,6 +23,11 @@ export const WithPaginationContainer = styled.div`
     justify-content: space-between;
     width: 100%;
     flex-grow: 1;
+    position: relative;
+
+    .pagination {
+        margin-top: ${CSS_CONSTANTS.margin};
+    }
 `
 
 export const HeaderCell = styled(SubHeader)`
@@ -26,4 +37,7 @@ export const HeaderCell = styled(SubHeader)`
 
 export const InnerRecordsListContainer = styled.div`
     width: 100%;
+    height: 0;
+    flex-grow: 1;
+    overflow: scroll;
 `

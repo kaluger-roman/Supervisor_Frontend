@@ -8,6 +8,7 @@ import {
     FindUsersPayload,
     RecordFiltersPayload,
     RecordSrcPayload,
+    RecordTranscription,
     TranscriptionPayload,
     TranscriptionUnit,
     User
@@ -44,7 +45,7 @@ export const supervisorApi = createApi({
                 method: "POST"
             })
         }),
-        recordTranscription: builder.query<TranscriptionUnit[], TranscriptionPayload>({
+        recordTranscription: builder.query<RecordTranscription, TranscriptionPayload>({
             query: (body) => ({
                 url: ROUTES.SUPERVISOR.TRANSCRIPTION_RECORD,
                 body,

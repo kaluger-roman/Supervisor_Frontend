@@ -1,1 +1,4 @@
-export type t = any
+export enum CallRole {
+    caller = "caller",
+    callee = "callee"
+}

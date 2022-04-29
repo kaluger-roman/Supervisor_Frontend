@@ -11,7 +11,7 @@ export enum COLORS {
     deepMain = "#BF7130",
     fullMain = "#A64B00",
 
-    primarySecondary = "#cccc5c",
+    primarySecondary = "#ffdd65",
     lightSecondary = "#FCFC72",
     deepLightSecondary = "#FDFDBE",
     deepSecondary = "#C9C95B",

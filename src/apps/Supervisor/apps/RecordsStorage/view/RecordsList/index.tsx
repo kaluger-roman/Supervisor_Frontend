@@ -11,7 +11,13 @@ import { changeRecordsPage } from "Supervisor/redux/reducers/recordsStorage"
 import { SHARE_RECORDS_KEY } from "../Filters/const"
 import { RecordItem } from "../RecordItem"
 import { RecordItemContainer } from "../RecordItem/styled"
-import { HeaderCell, InfoContainer, InnerRecordsListContainer, WithPaginationContainer } from "./styled"
+import {
+    HeaderCell,
+    InfoContainer,
+    InnerRecordsListContainer,
+    NoDataContainer,
+    WithPaginationContainer
+} from "./styled"
 
 export const RecordsList: React.FC = () => {
     const dispatch = useDispatch()
@@ -23,18 +29,18 @@ export const RecordsList: React.FC = () => {
 
     return (
         <StandardContainer fullHeight width="90vw">
-            <InfoContainer centered={!data?.records?.length}>
+            <InfoContainer>
+                <RecordItemContainer header>
+                    <HeaderCell>Id</HeaderCell>
+                    <HeaderCell>Участник 1</HeaderCell>
+                    <HeaderCell>Участник 2</HeaderCell>
+                    <HeaderCell>Начало</HeaderCell>
+                    <HeaderCell>Время(с)</HeaderCell>
+                    <HeaderCell>Еще</HeaderCell>
+                </RecordItemContainer>
                 {data?.records?.length && !isLoading ? (
                     <WithPaginationContainer>
                         <InnerRecordsListContainer>
-                            <RecordItemContainer header>
-                                <HeaderCell>Id</HeaderCell>
-                                <HeaderCell>Участник 1</HeaderCell>
-                                <HeaderCell>Участник 2</HeaderCell>
-                                <HeaderCell>Начало</HeaderCell>
-                                <HeaderCell>Время(с)</HeaderCell>
-                                <HeaderCell>Еще</HeaderCell>
-                            </RecordItemContainer>
                             {data.records.map((record) => (
                                 <RecordItem key={record.id} record={record} />
                             ))}
@@ -46,9 +52,13 @@ export const RecordsList: React.FC = () => {
                         />
                     </WithPaginationContainer>
                 ) : isLoading ? (
-                    <Watch height={100} width={100} color={COLORS.primaryDark} />
+                    <NoDataContainer>
+                        <Watch height={100} width={100} color={COLORS.primaryDark} />
+                    </NoDataContainer>
                 ) : (
-                    <StandardText>Записей не найдено</StandardText>
+                    <NoDataContainer>
+                        <StandardText>Записей не найдено</StandardText>
+                    </NoDataContainer>
                 )}
             </InfoContainer>
         </StandardContainer>

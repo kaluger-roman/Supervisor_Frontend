@@ -1,3 +1,4 @@
+import { CallRole } from "Supervisor/apps/RecordsStorage/types"
 import { DurationFilter } from "../types"
 
 export type AuthPayload = {
@@ -118,5 +119,16 @@ export type RecordType = {
     }
     duration: number
 }
+
+export type RecordTranscription = {
+    callee: TranscriptionUnit[]
+    caller: TranscriptionUnit[]
+}
+
+export type TranscriptionUnitWithSide = TranscriptionUnit & {
+    side: CallRole
+}
+
+export type ConvertedTrscrtUnitGroup = { data: TranscriptionUnitWithSide[]; side: CallRole }
 
 export type FilteredRecords = { records: RecordType[]; total: number }

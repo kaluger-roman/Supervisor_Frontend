@@ -2,15 +2,36 @@ import { useOverflow } from "components/helpers"
 import { Table } from "components/Tables"
 import { LargeText } from "components/Text"
 import { Tooltip } from "components/Text/styled"
-import { range } from "lodash"
+import { first, range } from "lodash"
 import moment from "moment"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player"
-import { CallStatus } from "Supervisor/redux/reducers/api/types"
-import { useRecordSrcMutation } from "Supervisor/redux/reducers/api/supervisor.api"
-import { MoreButton, RecordItemContainer, MoreInfoContainer, CallStatusLabel } from "./styled"
+import { CallStatus, ConvertedTrscrtUnitGroup } from "Supervisor/redux/reducers/api/types"
+import { useRecordSrcMutation, useRecordTranscriptionQuery } from "Supervisor/redux/reducers/api/supervisor.api"
+import {
+    MoreButton,
+    RecordItemContainer,
+    MoreInfoContainer,
+    CallStatusLabel,
+    LoadingContainer,
+    TranscriptionContainer,
+    TranscriptionHeader,
+    TranscriptionSide,
+    NumberTag,
+    IconCall,
+    AuthenticityRate,
+    IconAnswer,
+    AuthenticityValue,
+    TranscriptionBody,
+    MessageBlock,
+    MainText,
+    Word
+} from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
+import { Watch } from "react-loader-spinner"
+import { COLORS } from "config/globalStyles/colors"
+import { countRecordAuthenticityRate, makeCommonTranscriptList } from "../../helpers"
 
 const getStatusTime = (
     statusSequence: string[],
@@ -22,14 +43,64 @@ const getStatusTime = (
     return moment(statusTimestampsSequence[activeIndex]).format("HH:mm DD.MM")
 }
 
-const Transcription: React.FC = () => {
-    return null
+const Message: React.FC<ConvertedTrscrtUnitGroup> = ({ data, side }) => {
+    return (
+        <MessageBlock side={side}>
+            <MainText>
+                {data.map((unit) => (
+                    <Word conf={unit.conf}>{unit.word}</Word>
+                ))}
+            </MainText>
+        </MessageBlock>
+    )
+}
+
+const Transcription: React.FC<RecordItemProps> = ({ record }) => {
+    const { data, isLoading } = useRecordTranscriptionQuery({ id: record.id })
+    const authenticityRate = useMemo(() => countRecordAuthenticityRate(data) || 0, [data])
+    const convertedData = useMemo(() => data && makeCommonTranscriptList(data), [data])
+
+    return (
+        <TranscriptionContainer>
+            {isLoading ? (
+                <LoadingContainer>
+                    <Watch width={150} height={150} color={COLORS.primaryDark} />
+                </LoadingContainer>
+            ) : (
+                <>
+                    <TranscriptionHeader>
+                        <TranscriptionSide first>
+                            {record.call.caller.username}
+                            <NumberTag>{record.call.callerWebrtcNumber}</NumberTag>
+                        </TranscriptionSide>
+                        <IconCall />
+                        <AuthenticityRate>
+                            Достоверность:{" "}
+                            <AuthenticityValue value={authenticityRate}>{authenticityRate}%</AuthenticityValue>
+                        </AuthenticityRate>
+                        <IconAnswer />
+                        <TranscriptionSide>
+                            <NumberTag>{record.call.calleeWebrtcNumber}</NumberTag>
+                            {record.call.callee.username}
+                        </TranscriptionSide>
+                    </TranscriptionHeader>
+                    {convertedData && (
+                        <TranscriptionBody>
+                            {convertedData.map((unit) => (
+                                <Message key={first(unit.data)!.start} {...unit} />
+                            ))}
+                        </TranscriptionBody>
+                    )}
+                </>
+            )}
+        </TranscriptionContainer>
+    )
 }
 
 const MoreInfo: React.FC<RecordItemProps & { shown: boolean }> = ({ record, shown }) => {
     const [animationOn, setAnimationOn] = useState<boolean>(false)
     const [URISrc, setURISrc] = useState<string>()
-    const [trigger, { data }] = useRecordSrcMutation()
+    const [trigger, { data, isLoading }] = useRecordSrcMutation()
 
     useEffect(() => {
         if (shown && !animationOn) setAnimationOn(true)
@@ -79,16 +150,23 @@ const MoreInfo: React.FC<RecordItemProps & { shown: boolean }> = ({ record, show
                     }
                 }}
             />
-            <AudioPlayer
-                className="AudioPlayer"
-                showJumpControls={false}
-                showFilledVolume
-                layout="horizontal-reverse"
-                customControlsSection={[RHAP_UI.MAIN_CONTROLS, RHAP_UI.VOLUME_CONTROLS]}
-                src={URISrc}
-                autoPlayAfterSrcChange={false}
-            />
-            <Transcription />
+            {isLoading ? (
+                <LoadingContainer>
+                    <Watch width={50} height={50} color={COLORS.primaryDark} />
+                </LoadingContainer>
+            ) : (
+                <AudioPlayer
+                    className="AudioPlayer"
+                    showJumpControls={false}
+                    showFilledVolume
+                    layout="horizontal-reverse"
+                    customControlsSection={[RHAP_UI.MAIN_CONTROLS, RHAP_UI.VOLUME_CONTROLS]}
+                    src={URISrc}
+                    autoPlayAfterSrcChange={false}
+                />
+            )}
+
+            {shown && <Transcription record={record} />}
         </MoreInfoContainer>
     )
 }
