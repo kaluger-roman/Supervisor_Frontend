@@ -12,7 +12,9 @@ const initialState: WebRTCSlice = {
     isPeersConnected: false,
     currentCall: null,
     callEndCode: null,
-    isMuted: false
+    isMuted: false,
+    isHolded: false,
+    isRemoteHolded: false
 }
 
 const webRTCSlice = createSlice({
@@ -39,7 +41,9 @@ const webRTCSlice = createSlice({
             void (state.currentCall = action.payload),
         changeCallEndCode: (state, action: PayloadAction<CallEndCodes | null>) =>
             void (state.callEndCode = action.payload),
-        changeIsMuted: (state, action: PayloadAction<boolean>) => void (state.isMuted = action.payload)
+        changeIsMuted: (state, action: PayloadAction<boolean>) => void (state.isMuted = action.payload),
+        changeIsHolded: (state, action: PayloadAction<boolean>) => void (state.isHolded = action.payload),
+        changeIsRemoteHolded: (state, action: PayloadAction<boolean>) => void (state.isRemoteHolded = action.payload)
     }
 })
 
@@ -55,7 +59,9 @@ export const {
     changeIsPeersConnected,
     changeCurrentCall,
     changeCallEndCode,
-    changeIsMuted
+    changeIsMuted,
+    changeIsHolded,
+    changeIsRemoteHolded
 } = webRTCSlice.actions
 
 export default webRTCSlice.reducer

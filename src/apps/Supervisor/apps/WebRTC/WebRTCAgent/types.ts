@@ -35,3 +35,8 @@ export enum CallEndCodes {
     TimeExceed = "TimeExceed",
     failed = "failed"
 }
+
+export enum WebrtcDataChannelActions {
+    hold = "hold",
+    unhold = "unhold"
+}

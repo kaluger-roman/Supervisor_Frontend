@@ -16,7 +16,8 @@ export const EVENT_TYPES = {
         TIME_EXCEED: "TIME_EXCEED"
     },
     CALL: {
-        CHANGE: "CHANGE_CALL"
+        CHANGE: "CHANGE_CALL",
+        HOLD: "HOLD"
     }
 }
 

@@ -2,7 +2,13 @@ import { ShowModal } from "components/Modals"
 import { ModalSize } from "components/Modals/types"
 import OfflineSound from "Supervisor/sounds/offlineError.mp3"
 import RingingSound from "Supervisor/sounds/ringing.mp3"
-import { changeCallEndCode, changeCurrentCall, changeIsPeersConnected } from "Supervisor/redux/reducers/webRTC"
+import HoldSound from "Supervisor/sounds/hold.mp3"
+import {
+    changeCallEndCode,
+    changeCurrentCall,
+    changeIsPeersConnected,
+    changeIsRemoteHolded
+} from "Supervisor/redux/reducers/webRTC"
 import { EventSocket } from "Supervisor/redux/socket"
 import { EVENT_TYPES, WS_ERR_STATUS } from "Supervisor/redux/socket/constants"
 import store from "Supervisor/redux/store"
@@ -12,12 +18,14 @@ import {
     CallOffer,
     ChangeCallPayload,
     ConnectionState,
-    MakeCallPayload
+    MakeCallPayload,
+    WebrtcDataChannelActions
 } from "./types"
 import { SocketErrors, SocketException, SocketStandardActions } from "Supervisor/redux/socket/types"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
 import { silenceProcessor } from "./helpers"
-import { CHUNK_MIME_TYPE } from "./const"
+import { CHUNK_MIME_TYPE, DATA_CHANNEL_NAME } from "./const"
+import { Action } from "@reduxjs/toolkit"
 
 class Agent {
     configuration: AgentConfiguration = {
@@ -40,6 +48,8 @@ class Agent {
     mediaRecorder: MediaRecorder | null = null
     mediaRecorderTimer: NodeJS.Timer | null = null
     spyVolumeUnsunscribe: (() => void) | null = null
+    dataChannel: RTCDataChannel | null = null
+    remoteDataChannel: RTCDataChannel | null = null
 
     async init() {
         await this.getMediaPermissions()
@@ -53,6 +63,7 @@ class Agent {
 
     initPeer() {
         this.peerConnection = new RTCPeerConnection(this.configuration)
+
         this.initPeerListeners()
     }
 
@@ -207,6 +218,21 @@ class Agent {
                     })
                 }
             })
+
+            this.dataChannel = this.peerConnection.createDataChannel(DATA_CHANNEL_NAME)
+
+            this.peerConnection.addEventListener("datachannel", (event) => {
+                this.remoteDataChannel = event.channel
+            })
+
+            this.dataChannel.addEventListener("message", (event) => {
+                const message: Action<WebrtcDataChannelActions> = JSON.parse(event.data)
+
+                console.log("message", message)
+                if ([WebrtcDataChannelActions.hold, WebrtcDataChannelActions.unhold].includes(message.type)) {
+                    this.remoteHold(message.type)
+                }
+            })
         }
     }
 
@@ -253,6 +279,7 @@ class Agent {
     pauseDropAudio() {
         if (this.playingAudio) {
             this.playingAudio.pause()
+            this.playingAudio.remove()
             this.playingAudio = null
         }
     }
@@ -373,6 +400,44 @@ class Agent {
     mute(isMute: boolean): void {
         if (this.attachedTrack?.track) {
             this.attachedTrack.track.enabled = !isMute
+        }
+    }
+
+    playHoldAudio() {
+        this.playingAudio = new Audio(HoldSound)
+        this.playingAudio.loop = true
+        this.playingAudio.play()
+    }
+
+    hold(isHold: boolean): void {
+        this.mute(isHold)
+
+        this.remoteDataChannel?.send(
+            JSON.stringify({ type: isHold ? WebrtcDataChannelActions.hold : WebrtcDataChannelActions.unhold })
+        )
+
+        EventSocket.socket!.emit(EVENT_TYPES.CALL.HOLD, { isHold })
+
+        if (this.playingAudio && isHold) {
+            this.pauseDropAudio()
+        }
+
+        if (!isHold && store.getState().webRTC.isRemoteHolded) {
+            this.playHoldAudio()
+        }
+    }
+
+    remoteHold(signal: WebrtcDataChannelActions) {
+        const state = store.getState()
+
+        store.dispatch(changeIsRemoteHolded(signal === WebrtcDataChannelActions.hold))
+
+        if (signal === WebrtcDataChannelActions.hold && !state.webRTC.isHolded) {
+            this.playHoldAudio()
+        }
+
+        if (this.playingAudio && signal === WebrtcDataChannelActions.unhold) {
+            this.pauseDropAudio()
         }
     }
 }

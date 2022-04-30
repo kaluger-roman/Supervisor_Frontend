@@ -12,7 +12,7 @@ import {
     CallActionButtonsContainer
 } from "../styled"
 import { useDispatch } from "react-redux"
-import { changeIsMuted } from "Supervisor/redux/reducers/webRTC"
+import { changeIsHolded, changeIsMuted } from "Supervisor/redux/reducers/webRTC"
 
 const CallActButton: React.FC<CallAction> = ({ label, icon, onClick, active }) => (
     <CallActionButtonContainer>
@@ -25,7 +25,7 @@ const CallActButton: React.FC<CallAction> = ({ label, icon, onClick, active }) =
 
 export const CallActionButtons: React.FC = () => {
     const dispatch = useDispatch()
-    const { isMuted } = useSESelector((state) => state.webRTC)
+    const { isMuted, isHolded } = useSESelector((state) => state.webRTC)
 
     return (
         <CallActionButtonsContainer>
@@ -39,7 +39,16 @@ export const CallActionButtons: React.FC = () => {
                     WebRTCAgent.mute(!isMuted)
                 }}
             />
-            <CallActButton icon={HoldIcon} name="hold" label="Hold" onClick={() => {}} />
+            <CallActButton
+                icon={HoldIcon}
+                name="hold"
+                label="Hold"
+                active={isHolded}
+                onClick={() => {
+                    dispatch(changeIsHolded(!isHolded))
+                    WebRTCAgent.hold(!isHolded)
+                }}
+            />
         </CallActionButtonsContainer>
     )
 }

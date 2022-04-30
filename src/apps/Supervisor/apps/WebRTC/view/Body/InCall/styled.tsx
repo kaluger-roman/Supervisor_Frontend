@@ -38,7 +38,7 @@ export const CallActionButton = styled(CenteredDiv)<{ isActive?: boolean }>`
     height: 50px;
     box-shadow: ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight} ${CSS_CONSTANTS.shadowLight}
         ${COLORS.deepDark};
-    background-color: ${({ isActive }) => (isActive ? COLORS.primaryMain : COLORS.primarySecondary)};
+    background-color: ${({ isActive }) => (isActive ? COLORS.lightMain : COLORS.primarySecondary)};
     border-radius: 50%;
 
     &:hover {

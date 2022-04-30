@@ -1,7 +1,7 @@
 import { useOverflow } from "components/helpers"
 import { Table } from "components/Tables"
 import { LargeText } from "components/Text"
-import { Tooltip } from "components/Text/styled"
+import { StandardText, Tooltip } from "components/Text/styled"
 import { first, range } from "lodash"
 import moment from "moment"
 import React, { useEffect, useMemo, useState } from "react"
@@ -27,7 +27,8 @@ import {
     MainText,
     Word,
     Stats,
-    ConfStat
+    ConfStat,
+    NoTranscriptsContainer
 } from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
@@ -68,9 +69,9 @@ const Transcription: React.FC<RecordItemProps> = ({ record }) => {
     return (
         <TranscriptionContainer>
             {isLoading ? (
-                <LoadingContainer>
-                    <Watch width={150} height={150} color={COLORS.primaryDark} />
-                </LoadingContainer>
+                <NoTranscriptsContainer>
+                    <Watch width={100} height={100} color={COLORS.primaryDark} />
+                </NoTranscriptsContainer>
             ) : (
                 <>
                     <TranscriptionHeader>
@@ -89,12 +90,16 @@ const Transcription: React.FC<RecordItemProps> = ({ record }) => {
                             {record.call.callee.username}
                         </TranscriptionSide>
                     </TranscriptionHeader>
-                    {convertedData && (
+                    {convertedData?.length ? (
                         <TranscriptionBody>
                             {convertedData.map((unit) => (
                                 <Message key={first(unit.data)!.start} {...unit} />
                             ))}
                         </TranscriptionBody>
+                    ) : (
+                        <NoTranscriptsContainer>
+                            <StandardText>Транскрипций не найдено</StandardText>
+                        </NoTranscriptsContainer>
                     )}
                 </>
             )}

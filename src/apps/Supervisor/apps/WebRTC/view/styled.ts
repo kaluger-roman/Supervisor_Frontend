@@ -10,7 +10,7 @@ export const WebRTCWrapper = styled.div`
     height: ${WEB_RTC_HEIGHT}px;
     position: relative;
     background: ${COLORS.primaryDark};
-    background: linear-gradient(135deg, ${COLORS.primarySecondary} 0%, ${COLORS.primaryDark} 100%);
+    background: linear-gradient(135deg, ${COLORS.primarySecondary} 0%, ${COLORS.fullDark} 100%);
     box-shadow: ${CSS_CONSTANTS.shadowBase} ${CSS_CONSTANTS.shadowBase} ${CSS_CONSTANTS.shadowBase} ${COLORS.deepDark};
     border-radius: ${CSS_CONSTANTS.borderRadius};
     overflow: hidden;

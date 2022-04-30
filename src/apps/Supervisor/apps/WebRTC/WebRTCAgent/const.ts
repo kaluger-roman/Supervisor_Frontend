@@ -9,3 +9,4 @@ export const ANALIZER_STORE_COUNT = 3
 export const ANALIZER_STORE_SILENCE_COUNT = 150
 
 export const CHUNK_MIME_TYPE = "audio/webm;"
+export const DATA_CHANNEL_NAME = "WEBRTC_CHANNEL"

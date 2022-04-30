@@ -141,6 +141,10 @@ export const MoreInfoContainer = styled.div<{ shown?: boolean; animationOn?: boo
     margin-bottom: ${({ shown }) => (shown ? 6 : 0)}px;
 `
 
+export const NoTranscriptsContainer = styled(CenteredDiv)`
+    height: 355px;
+`
+
 const StatusToColor: { [key: string]: string } = {
     [CallStatus.active]: COLORS.success,
     [CallStatus.ended]: COLORS.error,
@@ -174,6 +178,7 @@ export const TranscriptionHeader = styled.div`
     top: 0;
     left: 0;
     background: ${withOpacity(COLORS.deepDark, 0.75)};
+    z-index: 1;
 `
 export const TranscriptionSide = styled(CenteredDiv)<{ first?: boolean }>`
     display: flex;

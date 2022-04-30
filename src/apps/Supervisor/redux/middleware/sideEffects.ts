@@ -4,7 +4,16 @@ import { CallPages, Pages } from "Supervisor/apps/WebRTC/types"
 import { agentApi } from "../reducers/api/agent.api"
 import { CallStatus } from "../reducers/api/types"
 import { changeAuthToken, logout } from "../reducers/main"
-import { changeCallEndCode, changeCallPage, changeCurrentCall, changeDialNumber, changePage } from "../reducers/webRTC"
+import {
+    changeCallEndCode,
+    changeCallPage,
+    changeCurrentCall,
+    changeDialNumber,
+    changeIsHolded,
+    changeIsMuted,
+    changeIsRemoteHolded,
+    changePage
+} from "../reducers/webRTC"
 import store from "../store"
 
 const changeCallEndCodeSideEffect = (action: ReturnType<typeof changeCallEndCode>) => {
@@ -24,6 +33,12 @@ const changeCallEndCodeSideEffect = (action: ReturnType<typeof changeCallEndCode
 
 const changeCurrentCallSideEffect = (action: ReturnType<typeof changeCurrentCall>) => {
     const state = store.getState()
+
+    if (!action.payload) {
+        store.dispatch(changeIsMuted(false))
+        store.dispatch(changeIsHolded(false))
+        store.dispatch(changeIsRemoteHolded(false))
+    }
 
     if (action.payload?.status === CallStatus.answerWaiting && action.payload.callee.id === state.main.userId) {
         store.dispatch(changePage(Pages.call))

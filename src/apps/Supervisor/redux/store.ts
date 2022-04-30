@@ -19,7 +19,7 @@ const store = configureStore({
         supervisorApi
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([
+        getDefaultMiddleware({ serializableCheck: false }).concat([
             authApiSlice.middleware,
             agentApiSlice.middleware,
             supervisorApiSlice.middleware,

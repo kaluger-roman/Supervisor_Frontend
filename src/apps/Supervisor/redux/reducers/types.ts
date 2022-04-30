@@ -2,7 +2,7 @@ import { UserStatuses } from "components/Navbar/types"
 import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
 import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
-import { CurrentCall, RecordType } from "./api/types"
+import { CurrentCall } from "./api/types"
 import { Option } from "components/Checkboxes/types"
 
 export enum AppPage {
@@ -20,6 +20,8 @@ export type WebRTCSlice = {
     currentCall: CurrentCall | null
     callEndCode: CallEndCodes | null
     isMuted: boolean
+    isHolded: boolean
+    isRemoteHolded: boolean
 }
 
 export type AuthSlice = {

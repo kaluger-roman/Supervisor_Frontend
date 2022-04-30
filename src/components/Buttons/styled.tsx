@@ -41,6 +41,7 @@ const IconCircleOuter = styled(CenteredDiv)<{ scale?: number }>`
     border-radius: 50%;
     background: ${COLORS.primaryDark};
     ${({ scale }) => `scale: ${scale};`}
+    cursor: pointer;
 
     & > div {
         background: ${COLORS.primaryMain};
