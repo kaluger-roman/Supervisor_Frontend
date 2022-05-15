@@ -4,7 +4,7 @@ import { LargeText } from "components/Text"
 import { StandardText, Tooltip } from "components/Text/styled"
 import { first, range } from "lodash"
 import moment from "moment"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player"
 import { CallStatus, ConvertedTrscrtUnitGroup } from "Supervisor/redux/reducers/api/types"
 import { useRecordSrcMutation, useRecordTranscriptionQuery } from "Supervisor/redux/reducers/api/supervisor.api"
@@ -35,6 +35,7 @@ import "./player.scss"
 import { Watch } from "react-loader-spinner"
 import { COLORS } from "config/globalStyles/colors"
 import { countAuthenticityRate, countRecordAuthenticityRate, makeCommonTranscriptList } from "../../helpers"
+import H5AudioPlayer from "react-h5-audio-player"
 
 const getStatusTime = (
     statusSequence: string[],
@@ -43,25 +44,30 @@ const getStatusTime = (
 ): string => {
     const activeIndex = statusSequence.findIndex((val) => statuses.includes(val as CallStatus))
 
-    return moment(statusTimestampsSequence[activeIndex]).format("HH:mm DD.MM")
+    return moment.unix(statusTimestampsSequence[activeIndex]).format("HH:mm DD.MM")
 }
 
-const Message: React.FC<ConvertedTrscrtUnitGroup> = ({ data, side }) => {
+const Message: React.FC<ConvertedTrscrtUnitGroup & { jumpTo: (time: number) => void }> = ({ data, side, jumpTo }) => {
     return (
         <MessageBlock side={side}>
             <MainText>
-                {data.map((unit) => (
-                    <Word conf={unit.conf}>{unit.word}</Word>
+                {data.map((unit, inx) => (
+                    <Word key={inx} conf={unit.conf}>
+                        {unit.word}
+                    </Word>
                 ))}
             </MainText>
             <Stats>
                 <ConfStat>Conf={countAuthenticityRate(data)}</ConfStat>
+                <ConfStat onClick={() => jumpTo(first(data)?.start || 0)} isAction>
+                    Jump To
+                </ConfStat>
             </Stats>
         </MessageBlock>
     )
 }
 
-const Transcription: React.FC<RecordItemProps> = ({ record }) => {
+const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void }> = ({ record, jumpTo }) => {
     const { data, isLoading } = useRecordTranscriptionQuery({ id: record.id })
     const authenticityRate = useMemo(() => countRecordAuthenticityRate(data) || 0, [data])
     const convertedData = useMemo(() => data && makeCommonTranscriptList(data), [data])
@@ -93,7 +99,7 @@ const Transcription: React.FC<RecordItemProps> = ({ record }) => {
                     {convertedData?.length ? (
                         <TranscriptionBody>
                             {convertedData.map((unit) => (
-                                <Message key={first(unit.data)!.start} {...unit} />
+                                <Message jumpTo={jumpTo} key={first(unit.data)!.id} {...unit} />
                             ))}
                         </TranscriptionBody>
                     ) : (
@@ -110,7 +116,15 @@ const Transcription: React.FC<RecordItemProps> = ({ record }) => {
 const MoreInfo: React.FC<RecordItemProps & { shown: boolean }> = ({ record, shown }) => {
     const [animationOn, setAnimationOn] = useState<boolean>(false)
     const [URISrc, setURISrc] = useState<string>()
+    const audioRef = useRef<H5AudioPlayer | null>(null)
     const [trigger, { data, isLoading }] = useRecordSrcMutation()
+
+    const jumpTo = useCallback((time: number) => {
+        if (audioRef.current?.audio.current) {
+            audioRef.current?.audio.current?.play()
+            audioRef.current.audio.current.currentTime = time
+        }
+    }, [])
 
     useEffect(() => {
         if (shown && !animationOn) setAnimationOn(true)
@@ -166,6 +180,7 @@ const MoreInfo: React.FC<RecordItemProps & { shown: boolean }> = ({ record, show
                 </LoadingContainer>
             ) : (
                 <AudioPlayer
+                    ref={audioRef}
                     className="AudioPlayer"
                     showJumpControls={false}
                     showFilledVolume
@@ -176,7 +191,7 @@ const MoreInfo: React.FC<RecordItemProps & { shown: boolean }> = ({ record, show
                 />
             )}
 
-            {shown && <Transcription record={record} />}
+            {shown && <Transcription record={record} jumpTo={jumpTo} />}
         </MoreInfoContainer>
     )
 }

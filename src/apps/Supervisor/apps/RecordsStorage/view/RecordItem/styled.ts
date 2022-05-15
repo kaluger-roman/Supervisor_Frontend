@@ -7,6 +7,7 @@ import InfoSvg from "Supervisor/icons/info.svg"
 import { CallStatus } from "Supervisor/redux/reducers/api/types"
 import OutboundPNG from "../icons/outbound.png"
 import InboundPNG from "../icons/inbound.png"
+import JumpPNG from "../icons/jump.png"
 import { AuthenticityToColor } from "../../helpers"
 import { CallRole } from "../../types"
 
@@ -243,13 +244,40 @@ export const Stats = styled.div`
     display: flex;
     justify-content: flex-start;
     font-size: 10px;
-    color: ${COLORS.primaryMain};
     margin-top: 10px;
+    gap: 4px;
 `
-export const ConfStat = styled.div`
+export const ConfStat = styled.div<{ isAction?: boolean }>`
     padding: 2px 6px;
-    background: ${withOpacity(COLORS.primaryDark, 1)};
+    background: ${({ isAction }) => (isAction ? COLORS.deepLightSecondary : COLORS.primaryDark)};
+    color: ${({ isAction }) => (isAction ? COLORS.deepDark : COLORS.primaryMain)};
     border-radius: 10px;
+    position: relative;
+
+    ${({ isAction }) =>
+        isAction &&
+        `
+        cursor: pointer;
+        padding-right: 18px;
+        &:hover{
+            background: ${COLORS.lightSecondary};
+        }
+        :after{
+            content: "";
+            position: absolute;
+            right: 4px;
+            top: 1px;
+            display: block;
+            width: 12px;
+            height: 12px;
+            mask-image: url(${JumpPNG});
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            background: ${COLORS.deepDark};
+            transform: rotate(90deg);
+        }
+    
+    `}
 `
 
 export const MessageBlock = styled.div<{ side: CallRole }>`

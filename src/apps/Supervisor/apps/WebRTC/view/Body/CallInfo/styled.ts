@@ -54,6 +54,7 @@ const hideHold = keyframes`
 `
 
 export const HoldNotice = styled(CenteredDiv)<{ shown?: boolean; animationOn?: boolean }>`
+    opacity: ${({ shown }) => (shown ? 1 : 0)};
     animation: ${({ shown, animationOn }) =>
         animationOn ? (shown ? `${showHold} 0.5s forwards` : `${hideHold} 0.5s forwards`) : "none"};
     padding: 4px 10px;
