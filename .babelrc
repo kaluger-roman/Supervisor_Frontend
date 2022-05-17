@@ -4,12 +4,15 @@
         [
             "module-resolver",
             {
-                "root": ["./"],
+                "root": [
+                    "./"
+                ],
                 "alias": {
                     "Supervisor": "./src/apps/Supervisor",
                     "components": "./src/components",
                     "assets": "./src/assets",
-                    "config": "./src/config"
+                    "config": "./src/config",
+                    "root": "./src"
                 }
             }
         ]
