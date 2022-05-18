@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Option } from "components/Checkboxes/types"
 import { MAX_DURATION_TRASHOLD, MIN_DURATION_TRASHOLD } from "Supervisor/apps/RecordsStorage/view/Filters/const"
-import { SortOrder } from "types"
+import { SortOrder } from "root/types"
 import { RecordsStorageSlice, SortedFieldsRecordFilters } from "./types"
 
 const initialState: RecordsStorageSlice = {
@@ -14,7 +14,7 @@ const initialState: RecordsStorageSlice = {
     searchCallerValue: "",
     searchCalleeValue: "",
     page: 1,
-    order: {}
+    order: []
 }
 
 const recordsStorageSlice = createSlice({
@@ -32,8 +32,12 @@ const recordsStorageSlice = createSlice({
         changeSearchCalleeValue: (state, action: PayloadAction<string>) =>
             void (state.searchCalleeValue = action.payload),
         changeRecordsPage: (state, action: PayloadAction<number>) => void (state.page = action.payload),
-        changeSortOrder: (state, action: PayloadAction<{ key: SortedFieldsRecordFilters; order: SortOrder }>) =>
-            void (state.order[action.payload.key] = action.payload.order)
+        changeSortOrder: (state, action: PayloadAction<{ key: SortedFieldsRecordFilters; order: SortOrder }>) => {
+            state.order = state.order.filter((item) => item.key !== action.payload.key)
+            if (action.payload.order !== SortOrder.unset) {
+                state.order.push(action.payload)
+            }
+        }
     }
 })
 

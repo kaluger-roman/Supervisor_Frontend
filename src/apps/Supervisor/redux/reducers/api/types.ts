@@ -1,5 +1,6 @@
+import { SortOrder } from "root/types"
 import { CallRole } from "Supervisor/apps/RecordsStorage/types"
-import { DurationFilter } from "../types"
+import { DurationFilter, SortedFieldsRecordFilters } from "../types"
 
 export type AuthPayload = {
     username: string
@@ -88,12 +89,15 @@ export type TranscriptionPayload = {
     id: number
 }
 
+export type SortItem = { key: SortedFieldsRecordFilters; order: SortOrder }
+
 export type RecordFiltersPayload = {
     calleesList: string[]
     callersList: string[]
     duration: DurationFilter
     limit?: number
     page?: number
+    orderBy?: SortItem[]
 }
 
 export type TranscriptionUnit = {

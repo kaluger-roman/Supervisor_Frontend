@@ -2,7 +2,7 @@ import { StandardContainer } from "components/Containers"
 import { Pagination } from "components/Pagination"
 import { StandardText } from "components/Text"
 import { COLORS } from "config/globalStyles/colors"
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef } from "react"
 import { Watch } from "react-loader-spinner"
 import { useDispatch } from "react-redux"
 import { NEXT_SORT_ORDER } from "Supervisor/constants"
@@ -22,37 +22,57 @@ import {
     WithPaginationContainer
 } from "./styled"
 import { CenteredDiv } from "components/styled"
+import { PER_PAGE_STANDARD_LIMIT } from "components/Pagination/const"
+import { SortItem } from "Supervisor/redux/reducers/api/types"
+import { equals } from "ramda"
 
 const SortedHeader: React.FC<{ sortKey?: SortedFieldsRecordFilters }> = ({ children, sortKey }) => {
     const dispatch = useDispatch()
     const { order } = useSESelector((state) => state.recordsStorage)
 
-    const sortHandler = useCallback(
-        () =>
-            sortKey &&
-            dispatch(
-                changeSortOrder({
-                    key: sortKey,
-                    order: NEXT_SORT_ORDER[order[sortKey] || SortOrder.unset]
-                })
-            ),
-        [sortKey, order]
-    )
+    const sortOrder = useMemo(() => order.find((item) => item.key === sortKey)?.order, [order, sortKey])
+
+    const sortHandler = useCallback(() => {
+        if (!sortKey) return
+
+        dispatch(
+            changeSortOrder({
+                key: sortKey,
+                order: NEXT_SORT_ORDER[sortOrder || SortOrder.unset]
+            })
+        )
+    }, [sortKey, sortOrder, dispatch])
 
     return (
         <CenteredDiv onClick={sortHandler}>
-            <HeaderCell sortOrder={sortKey && order[sortKey]}>{children}</HeaderCell>
+            <HeaderCell sortOrder={sortOrder}>{children}</HeaderCell>
         </CenteredDiv>
     )
 }
 
 export const RecordsList: React.FC = () => {
     const dispatch = useDispatch()
-    const { page } = useSESelector((state) => state.recordsStorage)
+    const { durationFilter, calleesList, callersList, page, order } = useSESelector((state) => state.recordsStorage)
+    const oldOrder = useRef<SortItem[]>([])
 
-    const [_, { data, isLoading }] = useRecordsMutation({
+    const [fetchRecords, { data, isLoading }] = useRecordsMutation({
         fixedCacheKey: SHARE_RECORDS_KEY
     })
+
+    useEffect(() => {
+        if (equals(order, oldOrder.current)) return
+
+        oldOrder.current = order
+
+        fetchRecords({
+            calleesList: calleesList.map((item) => item.value),
+            callersList: callersList.map((item) => item.value),
+            duration: durationFilter,
+            limit: PER_PAGE_STANDARD_LIMIT,
+            page: page,
+            orderBy: order
+        })
+    }, [order, calleesList, callersList, durationFilter, page, fetchRecords])
 
     return (
         <StandardContainer fullHeight width="90vw">
@@ -62,7 +82,7 @@ export const RecordsList: React.FC = () => {
                     <SortedHeader sortKey={SortedFieldsRecordFilters.callerName}>Участник 1</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.calleeName}>Участник 2</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.start}>Начало</SortedHeader>
-                    <SortedHeader sortKey={SortedFieldsRecordFilters.end}>Время(с)</SortedHeader>
+                    <SortedHeader sortKey={SortedFieldsRecordFilters.duration}>Время(с)</SortedHeader>
                     <SortedHeader>Еще</SortedHeader>
                 </RecordItemContainer>
                 {data?.records?.length && !isLoading ? (

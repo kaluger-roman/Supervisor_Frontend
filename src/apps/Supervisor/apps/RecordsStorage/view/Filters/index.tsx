@@ -1,7 +1,7 @@
 import { StandardContainer } from "components/Containers"
 import { Header } from "components/Headers"
 import { Selector } from "components/Selectors"
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo } from "react"
 import { Option } from "components/Checkboxes/types"
 import { User } from "Supervisor/redux/reducers/api/types"
 import { FiltersContainer, FindBtnContainer } from "./styled"
@@ -32,9 +32,8 @@ const userOptionsByValues = (opts: Option<string>[], values: string[]): Option<s
     opts.filter((opts) => values.includes(String(opts.value)))
 
 export const Filters: React.FC = () => {
-    const { durationFilter, calleesList, callersList, searchCalleeValue, searchCallerValue, page } = useSESelector(
-        (state) => state.recordsStorage
-    )
+    const { durationFilter, calleesList, callersList, searchCalleeValue, searchCallerValue, page, order } =
+        useSESelector((state) => state.recordsStorage)
     const dispatch = useDispatch()
     const { data: calleeFound, isLoading: isCalleeOptionsLoading } = useUsersQuery({
         username: searchCalleeValue,
@@ -60,6 +59,19 @@ export const Filters: React.FC = () => {
     const [fetchRecords] = useRecordsMutation({
         fixedCacheKey: SHARE_RECORDS_KEY
     })
+
+    const fetchRecordsCb = useCallback(
+        () =>
+            fetchRecords({
+                calleesList: calleeVals,
+                callersList: callerVals,
+                duration: durationFilter,
+                limit: PER_PAGE_STANDARD_LIMIT,
+                page: page,
+                orderBy: order
+            }),
+        [calleeVals, callerVals, durationFilter, page, order, fetchRecords]
+    )
 
     return (
         <StandardContainer width="90vw">
@@ -108,19 +120,7 @@ export const Filters: React.FC = () => {
                     inputWidth={InputWidth.long}
                 />
                 <FindBtnContainer>
-                    <StandardButton
-                        onClick={() =>
-                            fetchRecords({
-                                calleesList: calleeVals,
-                                callersList: callerVals,
-                                duration: durationFilter,
-                                limit: PER_PAGE_STANDARD_LIMIT,
-                                page: page
-                            })
-                        }
-                    >
-                        Найти
-                    </StandardButton>
+                    <StandardButton onClick={fetchRecordsCb}>Найти</StandardButton>
                 </FindBtnContainer>
             </FiltersContainer>
         </StandardContainer>
