@@ -29,7 +29,8 @@ import {
     Stats,
     ConfStat,
     NoTranscriptsContainer,
-    StatusLabel
+    StatusLabel,
+    LiveLabel
 } from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
@@ -69,9 +70,17 @@ const Message: React.FC<ConvertedTrscrtUnitGroup & { jumpTo: (time: number) => v
 }
 
 const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void }> = ({ record, jumpTo }) => {
-    const { data, isLoading } = useRecordTranscriptionQuery({ id: record.id })
+    const { data, isLoading, refetch } = useRecordTranscriptionQuery({ id: record.id })
     const authenticityRate = useMemo(() => countRecordAuthenticityRate(data) || 0, [data])
     const convertedData = useMemo(() => data && makeCommonTranscriptList(data), [data])
+
+    useEffect(() => {
+        let refetchTimeout: number | undefined
+
+        if (record.call.status === CallStatus.active) setInterval(() => refetch(), 5000)
+
+        return () => void (refetchTimeout && clearInterval(refetchTimeout))
+    }, [record, refetch])
 
     return (
         <TranscriptionContainer>
@@ -90,6 +99,7 @@ const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void
                         <AuthenticityRate>
                             Достоверность:{" "}
                             <AuthenticityValue value={authenticityRate}>{authenticityRate}%</AuthenticityValue>
+                            {record.call.status === CallStatus.active && <LiveLabel>Live</LiveLabel>}
                         </AuthenticityRate>
                         <IconAnswer />
                         <TranscriptionSide>

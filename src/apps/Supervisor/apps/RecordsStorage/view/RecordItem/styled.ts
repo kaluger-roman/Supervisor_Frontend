@@ -218,6 +218,16 @@ export const AuthenticityValue = styled.span<{ value: number }>`
     background: ${({ value }) => AuthenticityToColor(value)};
     padding: 4px 20px;
 `
+
+export const LiveLabel = styled.span`
+    font-weight: bold;
+    color: ${COLORS.success1};
+    border-radius: 20px;
+    background: ${COLORS.fullDark};
+    padding: 4px 20px;
+    margin-left: 10px;
+`
+
 const CallIcon = styled.i`
     width: 20px;
     height: 20px;
