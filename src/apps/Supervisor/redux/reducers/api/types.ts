@@ -98,6 +98,7 @@ export type RecordFiltersPayload = {
     limit?: number
     page?: number
     orderBy?: SortItem[]
+    status: CallStatus[]
 }
 
 export type TranscriptionUnit = {

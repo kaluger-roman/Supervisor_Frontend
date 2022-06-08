@@ -81,6 +81,9 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
     & > div:nth-child(6) {
         width: 80px;
     }
+    & > div:nth-child(7) {
+        width: 80px;
+    }
 `
 
 export const MoreButton = styled.div`
@@ -317,4 +320,8 @@ export const Word = styled.span<{ conf: number }>`
     padding: 0 2px;
     color: ${({ conf }) => AuthenticityToColor(conf * 100)};
     display: inline-block;
+`
+
+export const StatusLabel = styled.label<{ status: CallStatus }>`
+    color: ${({ status }) => (status === CallStatus.active ? COLORS.success1 : "inherit")};
 `

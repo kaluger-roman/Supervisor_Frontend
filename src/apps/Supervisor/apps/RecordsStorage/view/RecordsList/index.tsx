@@ -52,7 +52,9 @@ const SortedHeader: React.FC<{ sortKey?: SortedFieldsRecordFilters }> = ({ child
 
 export const RecordsList: React.FC = () => {
     const dispatch = useDispatch()
-    const { durationFilter, calleesList, callersList, page, order } = useSESelector((state) => state.recordsStorage)
+    const { durationFilter, calleesList, callersList, page, order, searchStatuses } = useSESelector(
+        (state) => state.recordsStorage
+    )
     const oldOrder = useRef<SortItem[]>([])
 
     const [fetchRecords, { data, isLoading }] = useRecordsMutation({
@@ -65,6 +67,7 @@ export const RecordsList: React.FC = () => {
         oldOrder.current = order
 
         fetchRecords({
+            status: searchStatuses,
             calleesList: calleesList.map((item) => item.value),
             callersList: callersList.map((item) => item.value),
             duration: durationFilter,
@@ -72,7 +75,7 @@ export const RecordsList: React.FC = () => {
             page: page,
             orderBy: order
         })
-    }, [order, calleesList, callersList, durationFilter, page, fetchRecords])
+    }, [order, calleesList, callersList, durationFilter, page, fetchRecords, searchStatuses])
 
     return (
         <StandardContainer fullHeight width="90vw">
@@ -83,6 +86,7 @@ export const RecordsList: React.FC = () => {
                     <SortedHeader sortKey={SortedFieldsRecordFilters.calleeName}>Участник 2</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.start}>Начало</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.duration}>Время(с)</SortedHeader>
+                    <SortedHeader sortKey={SortedFieldsRecordFilters.status}>Статус</SortedHeader>
                     <SortedHeader>Еще</SortedHeader>
                 </RecordItemContainer>
                 {data?.records?.length && !isLoading ? (

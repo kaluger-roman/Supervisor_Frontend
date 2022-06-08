@@ -3,6 +3,7 @@ import { Option } from "components/Checkboxes/types"
 import { MAX_DURATION_TRASHOLD, MIN_DURATION_TRASHOLD } from "Supervisor/apps/RecordsStorage/view/Filters/const"
 import { SortOrder } from "root/types"
 import { RecordsStorageSlice, SortedFieldsRecordFilters } from "./types"
+import { CallStatus } from "./api/types"
 
 const initialState: RecordsStorageSlice = {
     durationFilter: {
@@ -14,7 +15,8 @@ const initialState: RecordsStorageSlice = {
     searchCallerValue: "",
     searchCalleeValue: "",
     page: 1,
-    order: []
+    order: [],
+    searchStatuses: [CallStatus.ended]
 }
 
 const recordsStorageSlice = createSlice({
@@ -37,7 +39,9 @@ const recordsStorageSlice = createSlice({
             if (action.payload.order !== SortOrder.unset) {
                 state.order.push(action.payload)
             }
-        }
+        },
+        changeSearchStatuses: (state, action: PayloadAction<CallStatus[]>) =>
+            void (state.searchStatuses = action.payload)
     }
 })
 
@@ -49,7 +53,8 @@ export const {
     changeCalleesList,
     changeCallersList,
     changeRecordsPage,
-    changeSortOrder
+    changeSortOrder,
+    changeSearchStatuses
 } = recordsStorageSlice.actions
 
 export default recordsStorageSlice.reducer

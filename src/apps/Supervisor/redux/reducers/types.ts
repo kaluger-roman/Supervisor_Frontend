@@ -2,7 +2,7 @@ import { UserStatuses } from "components/Navbar/types"
 import { AuthPage, SecretQuestsKey } from "Supervisor/apps/Auth/types"
 import { CallEndCodes } from "Supervisor/apps/WebRTC/WebRTCAgent/types"
 import { Pages, CallPages } from "../../apps/WebRTC/types"
-import { CurrentCall, SortItem } from "./api/types"
+import { CallStatus, CurrentCall, SortItem } from "./api/types"
 import { Option } from "components/Checkboxes/types"
 
 export enum AppPage {
@@ -61,6 +61,7 @@ export type RecordsStorageSlice = {
     searchCalleeValue: string
     page: number
     order: SortItem[]
+    searchStatuses: CallStatus[]
 }
 
 export enum SortedFieldsRecordFilters {
@@ -68,5 +69,6 @@ export enum SortedFieldsRecordFilters {
     callerName = "callerName",
     id = "id",
     start = "start",
-    duration = "duration"
+    duration = "duration",
+    status = "status"
 }

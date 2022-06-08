@@ -28,7 +28,8 @@ import {
     Word,
     Stats,
     ConfStat,
-    NoTranscriptsContainer
+    NoTranscriptsContainer,
+    StatusLabel
 } from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
@@ -217,6 +218,9 @@ export const RecordItem: React.FC<RecordItemProps> = ({ record }) => {
                     ])}
                 </LargeText>
                 <LargeText>{record.duration}</LargeText>
+                <LargeText>
+                    <StatusLabel status={record.call.status}>{record.call.status}</StatusLabel>
+                </LargeText>
                 <MoreButton onClick={() => setMoreShown(!moreShown)} />
                 <Tooltip />
             </RecordItemContainer>
