@@ -32,9 +32,6 @@ class Agent {
         iceServers: [
             {
                 urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"]
-            },
-            {
-                urls: ["stun:global.stun.twilio.com:3478?transport=udp"]
             }
         ]
     }
