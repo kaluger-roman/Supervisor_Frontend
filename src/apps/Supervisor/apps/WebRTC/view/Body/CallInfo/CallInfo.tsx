@@ -19,7 +19,6 @@ export const CallInfo: React.FC = () => {
         if (isRemoteHolded && !animationOn) setAnimationOn(true)
     }, [isRemoteHolded])
 
-    console.log(isRemoteHolded, animationOn)
     return (
         <CallInfoWrapper>
             <div>{otherSide?.username}</div>

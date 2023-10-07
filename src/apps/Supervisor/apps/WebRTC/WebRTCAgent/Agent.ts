@@ -225,7 +225,6 @@ class Agent {
             this.dataChannel.addEventListener("message", (event) => {
                 const message: Action<WebrtcDataChannelActions> = JSON.parse(event.data)
 
-                console.log("message", message)
                 if ([WebrtcDataChannelActions.hold, WebrtcDataChannelActions.unhold].includes(message.type)) {
                     this.remoteHold(message.type)
                 }

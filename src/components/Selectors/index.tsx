@@ -43,7 +43,6 @@ export const Selector: React.FC<SelectorProps> = ({
                 containerRef.current !== e.target &&
                 !containerRef.current.contains(e.target)
             ) {
-                console.log("fdf")
                 setIsOpened(false)
             }
         },

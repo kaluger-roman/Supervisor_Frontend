@@ -1,6 +1,6 @@
 export const DIAL_NUMBER_REGEXP = /^\d{0,11}$/
 
-export const HOST = "http://localhost:3000"
+export const HOST = "http://localhost:3051"
 export const BASE_API = HOST + "/api"
 
 export const ROUTES = {

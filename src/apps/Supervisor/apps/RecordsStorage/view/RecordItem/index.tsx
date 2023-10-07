@@ -46,7 +46,7 @@ const getStatusTime = (
 ): string => {
     const activeIndex = statusSequence.findIndex((val) => statuses.includes(val as CallStatus))
 
-    return moment.unix(statusTimestampsSequence[activeIndex]).format("HH:mm DD.MM")
+    return moment(Number(statusTimestampsSequence[activeIndex])).format("HH:mm DD.MM")
 }
 
 const Message: React.FC<ConvertedTrscrtUnitGroup & { jumpTo: (time: number) => void }> = ({ data, side, jumpTo }) => {
@@ -78,6 +78,8 @@ const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void
         let refetchTimeout: number | undefined
 
         if (record.call.status === CallStatus.active) setInterval(() => refetch(), 5000)
+
+        if (record.call.status === CallStatus.ended) refetch()
 
         return () => void (refetchTimeout && clearInterval(refetchTimeout))
     }, [record, refetch])
