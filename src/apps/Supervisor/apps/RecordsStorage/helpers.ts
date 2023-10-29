@@ -22,6 +22,21 @@ export const countRecordAuthenticityRate = (transcript?: RecordTranscription) =>
 export const countAuthenticityRate = (units: TranscriptionUnit[]) =>
     units.length ? Math.round((units.reduce((acc, val) => Number(acc) + Number(val.conf), 0) / units.length) * 100) : 0
 
+export const countSynSuspRate = (units: TranscriptionUnit[]) =>
+    units.length
+        ? Math.round(
+              (units.reduce((acc, val) => Number(acc) + Number(val.crimeMeaningSynonymRate), 0) / units.length / 100) *
+                  100
+          )
+        : 0
+
+export const countW2VSuspRate = (units: TranscriptionUnit[]) =>
+    units.length
+        ? Math.round(
+              (units.reduce((acc, val) => Number(acc) + Number(val.crimeMeaningW2VRate), 0) / units.length / 100) * 100
+          )
+        : 0
+
 export const makeCommonTranscriptList = (transcript: RecordTranscription): ConvertedTrscrtUnitGroup[] =>
     compose(
         map((data: TranscriptionUnitWithSide[]) => ({ data, side: first(data)!.side })),

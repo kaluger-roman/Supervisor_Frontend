@@ -99,6 +99,7 @@ export type RecordFiltersPayload = {
     page?: number
     orderBy?: SortItem[]
     status: CallStatus[]
+    crimeRateFilter: number
 }
 
 export type TranscriptionUnit = {
@@ -107,6 +108,8 @@ export type TranscriptionUnit = {
     start: number
     word: string
     id: number
+    crimeMeaningSynonymRate: number
+    crimeMeaningW2VRate: number
 }
 
 export type RecordType = {
@@ -124,6 +127,9 @@ export type RecordType = {
         callee: { username: string }
     }
     duration: number
+    totalCrimeRateSyn: number
+    totalCrimeRateW2V: number
+    totalCrimeRateBert: number
 }
 
 export type RecordTranscription = {

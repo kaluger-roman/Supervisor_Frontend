@@ -10,6 +10,7 @@ const initialState: RecordsStorageSlice = {
         to: MAX_DURATION_TRASHOLD,
         from: MIN_DURATION_TRASHOLD
     },
+    crimeRateFilter: 0,
     calleesList: [],
     callersList: [],
     searchCallerValue: "",
@@ -23,6 +24,7 @@ const recordsStorageSlice = createSlice({
     name: "recordsStorage",
     initialState,
     reducers: {
+        changeCrimeRateFilter: (state, action: PayloadAction<number>) => void (state.crimeRateFilter = action.payload),
         changeMinDuration: (state, action: PayloadAction<number>) => void (state.durationFilter.from = action.payload),
         changeMaxDuration: (state, action: PayloadAction<number>) => void (state.durationFilter.to = action.payload),
         changeCalleesList: (state, action: PayloadAction<Option<string>[]>) =>
@@ -46,6 +48,7 @@ const recordsStorageSlice = createSlice({
 })
 
 export const {
+    changeCrimeRateFilter,
     changeMinDuration,
     changeMaxDuration,
     changeSearchCallerValue,

@@ -54,6 +54,7 @@ export type DurationFilter = {
 }
 
 export type RecordsStorageSlice = {
+    crimeRateFilter: number
     durationFilter: DurationFilter
     calleesList: Option<string>[]
     callersList: Option<string>[]

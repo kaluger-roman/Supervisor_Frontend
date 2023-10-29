@@ -52,7 +52,7 @@ const SortedHeader: React.FC<{ sortKey?: SortedFieldsRecordFilters }> = ({ child
 
 export const RecordsList: React.FC = () => {
     const dispatch = useDispatch()
-    const { durationFilter, calleesList, callersList, page, order, searchStatuses } = useSESelector(
+    const { durationFilter, calleesList, callersList, page, order, searchStatuses, crimeRateFilter } = useSESelector(
         (state) => state.recordsStorage
     )
     const oldOrder = useRef<SortItem[]>([])
@@ -73,9 +73,10 @@ export const RecordsList: React.FC = () => {
             duration: durationFilter,
             limit: PER_PAGE_STANDARD_LIMIT,
             page: page,
-            orderBy: order
+            orderBy: order,
+            crimeRateFilter
         })
-    }, [order, calleesList, callersList, durationFilter, page, fetchRecords, searchStatuses])
+    }, [order, calleesList, callersList, durationFilter, page, fetchRecords, searchStatuses, crimeRateFilter])
 
     return (
         <StandardContainer fullHeight width="90vw">
@@ -87,6 +88,7 @@ export const RecordsList: React.FC = () => {
                     <SortedHeader sortKey={SortedFieldsRecordFilters.start}>Начало</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.duration}>Время(с)</SortedHeader>
                     <SortedHeader sortKey={SortedFieldsRecordFilters.status}>Статус</SortedHeader>
+                    <SortedHeader sortKey={SortedFieldsRecordFilters.calleeName}>Подозрение</SortedHeader>
                     <SortedHeader>Еще</SortedHeader>
                 </RecordItemContainer>
                 {data?.records?.length && !isLoading ? (

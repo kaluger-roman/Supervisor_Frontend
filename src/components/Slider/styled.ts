@@ -38,6 +38,13 @@ export const SliderValuesLabel = styled.div`
     margin-bottom: 8px;
 `
 
+export const SliderValuesSingleLabel = styled.div`
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    color: ${COLORS.primarySecondary};
+`
+
 export const SliderLabelsContainer = styled.div`
     display: flex;
     justify-content: space-between;

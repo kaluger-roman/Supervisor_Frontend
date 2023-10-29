@@ -56,7 +56,7 @@ export const OptionsContainer = styled.div<{ isOpened: boolean; inputWidth?: Inp
     overflow: hidden scroll;
     width: ${({ inputWidth }) => parseInt(CSS_CONSTANTS.controlWidth) * (inputWidth === InputWidth.long ? 1.5 : 1)}px;
     top: 48px;
-    z-index: 1;
+    z-index: 10;
 `
 
 export const ListOption = styled.div<{ isSelected: boolean }>`

@@ -82,6 +82,9 @@ export const RecordItemContainer = styled.div<{ header?: boolean }>`
         width: 80px;
     }
     & > div:nth-child(7) {
+        width: 150px;
+    }
+    & > div:nth-child(8) {
         width: 80px;
     }
 `
@@ -208,15 +211,16 @@ export const NumberTag = styled(CenteredDiv)`
 `
 export const AuthenticityRate = styled.div`
     color: ${COLORS.primaryMain};
-    font-size: 20px;
+    font-size: 16px;
 `
 
-export const AuthenticityValue = styled.span<{ value: number }>`
+export const AuthenticityValue = styled.span<{ value: number; isNegative?: boolean }>`
     font-weight: bold;
     color: ${COLORS.deepDark};
     border-radius: 20px;
-    background: ${({ value }) => AuthenticityToColor(value)};
-    padding: 4px 20px;
+    background: ${({ value, isNegative }) => AuthenticityToColor(isNegative ? 100 - value : value)};
+    padding: 2px 10px;
+    margin: 4px;
 `
 
 export const LiveLabel = styled.span`
@@ -326,12 +330,33 @@ export const MessageBlock = styled.div<{ side: CallRole }>`
 export const MainText = styled.div`
     width: fit-content;
 `
-export const Word = styled.span<{ conf: number }>`
+export const Word = styled.span<{ conf: number; syn: number; w2v: number }>`
     padding: 0 2px;
-    color: ${({ conf }) => AuthenticityToColor(conf * 100)};
+    color: ${({ conf, syn, w2v }) => AuthenticityToColor(Math.min(conf, 100 - syn, 100 - w2v) * 100)};
     display: inline-block;
 `
 
 export const StatusLabel = styled.label<{ status: CallStatus }>`
     color: ${({ status }) => (status === CallStatus.active ? COLORS.success1 : "inherit")};
+`
+
+export const StatsLabelsHeader = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+`
+
+export const CircleSuspicion = styled.div<{ value: number }>`
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: ${({ value }) => AuthenticityToColor(100 - value)};
+`
+
+export const CirclesContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    align-items: center;
 `

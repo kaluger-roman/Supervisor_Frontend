@@ -30,14 +30,24 @@ import {
     ConfStat,
     NoTranscriptsContainer,
     StatusLabel,
-    LiveLabel
+    LiveLabel,
+    StatsLabelsHeader,
+    CircleSuspicion,
+    CirclesContainer
 } from "./styled"
 import { RecordItemProps } from "./types"
 import "./player.scss"
 import { Watch } from "react-loader-spinner"
 import { COLORS } from "config/globalStyles/colors"
-import { countAuthenticityRate, countRecordAuthenticityRate, makeCommonTranscriptList } from "../../helpers"
+import {
+    countAuthenticityRate,
+    countRecordAuthenticityRate,
+    countSynSuspRate,
+    countW2VSuspRate,
+    makeCommonTranscriptList
+} from "../../helpers"
 import H5AudioPlayer from "react-h5-audio-player"
+import ReactTooltip from "react-tooltip"
 
 const getStatusTime = (
     statusSequence: string[],
@@ -54,13 +64,27 @@ const Message: React.FC<ConvertedTrscrtUnitGroup & { jumpTo: (time: number) => v
         <MessageBlock side={side}>
             <MainText>
                 {data.map((unit, inx) => (
-                    <Word key={inx} conf={unit.conf}>
+                    <Word
+                        data-tip
+                        data-for={`tooltip-${unit.id}`}
+                        key={inx}
+                        conf={unit.conf}
+                        syn={countSynSuspRate([unit])}
+                        w2v={countW2VSuspRate([unit])}
+                    >
                         {unit.word}
+                        <ReactTooltip id={`tooltip-${unit.id}`}>
+                            <div>Confidence={countAuthenticityRate([unit])}</div>
+                            <div>Synonym suspicion={countSynSuspRate([unit])}</div>
+                            <div>W2V suspicion={countW2VSuspRate([unit])}</div>
+                        </ReactTooltip>
                     </Word>
                 ))}
             </MainText>
             <Stats>
                 <ConfStat>Conf={countAuthenticityRate(data)}</ConfStat>
+                <ConfStat>Syn={countSynSuspRate(data)}</ConfStat>
+                <ConfStat>W2v={countW2VSuspRate(data)}</ConfStat>
                 <ConfStat onClick={() => jumpTo(first(data)?.start || 0)} isAction>
                     Jump To
                 </ConfStat>
@@ -98,11 +122,25 @@ const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void
                             <NumberTag>{record.call.callerWebrtcNumber}</NumberTag>
                         </TranscriptionSide>
                         <IconCall />
-                        <AuthenticityRate>
-                            Достоверность:{" "}
-                            <AuthenticityValue value={authenticityRate}>{authenticityRate}%</AuthenticityValue>
-                            {record.call.status === CallStatus.active && <LiveLabel>Live</LiveLabel>}
-                        </AuthenticityRate>
+                        <StatsLabelsHeader>
+                            <AuthenticityRate>
+                                Достоверность:{" "}
+                                <AuthenticityValue value={authenticityRate}>{authenticityRate}%</AuthenticityValue>
+                                {record.call.status === CallStatus.active && <LiveLabel>Live</LiveLabel>}
+                            </AuthenticityRate>
+                            <AuthenticityRate>
+                                Подозрительность:{" "}
+                                <AuthenticityValue isNegative value={record.totalCrimeRateSyn}>
+                                    Syn: {record.totalCrimeRateSyn}%
+                                </AuthenticityValue>
+                                <AuthenticityValue isNegative value={record.totalCrimeRateW2V}>
+                                    W2V: {record.totalCrimeRateW2V}%
+                                </AuthenticityValue>
+                                <AuthenticityValue isNegative value={record.totalCrimeRateBert}>
+                                    BERT: {record.totalCrimeRateBert}%
+                                </AuthenticityValue>
+                            </AuthenticityRate>
+                        </StatsLabelsHeader>
                         <IconAnswer />
                         <TranscriptionSide>
                             <NumberTag>{record.call.calleeWebrtcNumber}</NumberTag>
@@ -233,6 +271,26 @@ export const RecordItem: React.FC<RecordItemProps> = ({ record }) => {
                 <LargeText>
                     <StatusLabel status={record.call.status}>{record.call.status}</StatusLabel>
                 </LargeText>
+                <CirclesContainer>
+                    <CircleSuspicion
+                        data-tip
+                        data-for="totalCrimeRateSyn"
+                        data-tooltip-content={`Подозрение по синононимичному алгоритму: ${record.totalCrimeRateSyn}`}
+                        value={record.totalCrimeRateSyn}
+                    />
+                    <ReactTooltip id="totalCrimeRateSyn">
+                        <span>Synonym algorithm: {record.totalCrimeRateSyn}%</span>
+                    </ReactTooltip>
+                    <CircleSuspicion data-tip data-for="totalCrimeRateW2V" value={record.totalCrimeRateW2V} />
+                    <ReactTooltip id="totalCrimeRateW2V">
+                        <span>W2V algorithm: {record.totalCrimeRateW2V}%</span>
+                    </ReactTooltip>
+                    <CircleSuspicion data-tip data-for="totalCrimeRateBert" value={record.totalCrimeRateBert} />
+                    <ReactTooltip id="totalCrimeRateBert">
+                        <span>BERT algorithm: {record.totalCrimeRateBert}%</span>
+                    </ReactTooltip>
+                </CirclesContainer>
+
                 <MoreButton onClick={() => setMoreShown(!moreShown)} />
                 <Tooltip />
             </RecordItemContainer>

@@ -6,7 +6,7 @@ import { Option } from "components/Checkboxes/types"
 import { CallStatus, User } from "Supervisor/redux/reducers/api/types"
 import { FiltersContainer, FindBtnContainer, StatusFiltersContainer } from "./styled"
 import { InputWidth } from "components/Inputs/types"
-import { Slider } from "components/Slider"
+import { SingleSlider, Slider } from "components/Slider"
 import { useSESelector } from "Supervisor/redux/hooks"
 import { useDispatch } from "react-redux"
 import {
@@ -16,7 +16,8 @@ import {
     changeSearchCallerValue,
     changeCalleesList,
     changeCallersList,
-    changeSearchStatuses
+    changeSearchStatuses,
+    changeCrimeRateFilter
 } from "Supervisor/redux/reducers/recordsStorage"
 import { useRecordsMutation, useUsersQuery } from "Supervisor/redux/reducers/api/supervisor.api"
 import { SHARE_RECORDS_KEY, STANDARD_USERS_LIMIT } from "./const"
@@ -35,6 +36,7 @@ const userOptionsByValues = (opts: Option<string>[], values: string[]): Option<s
 
 export const Filters: React.FC = () => {
     const {
+        crimeRateFilter,
         durationFilter,
         calleesList,
         callersList,
@@ -79,9 +81,10 @@ export const Filters: React.FC = () => {
                 duration: durationFilter,
                 limit: PER_PAGE_STANDARD_LIMIT,
                 page: page,
-                orderBy: order
+                orderBy: order,
+                crimeRateFilter
             }),
-        [calleeVals, callerVals, durationFilter, page, order, fetchRecords, searchStatuses]
+        [calleeVals, callerVals, durationFilter, page, order, fetchRecords, searchStatuses, crimeRateFilter]
     )
 
     return (
@@ -128,6 +131,16 @@ export const Filters: React.FC = () => {
                     min={0}
                     max={60}
                     minDistance={5}
+                    inputWidth={InputWidth.long}
+                />
+                <SingleSlider
+                    onChange={(value) => dispatch(changeCrimeRateFilter(value))}
+                    value={crimeRateFilter}
+                    ariaLabel={"Минимальный уровень"}
+                    ariaValuetext="Минимальная опасность"
+                    pearling
+                    min={0}
+                    max={100}
                     inputWidth={InputWidth.long}
                 />
                 <StatusFiltersContainer>

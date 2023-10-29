@@ -44,4 +44,6 @@ export const Link = styled.div<{ colorType?: ThemeVariant; centered?: boolean }>
     }
 `
 
-export const Tooltip: React.FC = () => <ReactTooltip delayShow={300} className="ReactTooltip" place="bottom" />
+export const Tooltip: React.FC = () => (
+    <ReactTooltip delayShow={300} className="ReactTooltip" place="bottom" id="tooltip" />
+)

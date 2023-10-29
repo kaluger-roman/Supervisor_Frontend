@@ -6,9 +6,13 @@ import { CSS_CONSTANTS } from "config/globalStyles/common"
 
 export const FiltersContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(3, 260px);
+    grid-template-columns: repeat(3, 1fr);
+
     justify-items: center;
     width: fit-content;
+    width: 100%;
+    grid-template-rows: 50px 50px 50px;
+    gap: 20px 0;
 `
 
 export const FindBtnContainer = styled(CenteredDiv)`
