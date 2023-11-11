@@ -221,6 +221,8 @@ export const AuthenticityValue = styled.span<{ value: number; isNegative?: boole
     background: ${({ value, isNegative }) => AuthenticityToColor(isNegative ? 100 - value : value)};
     padding: 2px 10px;
     margin: 4px;
+    display: inline-flex;
+    align-items: center;
 `
 
 export const LiveLabel = styled.span`

@@ -130,6 +130,7 @@ export type RecordType = {
     totalCrimeRateSyn: number
     totalCrimeRateW2V: number
     totalCrimeRateBert: number
+    bertLabel: string
 }
 
 export type RecordTranscription = {

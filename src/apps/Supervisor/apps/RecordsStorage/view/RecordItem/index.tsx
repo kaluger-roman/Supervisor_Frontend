@@ -74,17 +74,17 @@ const Message: React.FC<ConvertedTrscrtUnitGroup & { jumpTo: (time: number) => v
                     >
                         {unit.word}
                         <ReactTooltip id={`tooltip-${unit.id}`}>
-                            <div>Confidence={countAuthenticityRate([unit])}</div>
-                            <div>Synonym suspicion={countSynSuspRate([unit])}</div>
-                            <div>W2V suspicion={countW2VSuspRate([unit])}</div>
+                            <div>Confidence={countAuthenticityRate([unit])}%</div>
+                            <div>Synonym suspicion={countSynSuspRate([unit])}%</div>
+                            <div>W2V suspicion={countW2VSuspRate([unit])}%</div>
                         </ReactTooltip>
                     </Word>
                 ))}
             </MainText>
             <Stats>
-                <ConfStat>Conf={countAuthenticityRate(data)}</ConfStat>
-                <ConfStat>Syn={countSynSuspRate(data)}</ConfStat>
-                <ConfStat>W2v={countW2VSuspRate(data)}</ConfStat>
+                <ConfStat>Conf={countAuthenticityRate(data)}%</ConfStat>
+                <ConfStat>Syn={countSynSuspRate(data)}%</ConfStat>
+                <ConfStat>W2V={countW2VSuspRate(data)}%</ConfStat>
                 <ConfStat onClick={() => jumpTo(first(data)?.start || 0)} isAction>
                     Jump To
                 </ConfStat>
@@ -131,13 +131,14 @@ const Transcription: React.FC<RecordItemProps & { jumpTo: (time: number) => void
                             <AuthenticityRate>
                                 Подозрительность:{" "}
                                 <AuthenticityValue isNegative value={record.totalCrimeRateSyn}>
-                                    Syn: {record.totalCrimeRateSyn}%
+                                    Syn: {Math.round(record.totalCrimeRateSyn)}%
                                 </AuthenticityValue>
                                 <AuthenticityValue isNegative value={record.totalCrimeRateW2V}>
-                                    W2V: {record.totalCrimeRateW2V}%
+                                    W2V: {Math.round(record.totalCrimeRateW2V)}%
                                 </AuthenticityValue>
                                 <AuthenticityValue isNegative value={record.totalCrimeRateBert}>
-                                    BERT: {record.totalCrimeRateBert}%
+                                    BERT: {Math.round(record.totalCrimeRateBert)}%&nbsp;
+                                    <span style={{ fontSize: "10px" }}>({record.bertLabel || "Неизвестно"})</span>
                                 </AuthenticityValue>
                             </AuthenticityRate>
                         </StatsLabelsHeader>
@@ -272,23 +273,37 @@ export const RecordItem: React.FC<RecordItemProps> = ({ record }) => {
                     <StatusLabel status={record.call.status}>{record.call.status}</StatusLabel>
                 </LargeText>
                 <CirclesContainer>
-                    <CircleSuspicion
-                        data-tip
-                        data-for="totalCrimeRateSyn"
-                        data-tooltip-content={`Подозрение по синононимичному алгоритму: ${record.totalCrimeRateSyn}`}
-                        value={record.totalCrimeRateSyn}
-                    />
-                    <ReactTooltip id="totalCrimeRateSyn">
-                        <span>Synonym algorithm: {record.totalCrimeRateSyn}%</span>
-                    </ReactTooltip>
-                    <CircleSuspicion data-tip data-for="totalCrimeRateW2V" value={record.totalCrimeRateW2V} />
-                    <ReactTooltip id="totalCrimeRateW2V">
-                        <span>W2V algorithm: {record.totalCrimeRateW2V}%</span>
-                    </ReactTooltip>
-                    <CircleSuspicion data-tip data-for="totalCrimeRateBert" value={record.totalCrimeRateBert} />
-                    <ReactTooltip id="totalCrimeRateBert">
-                        <span>BERT algorithm: {record.totalCrimeRateBert}%</span>
-                    </ReactTooltip>
+                    <div>
+                        <CircleSuspicion
+                            data-tip
+                            data-for={record.id + "totalCrimeRateSyn"}
+                            data-tooltip-content={`Подозрение по синононимичному алгоритму: ${record.totalCrimeRateSyn}`}
+                            value={record.totalCrimeRateSyn}
+                        />
+                        <ReactTooltip id={record.id + "totalCrimeRateSyn"}>
+                            <span>Synonym algorithm: {Math.round(record.totalCrimeRateSyn)}%</span>
+                        </ReactTooltip>
+                    </div>
+                    <div>
+                        <CircleSuspicion
+                            data-tip
+                            data-for={record.id + "totalCrimeRateW2V"}
+                            value={record.totalCrimeRateW2V}
+                        />
+                        <ReactTooltip id={record.id + "totalCrimeRateW2V"}>
+                            <span>W2V algorithm: {Math.round(record.totalCrimeRateW2V)}%</span>
+                        </ReactTooltip>
+                    </div>
+                    <div>
+                        <CircleSuspicion
+                            data-tip
+                            data-for={record.id + "totalCrimeRateBert"}
+                            value={record.totalCrimeRateBert}
+                        />
+                        <ReactTooltip id={record.id + "totalCrimeRateBert"}>
+                            <span>BERT algorithm: {Math.round(record.totalCrimeRateBert)}%</span>
+                        </ReactTooltip>
+                    </div>
                 </CirclesContainer>
 
                 <MoreButton onClick={() => setMoreShown(!moreShown)} />
